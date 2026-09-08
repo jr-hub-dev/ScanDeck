@@ -1,12 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.hooks import collect_all, collect_submodules
 
 datas = [
     ("data", "data"),
     ("scandeck/locales", "scandeck/locales"),
 ]
 binaries = []
-hiddenimports = ["tkinter", "tkinter.filedialog", "tkinter.font"]
+hiddenimports = [
+    "tkinter",
+    "tkinter.filedialog",
+    "tkinter.font",
+    *collect_submodules("scandeck"),
+]
 
 pkg_datas, pkg_binaries, pkg_hidden = collect_all("openpyxl")
 datas += pkg_datas
@@ -14,7 +19,7 @@ binaries += pkg_binaries
 hiddenimports += pkg_hidden
 
 a = Analysis(
-    ["scandeck/__main__.py"],
+    ["launch_scandeck.py"],
     pathex=[],
     binaries=binaries,
     datas=datas,
