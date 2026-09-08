@@ -1,4 +1,4 @@
-[English](README.md) · **Français** · [Español](README.es.md)
+[English](README.md) · **Français** · [Español](README.es.md) · [Versions](CHANGELOG.fr.md)
 
 # ScanDeck
 
@@ -10,7 +10,7 @@ Le HUD existe aujourd’hui en **anglais, français et espagnol**. Les noms du j
 
 C’est un overlay compagnon, pas un mod. Il ne s’injecte pas dans le jeu.
 
-Journal des versions : [CHANGELOG.md](CHANGELOG.md) · [Releases](https://github.com/jr-hub-dev/ScanDeck/releases)
+Journal des versions : [Français](CHANGELOG.fr.md) · [English](CHANGELOG.md) · [Español](CHANGELOG.es.md) · [Releases](https://github.com/jr-hub-dev/ScanDeck/releases)
 
 ## Prérequis
 

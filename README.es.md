@@ -1,4 +1,4 @@
-[English](README.md) · [Français](README.fr.md) · **Español**
+[English](README.md) · [Français](README.fr.md) · **Español** · [Versiones](CHANGELOG.es.md)
 
 # ScanDeck
 
@@ -10,7 +10,7 @@ El HUD está ahora en **inglés, francés y español**. Los nombres del juego (f
 
 Es un overlay de acompañamiento, no un mod. No se inyecta en el cliente.
 
-Notas de versión: [CHANGELOG.md](CHANGELOG.md) · [Releases](https://github.com/jr-hub-dev/ScanDeck/releases)
+Notas de versión: [Español](CHANGELOG.es.md) · [English](CHANGELOG.md) · [Français](CHANGELOG.fr.md) · [Releases](https://github.com/jr-hub-dev/ScanDeck/releases)
 
 ## Requisitos
 

@@ -38,7 +38,11 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ScanDeck-windows.zip
-          generate_release_notes: true
+          generate_release_notes: false
           body: |
+            Changelog: https://github.com/jr-hub-dev/ScanDeck/blob/main/CHANGELOG.md
+            Français: https://github.com/jr-hub-dev/ScanDeck/blob/main/CHANGELOG.fr.md
+            Español: https://github.com/jr-hub-dev/ScanDeck/blob/main/CHANGELOG.es.md
+
             Unzip and run `ScanDeck.exe`. Keep the whole folder together.
             Windows SmartScreen may warn on the first launch: More info → Run anyway.
