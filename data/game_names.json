@@ -1,0 +1,40 @@
+{
+  "genus": {
+    "Aleoida": {"en": "Aleoida", "fr": "Aleoida", "es": "Aleoida"},
+    "Bacterium": {"en": "Bacterium", "fr": "Bacterium", "es": "Bacterium"},
+    "Cactoida": {"en": "Cactoida", "fr": "Cactoida", "es": "Cactoida"},
+    "Clypeus": {"en": "Clypeus", "fr": "Clypeus", "es": "Clypeus"},
+    "Concha": {"en": "Concha", "fr": "Concha", "es": "Concha"},
+    "Electricae": {"en": "Electricae", "fr": "Electricae", "es": "Electricae"},
+    "Fonticulua": {"en": "Fonticulua", "fr": "Fonticulua", "es": "Fonticulua"},
+    "Fumerola": {"en": "Fumerola", "fr": "Fumerola", "es": "Fumerola"},
+    "Fungoida": {"en": "Fungoida", "fr": "Fungoida", "es": "Fungoida"},
+    "Osseus": {"en": "Osseus", "fr": "Osseus", "es": "Osseus"},
+    "Recepta": {"en": "Recepta", "fr": "Recepta", "es": "Recepta"},
+    "Stratum": {"en": "Stratum", "fr": "Stratum", "es": "Stratum"},
+    "Tubus": {"en": "Tubus", "fr": "Tubus", "es": "Tubus"},
+    "Tussock": {"en": "Tussock", "fr": "Touradon", "es": "Tussock"},
+    "Frutexa": {"en": "Frutexa", "fr": "Frutexa", "es": "Frutexa"}
+  },
+  "planet_class": {
+    "Ammonia world": {"en": "Ammonia world", "fr": "Monde d'ammoniac", "es": "Mundo de amoníaco"},
+    "Earthlike body": {"en": "Earth-like world", "fr": "Monde semblable à la Terre", "es": "Mundo similar a la Tierra"},
+    "High metal content body": {"en": "High metal content world", "fr": "Monde riche en métaux", "es": "Mundo rico en metales"},
+    "Icy body": {"en": "Icy body", "fr": "Corps glacé", "es": "Cuerpo helado"},
+    "Metal rich body": {"en": "Metal-rich body", "fr": "Corps riche en métaux", "es": "Cuerpo rico en metales"},
+    "Rocky body": {"en": "Rocky body", "fr": "Corps rocheux", "es": "Cuerpo rocoso"},
+    "Rocky ice body": {"en": "Rocky ice world", "fr": "Monde rocheux glacé", "es": "Mundo de hielo rocoso"},
+    "Water world": {"en": "Water world", "fr": "Monde océanique", "es": "Mundo acuático"},
+    "Sudarsky class I gas giant": {"en": "Class I gas giant", "fr": "Classe I géante gazeuse", "es": "Gigante gaseoso de clase I"},
+    "Sudarsky class II gas giant": {"en": "Class II gas giant", "fr": "Classe II géante gazeuse", "es": "Gigante gaseoso de clase II"},
+    "Sudarsky class III gas giant": {"en": "Class III gas giant", "fr": "Classe III géante gazeuse", "es": "Gigante gaseoso de clase III"},
+    "Sudarsky class IV gas giant": {"en": "Class IV gas giant", "fr": "Classe IV géante gazeuse", "es": "Gigante gaseoso de clase IV"},
+    "Sudarsky class V gas giant": {"en": "Class V gas giant", "fr": "Classe V géante gazeuse", "es": "Gigante gaseoso de clase V"},
+    "Helium-rich gas giant": {"en": "Helium-rich gas giant", "fr": "Géante gazeuse riche en hélium", "es": "Gigante gaseoso rico en helio"},
+    "Helium rich gas giant": {"en": "Helium-rich gas giant", "fr": "Géante gazeuse riche en hélium", "es": "Gigante gaseoso rico en helio"},
+    "Helium gas giant": {"en": "Helium gas giant", "fr": "Géante gazeuse d'hélium", "es": "Gigante gaseoso de helio"},
+    "Water giant": {"en": "Water giant", "fr": "Géante océanique", "es": "Gigante oceánico"},
+    "Gas giant with water based life": {"en": "Gas giant with water-based life", "fr": "Géante gazeuse avec de la vie aquatique", "es": "Gigante gaseoso con vida acuática"},
+    "Gas giant with ammonia based life": {"en": "Gas giant with ammonia-based life", "fr": "Géante gazeuse avec de la vie à base d'ammoniac", "es": "Gigante gaseoso con vida de amoníaco"}
+  }
+}

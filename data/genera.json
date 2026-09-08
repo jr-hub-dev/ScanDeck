@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "notes": "Colony range is genus-level (SrvSurvey / EDMC-ExploData). Spotting is a community heuristic for credits-per-minute, not a game rule.",
+  "genera": {
+    "Aleoida": {
+      "journal_key": "$Codex_Ent_Aleoids_Genus_Name;",
+      "aliases": ["Aleoida", "Aleoids"],
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey"
+    },
+    "Bacterium": {
+      "journal_key": "$Codex_Ent_Bacterial_Genus_Name;",
+      "aliases": ["Bacterium", "Bacteria", "Bacterial"],
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "notes": "Often almost invisible on the ground. High value species can still be worth it; cheap ones usually are not."
+    },
+    "Cactoida": {
+      "journal_key": "$Codex_Ent_Cactoid_Genus_Name;",
+      "aliases": ["Cactoida", "Cactoid"],
+      "colony_range_m": 300,
+      "spotting": "easy",
+      "family": "odyssey"
+    },
+    "Clypeus": {
+      "journal_key": "$Codex_Ent_Clypeus_Genus_Name;",
+      "aliases": ["Clypeus"],
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey"
+    },
+    "Concha": {
+      "journal_key": "$Codex_Ent_Conchas_Genus_Name;",
+      "aliases": ["Concha", "Conchas"],
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey"
+    },
+    "Electricae": {
+      "journal_key": "$Codex_Ent_Electricae_Genus_Name;",
+      "aliases": ["Electricae"],
+      "colony_range_m": 1000,
+      "spotting": "easy",
+      "family": "odyssey",
+      "notes": "Typically icy bodies near nebulae. 1000 m sample distance."
+    },
+    "Fonticulua": {
+      "journal_key": "$Codex_Ent_Fonticulus_Genus_Name;",
+      "aliases": ["Fonticulua", "Fonticulus"],
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey"
+    },
+    "Frutexa": {
+      "journal_key": "$Codex_Ent_Shrubs_Genus_Name;",
+      "aliases": ["Frutexa", "Shrubs"],
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey"
+    },
+    "Fumerola": {
+      "journal_key": "$Codex_Ent_Fumerolas_Genus_Name;",
+      "aliases": ["Fumerola", "Fumerolas"],
+      "colony_range_m": 100,
+      "spotting": "medium",
+      "family": "odyssey",
+      "notes": "Tied to volcanism."
+    },
+    "Fungoida": {
+      "journal_key": "$Codex_Ent_Fungoids_Genus_Name;",
+      "aliases": ["Fungoida", "Fungoids"],
+      "colony_range_m": 300,
+      "spotting": "medium",
+      "family": "odyssey"
+    },
+    "Osseus": {
+      "journal_key": "$Codex_Ent_Osseus_Genus_Name;",
+      "aliases": ["Osseus"],
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey"
+    },
+    "Recepta": {
+      "journal_key": "$Codex_Ent_Recepta_Genus_Name;",
+      "aliases": ["Recepta"],
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey"
+    },
+    "Stratum": {
+      "journal_key": "$Codex_Ent_Stratum_Genus_Name;",
+      "aliases": ["Stratum"],
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "notes": "Very easy to spot from the air on flat terrain."
+    },
+    "Tubus": {
+      "journal_key": "$Codex_Ent_Tubus_Genus_Name;",
+      "aliases": ["Tubus"],
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey"
+    },
+    "Tussock": {
+      "journal_key": "$Codex_Ent_Tussocks_Genus_Name;",
+      "aliases": ["Tussock", "Tussocks", "Touradon"],
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "notes": "French journal localisation: Touradon."
+    }
+  }
+}

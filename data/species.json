@@ -1,0 +1,2524 @@
+{
+  "version": 1,
+  "sorted_by": "value_cr_desc",
+  "first_logged_multiplier": 5,
+  "sources": [
+    "Canonn Vista Genomics Price List",
+    "EDMC-BioScan rulesets (names, Codex IDs, cross-check values)",
+    "SrvSurvey bio-criteria (empirical spawn ranges)"
+  ],
+  "species": [
+    {
+      "genus": "Fonticulua",
+      "name": "Fonticulua Fluctus",
+      "species_short": "Fluctus",
+      "codex_species": "$Codex_Ent_Fonticulus_05_Name;",
+      "value_cr": 20000000,
+      "first_logged_cr": 100000000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body",
+          "Rocky ice body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": 143.0,
+        "temp_max_k": 200.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Concha",
+      "name": "Concha Biconcavis",
+      "species_short": "Biconcavis",
+      "codex_species": "$Codex_Ent_Conchas_04_Name;",
+      "value_cr": 19010800,
+      "first_logged_cr": 95054000,
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Nitrogen"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fonticulua",
+      "name": "Fonticulua Segmentatus",
+      "species_short": "Segmentatus",
+      "codex_species": "$Codex_Ent_Fonticulus_01_Name;",
+      "value_cr": 19010800,
+      "first_logged_cr": 95054000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body",
+          "Rocky ice body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Tectonicas",
+      "species_short": "Tectonicas",
+      "codex_species": "$Codex_Ent_Stratum_07_Name;",
+      "value_cr": 19010800,
+      "first_logged_cr": 95054000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Stigmasis",
+      "species_short": "Stigmasis",
+      "codex_species": "$Codex_Ent_Tussocks_13_Name;",
+      "value_cr": 19010800,
+      "first_logged_cr": 95054000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "SulphurDioxide"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Cactoida",
+      "name": "Cactoida Vermis",
+      "species_short": "Vermis",
+      "codex_species": "$Codex_Ent_Cactoid_03_Name;",
+      "value_cr": 16202800,
+      "first_logged_cr": 81014000,
+      "colony_range_m": 300,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Clypeus",
+      "name": "Clypeus Speculumi",
+      "species_short": "Speculumi",
+      "codex_species": "$Codex_Ent_Clypeus_03_Name;",
+      "value_cr": 16202800,
+      "first_logged_cr": 81014000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide",
+          "Water"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fumerola",
+      "name": "Fumerola Extremus",
+      "species_short": "Extremus",
+      "codex_species": "$Codex_Ent_Fumerolas_02_Name;",
+      "value_cr": 16202800,
+      "first_logged_cr": 81014000,
+      "colony_range_m": 100,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "required",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Recepta",
+      "name": "Recepta Deltahedronix",
+      "species_short": "Deltahedronix",
+      "codex_species": "$Codex_Ent_Recepta_02_Name;",
+      "value_cr": 16202800,
+      "first_logged_cr": 81014000,
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Cucumisis",
+      "species_short": "Cucumisis",
+      "codex_species": "$Codex_Ent_Stratum_06_Name;",
+      "value_cr": 16202800,
+      "first_logged_cr": 81014000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": 191.0,
+        "temp_max_k": 373.0,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Recepta",
+      "name": "Recepta Conditivus",
+      "species_short": "Conditivus",
+      "codex_species": "$Codex_Ent_Recepta_03_Name;",
+      "value_cr": 14313700,
+      "first_logged_cr": 71568500,
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Virgam",
+      "species_short": "Virgam",
+      "codex_species": "$Codex_Ent_Tussocks_14_Name;",
+      "value_cr": 14313700,
+      "first_logged_cr": 71568500,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Water"
+        ],
+        "temp_min_k": 390.0,
+        "temp_max_k": 390.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Aleoida",
+      "name": "Aleoida Gravis",
+      "species_short": "Gravis",
+      "codex_species": "$Codex_Ent_Aleoids_05_Name;",
+      "value_cr": 12934900,
+      "first_logged_cr": 64674500,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 190.0,
+        "temp_max_k": 197.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Osseus",
+      "name": "Osseus Discus",
+      "species_short": "Discus",
+      "codex_species": "$Codex_Ent_Osseus_02_Name;",
+      "value_cr": 12934900,
+      "first_logged_cr": 64674500,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Recepta",
+      "name": "Recepta Umbrux",
+      "species_short": "Umbrux",
+      "codex_species": "$Codex_Ent_Recepta_01_Name;",
+      "value_cr": 12934900,
+      "first_logged_cr": 64674500,
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Clypeus",
+      "name": "Clypeus Margaritus",
+      "species_short": "Margaritus",
+      "codex_species": "$Codex_Ent_Clypeus_02_Name;",
+      "value_cr": 11873200,
+      "first_logged_cr": 59366000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide",
+          "Water"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tubus",
+      "name": "Tubus Cavas",
+      "species_short": "Cavas",
+      "codex_species": "$Codex_Ent_Tubus_03_Name;",
+      "value_cr": 11873200,
+      "first_logged_cr": 59366000,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 160.0,
+        "temp_max_k": 197.0,
+        "gravity_min_g": 0.153,
+        "gravity_max_g": 0.153,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreLeft",
+          "Scutum-CentaurusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Frutexa",
+      "name": "Frutexa Flammasis",
+      "species_short": "Flammasis",
+      "codex_species": "$Codex_Ent_Shrubs_04_Name;",
+      "value_cr": 10326000,
+      "first_logged_cr": 51630000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "variable",
+        "regions_empirical": [
+          "CentreLeft",
+          "Scutum-CentaurusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Osseus",
+      "name": "Osseus Pellebantus",
+      "species_short": "Pellebantus",
+      "codex_species": "$Codex_Ent_Osseus_06_Name;",
+      "value_cr": 9739000,
+      "first_logged_cr": 48695000,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 191.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreTop",
+          "PerseusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Informem",
+      "species_short": "Informem",
+      "codex_species": "$Codex_Ent_Bacterial_08_Name;",
+      "value_cr": 8418000,
+      "first_logged_cr": 42090000,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Nitrogen"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Clypeus",
+      "name": "Clypeus Lacrimam",
+      "species_short": "Lacrimam",
+      "codex_species": "$Codex_Ent_Clypeus_01_Name;",
+      "value_cr": 8418000,
+      "first_logged_cr": 42090000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide",
+          "Water"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Volu",
+      "species_short": "Volu",
+      "codex_species": "$Codex_Ent_Bacterial_09_Name;",
+      "value_cr": 7774700,
+      "first_logged_cr": 38873500,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Oxygen"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Concha",
+      "name": "Concha Aureolas",
+      "species_short": "Aureolas",
+      "codex_species": "$Codex_Ent_Conchas_02_Name;",
+      "value_cr": 7774700,
+      "first_logged_cr": 38873500,
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Frutexa",
+      "name": "Frutexa Acus",
+      "species_short": "Acus",
+      "codex_species": "$Codex_Ent_Shrubs_02_Name;",
+      "value_cr": 7774700,
+      "first_logged_cr": 38873500,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 146.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.238,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreLeft",
+          "Orion-CygnusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tubus",
+      "name": "Tubus Compagibus",
+      "species_short": "Compagibus",
+      "codex_species": "$Codex_Ent_Tubus_05_Name;",
+      "value_cr": 7774700,
+      "first_logged_cr": 38873500,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 160.0,
+        "temp_max_k": 197.0,
+        "gravity_min_g": 0.16,
+        "gravity_max_g": 0.16,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreLeft",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Triticum",
+      "species_short": "Triticum",
+      "codex_species": "$Codex_Ent_Tussocks_12_Name;",
+      "value_cr": 7774700,
+      "first_logged_cr": 38873500,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 191.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fumerola",
+      "name": "Fumerola Nitris",
+      "species_short": "Nitris",
+      "codex_species": "$Codex_Ent_Fumerolas_03_Name;",
+      "value_cr": 7500900,
+      "first_logged_cr": 37504500,
+      "colony_range_m": 100,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Aleoida",
+      "name": "Aleoida Arcus",
+      "species_short": "Arcus",
+      "codex_species": "$Codex_Ent_Aleoids_01_Name;",
+      "value_cr": 7252500,
+      "first_logged_cr": 36262500,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 175.0,
+        "temp_max_k": 180.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Capillum",
+      "species_short": "Capillum",
+      "codex_species": "$Codex_Ent_Tussocks_15_Name;",
+      "value_cr": 7025800,
+      "first_logged_cr": 35129000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": 80.0,
+        "temp_max_k": 129.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Aleoida",
+      "name": "Aleoida Coronamus",
+      "species_short": "Coronamus",
+      "codex_species": "$Codex_Ent_Aleoids_02_Name;",
+      "value_cr": 6284600,
+      "first_logged_cr": 31423000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 180.0,
+        "temp_max_k": 190.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Electricae",
+      "name": "Electricae Pluma",
+      "species_short": "Pluma",
+      "codex_species": "$Codex_Ent_Electricae_01_Name;",
+      "value_cr": 6284600,
+      "first_logged_cr": 31423000,
+      "colony_range_m": 1000,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Electricae",
+      "name": "Electricae Radialem",
+      "species_short": "Radialem",
+      "codex_species": "$Codex_Ent_Electricae_02_Name;",
+      "value_cr": 6284600,
+      "first_logged_cr": 31423000,
+      "colony_range_m": 1000,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": [
+          "Distance à une nébuleuse requise (empirique, incertaine si non calculée)."
+        ],
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fumerola",
+      "name": "Fumerola Aquatis",
+      "species_short": "Aquatis",
+      "codex_species": "$Codex_Ent_Fumerolas_04_Name;",
+      "value_cr": 6284600,
+      "first_logged_cr": 31423000,
+      "colony_range_m": 100,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "required",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fumerola",
+      "name": "Fumerola Carbosis",
+      "species_short": "Carbosis",
+      "codex_species": "$Codex_Ent_Fumerolas_01_Name;",
+      "value_cr": 6284600,
+      "first_logged_cr": 31423000,
+      "colony_range_m": 100,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "required",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Frutexa",
+      "name": "Frutexa Sponsae",
+      "species_short": "Sponsae",
+      "codex_species": "$Codex_Ent_Shrubs_06_Name;",
+      "value_cr": 5988000,
+      "first_logged_cr": 29940000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Water"
+        ],
+        "temp_min_k": 390.0,
+        "temp_max_k": 390.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "variable",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Pennata",
+      "species_short": "Pennata",
+      "codex_species": "$Codex_Ent_Tussocks_01_Name;",
+      "value_cr": 5853800,
+      "first_logged_cr": 29269000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 145.0,
+        "temp_max_k": 154.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fonticulua",
+      "name": "Fonticulua Upupam",
+      "species_short": "Upupam",
+      "codex_species": "$Codex_Ent_Fonticulus_03_Name;",
+      "value_cr": 5727600,
+      "first_logged_cr": 28638000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body",
+          "Rocky ice body"
+        ],
+        "atmospheres": [
+          "ArgonRich"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tubus",
+      "name": "Tubus Sororibus",
+      "species_short": "Sororibus",
+      "codex_species": "$Codex_Ent_Tubus_02_Name;",
+      "value_cr": 5727600,
+      "first_logged_cr": 28638000,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.153,
+        "gravity_max_g": 0.153,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Nebulus",
+      "species_short": "Nebulus",
+      "codex_species": "$Codex_Ent_Bacterial_02_Name;",
+      "value_cr": 5289900,
+      "first_logged_cr": 26449500,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body"
+        ],
+        "atmospheres": [
+          "Helium"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "variable",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Scopulum",
+      "species_short": "Scopulum",
+      "codex_species": "$Codex_Ent_Bacterial_03_Name;",
+      "value_cr": 4934500,
+      "first_logged_cr": 24672500,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Omentum",
+      "species_short": "Omentum",
+      "codex_species": "$Codex_Ent_Bacterial_11_Name;",
+      "value_cr": 4638900,
+      "first_logged_cr": 23194500,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Concha",
+      "name": "Concha Renibus",
+      "species_short": "Renibus",
+      "codex_species": "$Codex_Ent_Conchas_01_Name;",
+      "value_cr": 4572400,
+      "first_logged_cr": 22862000,
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Serrati",
+      "species_short": "Serrati",
+      "codex_species": "$Codex_Ent_Tussocks_07_Name;",
+      "value_cr": 4447100,
+      "first_logged_cr": 22235500,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 171.0,
+        "temp_max_k": 174.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Osseus",
+      "name": "Osseus Fractus",
+      "species_short": "Fractus",
+      "codex_species": "$Codex_Ent_Osseus_01_Name;",
+      "value_cr": 4027800,
+      "first_logged_cr": 20139000,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 180.0,
+        "temp_max_k": 190.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreTop",
+          "PerseusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Verrata",
+      "species_short": "Verrata",
+      "codex_species": "$Codex_Ent_Bacterial_13_Name;",
+      "value_cr": 3897000,
+      "first_logged_cr": 19485000,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fungoida",
+      "name": "Fungoida Bullarum",
+      "species_short": "Bullarum",
+      "codex_species": "$Codex_Ent_Fungoids_03_Name;",
+      "value_cr": 3703200,
+      "first_logged_cr": 18516000,
+      "colony_range_m": 300,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Cactoida",
+      "name": "Cactoida Cortexum",
+      "species_short": "Cortexum",
+      "codex_species": "$Codex_Ent_Cactoid_01_Name;",
+      "value_cr": 3667600,
+      "first_logged_cr": 18338000,
+      "colony_range_m": 300,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 180.0,
+        "temp_max_k": 197.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreLeft",
+          "Orion-CygnusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Cactoida",
+      "name": "Cactoida Pullulanta",
+      "species_short": "Pullulanta",
+      "codex_species": "$Codex_Ent_Cactoid_04_Name;",
+      "value_cr": 3667600,
+      "first_logged_cr": 18338000,
+      "colony_range_m": 300,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 180.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreTop",
+          "PerseusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Caputus",
+      "species_short": "Caputus",
+      "codex_species": "$Codex_Ent_Tussocks_11_Name;",
+      "value_cr": 3472400,
+      "first_logged_cr": 17362000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 181.0,
+        "temp_max_k": 190.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Aleoida",
+      "name": "Aleoida Laminiae",
+      "species_short": "Laminiae",
+      "codex_species": "$Codex_Ent_Aleoids_04_Name;",
+      "value_cr": 3385200,
+      "first_logged_cr": 16926000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Orion-CygnusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Aleoida",
+      "name": "Aleoida Spica",
+      "species_short": "Spica",
+      "codex_species": "$Codex_Ent_Aleoids_03_Name;",
+      "value_cr": 3385200,
+      "first_logged_cr": 16926000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": 170.0,
+        "temp_max_k": 170.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "Orion-CygnusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fungoida",
+      "name": "Fungoida Gelata",
+      "species_short": "Gelata",
+      "codex_species": "$Codex_Ent_Fungoids_04_Name;",
+      "value_cr": 3330300,
+      "first_logged_cr": 16651500,
+      "colony_range_m": 300,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "Orion-CygnusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Albata",
+      "species_short": "Albata",
+      "codex_species": "$Codex_Ent_Tussocks_08_Name;",
+      "value_cr": 3252500,
+      "first_logged_cr": 16262500,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 175.0,
+        "temp_max_k": 180.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Ventusa",
+      "species_short": "Ventusa",
+      "codex_species": "$Codex_Ent_Tussocks_02_Name;",
+      "value_cr": 3227700,
+      "first_logged_cr": 16138500,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 155.0,
+        "temp_max_k": 160.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Osseus",
+      "name": "Osseus Pumice",
+      "species_short": "Pumice",
+      "codex_species": "$Codex_Ent_Osseus_04_Name;",
+      "value_cr": 3156300,
+      "first_logged_cr": 15781500,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fonticulua",
+      "name": "Fonticulua Lapida",
+      "species_short": "Lapida",
+      "codex_species": "$Codex_Ent_Fonticulus_04_Name;",
+      "value_cr": 3111000,
+      "first_logged_cr": 15555000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body",
+          "Rocky ice body"
+        ],
+        "atmospheres": [
+          "Nitrogen"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Laminamus",
+      "species_short": "Laminamus",
+      "codex_species": "$Codex_Ent_Stratum_03_Name;",
+      "value_cr": 2788300,
+      "first_logged_cr": 13941500,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": 161.0,
+        "temp_max_k": 161.0,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "variable",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fungoida",
+      "name": "Fungoida Stabitis",
+      "species_short": "Stabitis",
+      "codex_species": "$Codex_Ent_Fungoids_02_Name;",
+      "value_cr": 2680300,
+      "first_logged_cr": 13401500,
+      "colony_range_m": 300,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Orion-CygnusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Frigus",
+      "species_short": "Frigus",
+      "codex_species": "$Codex_Ent_Stratum_08_Name;",
+      "value_cr": 2637500,
+      "first_logged_cr": 13187500,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.56,
+        "gravity_max_g": 0.56,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tubus",
+      "name": "Tubus Rosarium",
+      "species_short": "Rosarium",
+      "codex_species": "$Codex_Ent_Tubus_04_Name;",
+      "value_cr": 2637500,
+      "first_logged_cr": 13187500,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": 160.0,
+        "temp_max_k": 160.0,
+        "gravity_min_g": 0.164,
+        "gravity_max_g": 0.164,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Cactoida",
+      "name": "Cactoida Lapis",
+      "species_short": "Lapis",
+      "codex_species": "$Codex_Ent_Cactoid_02_Name;",
+      "value_cr": 2483600,
+      "first_logged_cr": 12418000,
+      "colony_range_m": 300,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": 160.0,
+        "temp_max_k": 160.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Cactoida",
+      "name": "Cactoida Peperatis",
+      "species_short": "Peperatis",
+      "codex_species": "$Codex_Ent_Cactoid_05_Name;",
+      "value_cr": 2483600,
+      "first_logged_cr": 12418000,
+      "colony_range_m": 300,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": 160.0,
+        "temp_max_k": 160.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Scutum-CentaurusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Araneamus",
+      "species_short": "Araneamus",
+      "codex_species": "$Codex_Ent_Stratum_04_Name;",
+      "value_cr": 2448900,
+      "first_logged_cr": 12244500,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Excutitus",
+      "species_short": "Excutitus",
+      "codex_species": "$Codex_Ent_Stratum_01_Name;",
+      "value_cr": 2448900,
+      "first_logged_cr": 12244500,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": 165.0,
+        "temp_max_k": 190.0,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Orion-CygnusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tubus",
+      "name": "Tubus Conifer",
+      "species_short": "Conifer",
+      "codex_species": "$Codex_Ent_Tubus_01_Name;",
+      "value_cr": 2415500,
+      "first_logged_cr": 12077500,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 160.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.152,
+        "gravity_max_g": 0.152,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreTop",
+          "PerseusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Osseus",
+      "name": "Osseus Spiralis",
+      "species_short": "Spiralis",
+      "codex_species": "$Codex_Ent_Osseus_03_Name;",
+      "value_cr": 2404700,
+      "first_logged_cr": 12023500,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": 160.0,
+        "temp_max_k": 160.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Concha",
+      "name": "Concha Labiata",
+      "species_short": "Labiata",
+      "codex_species": "$Codex_Ent_Conchas_03_Name;",
+      "value_cr": 2352400,
+      "first_logged_cr": 11762000,
+      "colony_range_m": 150,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 150.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Tela",
+      "species_short": "Tela",
+      "codex_species": "$Codex_Ent_Bacterial_07_Name;",
+      "value_cr": 1949000,
+      "first_logged_cr": 9745000,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Ignis",
+      "species_short": "Ignis",
+      "codex_species": "$Codex_Ent_Tussocks_03_Name;",
+      "value_cr": 1849000,
+      "first_logged_cr": 9245000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 161.0,
+        "temp_max_k": 170.0,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "3",
+          "7",
+          "PerseusArm",
+          "Sagittarius-CarinaArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Frutexa",
+      "name": "Frutexa Flabellum",
+      "species_short": "Flabellum",
+      "codex_species": "$Codex_Ent_Shrubs_01_Name;",
+      "value_cr": 1808900,
+      "first_logged_cr": 9044500,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Scutum-CentaurusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fonticulua",
+      "name": "Fonticulua Digitos",
+      "species_short": "Digitos",
+      "codex_species": "$Codex_Ent_Fonticulus_06_Name;",
+      "value_cr": 1804100,
+      "first_logged_cr": 9020500,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body",
+          "Rocky ice body"
+        ],
+        "atmospheres": [
+          "Methane"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Catena",
+      "species_short": "Catena",
+      "codex_species": "$Codex_Ent_Tussocks_05_Name;",
+      "value_cr": 1766600,
+      "first_logged_cr": 8833000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "Scutum-CentaurusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Cultro",
+      "species_short": "Cultro",
+      "codex_species": "$Codex_Ent_Tussocks_04_Name;",
+      "value_cr": 1766600,
+      "first_logged_cr": 8833000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "CentreLeft",
+          "Orion-CygnusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Divisa",
+      "species_short": "Divisa",
+      "codex_species": "$Codex_Ent_Tussocks_10_Name;",
+      "value_cr": 1766600,
+      "first_logged_cr": 8833000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "3",
+          "PerseusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Cerbrus",
+      "species_short": "Cerbrus",
+      "codex_species": "$Codex_Ent_Bacterial_12_Name;",
+      "value_cr": 1689800,
+      "first_logged_cr": 8449000,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fungoida",
+      "name": "Fungoida Setisis",
+      "species_short": "Setisis",
+      "codex_species": "$Codex_Ent_Fungoids_01_Name;",
+      "value_cr": 1670100,
+      "first_logged_cr": 8350500,
+      "colony_range_m": 300,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Alcyoneum",
+      "species_short": "Alcyoneum",
+      "codex_species": "$Codex_Ent_Bacterial_06_Name;",
+      "value_cr": 1658500,
+      "first_logged_cr": 8292500,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Ammonia"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Frutexa",
+      "name": "Frutexa Collum",
+      "species_short": "Collum",
+      "codex_species": "$Codex_Ent_Shrubs_07_Name;",
+      "value_cr": 1639800,
+      "first_logged_cr": 8199000,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "SulphurDioxide"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Frutexa",
+      "name": "Frutexa Fera",
+      "species_short": "Fera",
+      "codex_species": "$Codex_Ent_Shrubs_05_Name;",
+      "value_cr": 1632500,
+      "first_logged_cr": 8162500,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 146.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.238,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreRight",
+          "OuterArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Frutexa",
+      "name": "Frutexa Metallicum",
+      "species_short": "Metallicum",
+      "codex_species": "$Codex_Ent_Shrubs_03_Name;",
+      "value_cr": 1632500,
+      "first_logged_cr": 8162500,
+      "colony_range_m": 150,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "High metal content body",
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Osseus",
+      "name": "Osseus Cornibus",
+      "species_short": "Cornibus",
+      "codex_species": "$Codex_Ent_Osseus_05_Name;",
+      "value_cr": 1483000,
+      "first_logged_cr": 7415000,
+      "colony_range_m": 800,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 180.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreTop",
+          "PerseusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Limaxus",
+      "species_short": "Limaxus",
+      "codex_species": "$Codex_Ent_Stratum_05_Name;",
+      "value_cr": 1362000,
+      "first_logged_cr": 6810000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": 165.0,
+        "temp_max_k": 190.0,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "unknown",
+        "regions_empirical": [
+          "Scutum-CentaurusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Stratum",
+      "name": "Stratum Paleas",
+      "species_short": "Paleas",
+      "codex_species": "$Codex_Ent_Stratum_02_Name;",
+      "value_cr": 1362000,
+      "first_logged_cr": 6810000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Rocky body"
+        ],
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": null,
+        "gravity_max_g": null,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Bullaris",
+      "species_short": "Bullaris",
+      "codex_species": "$Codex_Ent_Bacterial_10_Name;",
+      "value_cr": 1152500,
+      "first_logged_cr": 5762500,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": null,
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Acies",
+      "species_short": "Acies",
+      "codex_species": "$Codex_Ent_Bacterial_04_Name;",
+      "value_cr": 1000000,
+      "first_logged_cr": 5000000,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Neon"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Aurasus",
+      "species_short": "Aurasus",
+      "codex_species": "$Codex_Ent_Bacterial_01_Name;",
+      "value_cr": 1000000,
+      "first_logged_cr": 5000000,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 145.0,
+        "temp_max_k": 400.0,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "none",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Bacterium",
+      "name": "Bacterium Vesicula",
+      "species_short": "Vesicula",
+      "codex_species": "$Codex_Ent_Bacterial_05_Name;",
+      "value_cr": 1000000,
+      "first_logged_cr": 5000000,
+      "colony_range_m": 500,
+      "spotting": "hard",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "Argon"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.61,
+        "gravity_max_g": 0.61,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Fonticulua",
+      "name": "Fonticulua Campestris",
+      "species_short": "Campestris",
+      "codex_species": "$Codex_Ent_Fonticulus_02_Name;",
+      "value_cr": 1000000,
+      "first_logged_cr": 5000000,
+      "colony_range_m": 500,
+      "spotting": "easy",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": [
+          "Icy body",
+          "Rocky ice body"
+        ],
+        "atmospheres": [
+          "Argon"
+        ],
+        "temp_min_k": null,
+        "temp_max_k": null,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "unknown",
+        "regions_empirical": null,
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Pennatis",
+      "species_short": "Pennatis",
+      "codex_species": "$Codex_Ent_Tussocks_06_Name;",
+      "value_cr": 1000000,
+      "first_logged_cr": 5000000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 146.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreRight",
+          "OuterArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    },
+    {
+      "genus": "Tussock",
+      "name": "Tussock Propagito",
+      "species_short": "Propagito",
+      "codex_species": "$Codex_Ent_Tussocks_09_Name;",
+      "value_cr": 1000000,
+      "first_logged_cr": 5000000,
+      "colony_range_m": 200,
+      "spotting": "medium",
+      "family": "odyssey",
+      "constraints": {
+        "planet_types": null,
+        "atmospheres": [
+          "CarbonDioxide"
+        ],
+        "temp_min_k": 145.0,
+        "temp_max_k": 195.41,
+        "gravity_min_g": 0.276,
+        "gravity_max_g": 0.276,
+        "volcanism": "none",
+        "regions_empirical": [
+          "CentreLeft",
+          "Scutum-CentaurusArm"
+        ],
+        "notes": null,
+        "constraint_certainty": "empirical",
+        "constraint_source": "SrvSurvey bio-criteria (Spansh/Canonn observations)"
+      }
+    }
+  ]
+}
