@@ -6,6 +6,11 @@ Ce qui a changé pour les joueurs. Zips Windows : [Releases](https://github.com/
 
 Le lien GitHub « Full Changelog » est un **diff de code**, pas ces notes.
 
+## 1.0.4 — 2026-09-08
+
+### Modifié
+- Les lignes non vendues s’appellent **UC À VENDRE** (cartographie, gauche) et **VISTA À VENDRE** (bio, droite)
+
 ## 1.0.3 — 2026-09-08
 
 ### Ajouté

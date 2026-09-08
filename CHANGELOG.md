@@ -6,6 +6,11 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.0.4 — 2026-09-08
+
+### Changed
+- Unsold lines are labeled **UC TO SELL** (cartography, left) and **VISTA TO SELL** (biology, right)
+
 ## 1.0.3 — 2026-09-08
 
 ### Added
