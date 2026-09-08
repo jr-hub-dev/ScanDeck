@@ -246,7 +246,7 @@ class ScanDeckHud:
         self.sys_meta.pack(fill="x", pady=(2, 8))
         tk.Frame(left_head, bg=CYAN, height=1).pack(fill="x")
         self.carto_hold_lbl = tk.Label(
-            left_head, text=f"{t('for_sale')}  —", fg=MUTED, bg=BG, font=_font(8, "bold"),
+            left_head, text=f"{t('for_sale_carto')}  —", fg=MUTED, bg=BG, font=_font(8, "bold"),
             anchor="w",
         )
         self.carto_hold_lbl.pack(fill="x", pady=(8, 0))
@@ -275,7 +275,7 @@ class ScanDeckHud:
         self.meta_lbl.pack(fill="x", pady=(2, 8))
         tk.Frame(self._header, bg=CYAN, height=1).pack(fill="x")
         self.hold_lbl = tk.Label(
-            self._header, text=f"{t('for_sale')}  —", fg=MUTED, bg=BG, font=_font(8, "bold"),
+            self._header, text=f"{t('for_sale_bio')}  —", fg=MUTED, bg=BG, font=_font(8, "bold"),
             anchor="e",
         )
         self.hold_lbl.pack(fill="x", pady=(8, 0))
@@ -420,19 +420,19 @@ class ScanDeckHud:
         carto_n = int(snap.get("carto_n") or 0)
         carto_cr = int(snap.get("carto_cr") or 0)
         if carto_n <= 0:
-            self.carto_hold_lbl.config(text=f"{t('for_sale')}  —", fg=MUTED)
+            self.carto_hold_lbl.config(text=f"{t('for_sale_carto')}  —", fg=MUTED)
         else:
             self.carto_hold_lbl.config(
-                text=f"{t('for_sale')}  {fmt_scan_cr(carto_cr)}  ·  {carto_n}",
+                text=f"{t('for_sale_carto')}  {fmt_scan_cr(carto_cr)}  ·  {carto_n}",
                 fg=self._hold_fg(carto_cr, self.explore_rail.snap.get("remain")),
             )
         n = int(snap.get("bio_n") if snap.get("bio_n") is not None else snap.get("n") or 0)
         cr = int(snap.get("bio_cr") if snap.get("bio_cr") is not None else snap.get("cr") or 0)
         if n <= 0:
-            self.hold_lbl.config(text=f"{t('for_sale')}  —", fg=MUTED)
+            self.hold_lbl.config(text=f"{t('for_sale_bio')}  —", fg=MUTED)
         else:
             self.hold_lbl.config(
-                text=f"{t('for_sale')}  {fmt_scan_cr(cr)}  ·  {n}",
+                text=f"{t('for_sale_bio')}  {fmt_scan_cr(cr)}  ·  {n}",
                 fg=self._hold_fg(cr, self.rail.snap.get("remain")),
             )
 

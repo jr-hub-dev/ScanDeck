@@ -11,6 +11,8 @@
   "species_count": "{n} especies",
   "waiting_dss": "Esperando un DSS…",
   "for_sale": "A LA VENTA",
+  "for_sale_carto": "UC  A LA VENTA",
+  "for_sale_bio": "VISTA  A LA VENTA",
   "starting": "Iniciando…",
   "hud_version": "v{version}",
   "update_available": "ACTUALIZACIÓN {tag}",

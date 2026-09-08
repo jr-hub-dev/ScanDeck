@@ -77,7 +77,7 @@ In Odyssey exobiology, a **genus** (plural **genera**) is the bio *family* — B
 2. **FSS a planet** — body type, signals, a first value estimate. Tags: **carto** if already mapped, **FF** if already footfalled.
 3. **DSS (detailed surface scan)** — reveals those **genera** (the families), not the exact species. The **right** pane lists matching species and a land / skip verdict.
 4. **Land** — Genetic Sampler: Log → Sample → Analyse (1/3, 2/3, done). Codex / Nomad can identify a species before you sample it.
-5. **Sell** — Universal Cartographics and Vista Genomics. The **TO SELL** lines track unsold scans (cartography left, biology right). They clear when you sell. They turn green when the hold covers the remaining credits to the next rank.
+5. **Sell** — Universal Cartographics and Vista Genomics. **UC TO SELL** (left) is unsold cartography; **VISTA TO SELL** (right) is unsold biology. They clear when you sell. They turn green when the hold covers the remaining credits to the next rank.
 
 ### HUD layout
 

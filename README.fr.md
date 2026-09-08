@@ -77,7 +77,7 @@ En exobiologie Odyssey, un **genre** (en anglais *genus*, pluriel *genera*) est 
 2. **FSS d’une planète** — type, signaux, une première estimation de valeur. Pastilles : **carto** si déjà cartographiée, **FF** si déjà footfall.
 3. **DSS (cartographie détaillée)** — révèle ces **genres** (les familles), pas l’espèce exacte. Le panneau **de droite** liste les espèces compatibles et un verdict atterrir / passer.
 4. **Atterrir** — Genetic Sampler : Log → Sample → Analyse (1/3, 2/3, terminé). Le Codex / Nomad peut identifier une espèce avant l’échantillon.
-5. **Vendre** — Universal Cartographics et Vista Genomics. Les lignes **À VENDRE** suivent les scans non vendus (cartographie à gauche, bio à droite). Elles se vident à la vente. Elles passent au vert quand la soute couvre le reste jusqu’au rang suivant.
+5. **Vendre** — Universal Cartographics et Vista Genomics. **UC À VENDRE** (gauche) = cartographie non vendue ; **VISTA À VENDRE** (droite) = bios non vendues. Elles se vident à la vente. Elles passent au vert quand la soute couvre le reste jusqu’au rang suivant.
 
 ### Disposition du HUD
 

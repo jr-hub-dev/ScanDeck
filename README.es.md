@@ -77,7 +77,7 @@ En la exobiología de Odyssey, un **género** (en inglés *genus*, plural *gener
 2. **FSS de un planeta** — tipo, señales, una primera estimación de valor. Etiquetas: **carto** si ya está mapeado, **FF** si ya hay footfall.
 3. **DSS (escaneo detallado de superficie)** — revela esos **géneros** (las familias), no la especie exacta. El panel **derecho** lista las especies compatibles y un veredicto aterrizar / pasar.
 4. **Aterrizar** — Genetic Sampler: Log → Sample → Analyse (1/3, 2/3, hecho). El Codex / Nomad puede identificar una especie antes de muestrear.
-5. **Vender** — Universal Cartographics y Vista Genomics. Las líneas **A LA VENTA** siguen los escaneos sin vender (cartografía a la izquierda, bio a la derecha). Se vacían al vender. Pasan a verde cuando lo acumulado cubre lo que falta para el siguiente rango.
+5. **Vender** — Universal Cartographics y Vista Genomics. **UC A LA VENTA** (izquierda) es cartografía sin vender; **VISTA A LA VENTA** (derecha) es bio sin vender. Se vacían al vender. Pasan a verde cuando lo acumulado cubre lo que falta para el siguiente rango.
 
 ### Disposición del HUD
 
