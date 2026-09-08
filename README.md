@@ -1,20 +1,32 @@
 # ScanDeck
 
-Exploration & exobiology HUD for **Elite Dangerous Odyssey**.
+Exploration and exobiology HUD for **Elite Dangerous Odyssey**.
 
-Reads the game journals. After FSS/DSS it lists bodies, predicted species, unsold Universal Cartographics / Vista Genomics data, and rank rails.
+It reads the game journals in real time and sits on top of the desktop. After you honk and scan, it lists bodies, predicted species, unsold Universal Cartographics / Vista Genomics data, and explorer / exobiologist rank progress.
 
-Languages: **English, French, Spanish**. UI strings are translated; in-game names (genera, planet types, ranks) follow the game client when possible (`Fileheader.language`, journal `*_Localised`). Most Odyssey genera stay Latin; French **Tussock → Touradon** is the known exception.
+Languages: **English, French, Spanish**. The UI follows **Options**, or `--lang`, or the Elite client language (`Fileheader.language`). In-game names (genera, planet types, ranks) follow the client when possible. Most Odyssey genera stay Latin; the known French exception is **Tussock → Touradon**.
 
-## Windows (no Python)
+This is a companion overlay, not a game mod. It does not inject into the client.
 
-Download **ScanDeck-windows.zip** from [Releases](https://github.com/jr-hub-dev/ScanDeck/releases). Unzip and run `ScanDeck.exe`. Keep the whole folder together — do not move the exe out on its own.
+## Requirements
 
-Windows SmartScreen may warn on the first launch: **More info → Run anyway**.
+- Elite Dangerous **Odyssey**
+- Journals enabled (default: `%USERPROFILE%\Saved Games\Frontier Developments\Elite Dangerous`)
+- **Windows zip:** nothing else
+- **From source:** Python 3.11+ with Tk. `openpyxl` is optional (spreadsheet)
 
-## Install from source
+## Install
 
-Python 3.11+ with Tk.
+### Windows (recommended)
+
+1. Download **ScanDeck-windows.zip** from [Releases](https://github.com/jr-hub-dev/ScanDeck/releases).
+2. Unzip the whole folder somewhere (Desktop, Documents, …).
+3. Run `ScanDeck.exe` **from that folder**. Do not move the exe out on its own.
+4. If SmartScreen appears: **More info → Run anyway**.
+
+Start ScanDeck **before or while** you play. It replays recent journals on launch, then follows the live log.
+
+### Linux / macOS / Windows with Python
 
 ```bash
 git clone https://github.com/jr-hub-dev/ScanDeck.git
@@ -23,20 +35,68 @@ pip install -r requirements.txt
 python3 -m scandeck
 ```
 
-On Windows with Python: `python -m scandeck`. Linux: `./scandeck.sh` or `python3 -m scandeck`.
+On Windows with Python: `python -m scandeck`. On Linux you can also run `./scandeck.sh`.
 
-`--lang auto|en|fr|es` — `auto` (default) follows the OS, then the Elite client language from the journal.
+```text
+python3 -m scandeck --lang auto   # default: OS, then Elite client
+python3 -m scandeck --lang en
+python3 -m scandeck --lang fr
+python3 -m scandeck --lang es
+```
 
-## Journals
+## First launch
 
-Detected on Windows (`Saved Games/Frontier Developments/Elite Dangerous`) and Linux (Proton / Wine / Heroic). Override with **Options** in the HUD, `--journal-dir`, or `ED_JOURNAL_DIR`. Language and journal folder are saved in the ScanDeck data folder (`config.json`).
+If the HUD says it cannot find journals, click **Options** (bottom left):
 
-The workbook is stored in `Documents/ScanDeck/` (Windows) or `~/.local/share/ScanDeck/` (Linux), not next to the game. `openpyxl` is optional; without it the HUD still runs, without the spreadsheet.
+- **Language** — Auto / English / Français / Español
+- **Journal folder** — leave empty to auto-detect, or Browse to the folder that contains `Journal.*.log` files
 
-## Notes
+Typical locations:
 
-- A compatible planet does **not** guarantee a species.
-- DSS gives **genera**, not the exact species, until the Genetic Sampler speaks.
-- Criteria come from SrvSurvey / Canonn (observations, not official rules).
+| Platform | Folder |
+|---|---|
+| Windows | `Documents\..\Saved Games\Frontier Developments\Elite Dangerous` (under your user profile) |
+| Steam / Proton | `~/.steam/steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous` |
+| Wine / Heroic | under the prefix, same `Saved Games\Frontier Developments\Elite Dangerous` path |
+
+Settings are saved in `Documents\ScanDeck\config.json` (Windows) or `~/.local/share/ScanDeck/config.json` (Linux). Changing language or journals restarts the HUD.
+
+Command-line `--journal-dir` and `ED_JOURNAL_DIR` override Options.
+
+## How it works
+
+Play normally. ScanDeck only listens to journals.
+
+1. **Honk (FSS discovery scan)** — bodies appear on the **left**. Bio signals are not on the honk; scan each planet in the FSS.
+2. **FSS a planet** — body type, signals, a first value estimate. Tags: **carto** if already mapped, **FF** if already footfalled.
+3. **DSS (detailed surface scan)** — **genera** only (Bacterium, Stratum, …), not the exact species. The **right** pane lists matching species and a land / skip verdict.
+4. **Land** — Genetic Sampler: Log → Sample → Analyse (1/3, 2/3, done). One species per genus on a planet. Codex / Nomad can identify a species before you sample it.
+5. **Sell** — Universal Cartographics and Vista Genomics. The **TO SELL** lines track unsold scans (cartography left, biology right). They clear when you sell. They turn green when the hold covers the remaining credits to the next rank.
+
+### HUD layout
+
+| Area | What you see |
+|---|---|
+| Left list | Bodies in the current system |
+| Right pane | Selected planet: verdict, genera, species, scan progress |
+| Far left rail | Explorer rank |
+| Far right rail | Exobiologist rank |
+| Footer | **Open spreadsheet**, **Options** |
+
+Click a body on the left to open it on the right. Copy buttons next to the system / body name copy that name.
+
+Verdicts are a landing hint (high value, optional, skip), not a guarantee the species is there.
+
+### Spreadsheet
+
+**Open spreadsheet** writes `scandeck.xlsx` next to the config (Documents / ScanDeck on Windows). One row per planet × DSS genus, updated as you sample. Needs `openpyxl` (included in the Windows zip).
+
+## What ScanDeck does *not* know
+
+- A planet matching the criteria does **not** guarantee that species.
+- DSS confirms **genus**, not species, until the sampler or Nomad speaks.
+- `ScanOrganic Log` is an identification, not a completed sample.
+- Appearance rules come from [SrvSurvey](https://github.com/njthomson/SrvSurvey) / [Canonn](https://canonn.science/codex/vista-genomics-price-list/) observations, not Frontier. Details: [`data/SOURCES.md`](data/SOURCES.md).
+- Scan values follow community tables (MattG / EDDI-style cartography; Canonn Vista prices). First Logged / First Footfall bio bonus is ×5.
 
 Russian is not included yet.
