@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import json
 import os
-from pathlib import Path
+
+from .paths import resource_root
 
 SUPPORTED = ("en", "fr", "es")
-_DIR = Path(__file__).resolve().parent / "locales"
-_DATA = Path(__file__).resolve().parents[1] / "data" / "game_names.json"
+_DIR = resource_root() / "scandeck" / "locales"
+_DATA = resource_root() / "data" / "game_names.json"
 
 _lang = "en"
 _auto = True

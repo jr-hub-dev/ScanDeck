@@ -5,8 +5,9 @@ from functools import cached_property
 from pathlib import Path
 
 from .models import Species
+from .paths import resource_root
 
-DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+DATA_DIR = resource_root() / "data"
 
 
 class Catalog:
