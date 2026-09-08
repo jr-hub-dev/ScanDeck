@@ -17,6 +17,7 @@ from .config import load as load_config, save as save_config
 from .i18n import is_auto, lang, t
 from .journal import guessed_journal_dir
 from . import __version__
+from .paths import resource_root
 from .ranks import EXPLORE_RANKS, RANKS, fmt_credits, fmt_threshold, rank_short
 from .scan_value import fmt_scan_cr
 from .update import RELEASES_URL, newer_release
@@ -208,6 +209,7 @@ class ScanDeckHud:
         self._hold_snap: dict = {}
         self.root = tk.Tk()
         self.root.title("ScanDeck")
+        self._apply_icon()
         _pick_font(self.root)
         self.root.configure(bg=BG)
         self.root.geometry("1120x780")
@@ -369,6 +371,26 @@ class ScanDeckHud:
         self._start_watcher(journal_dir)
         self.root.after(150, self._drain)
         self._start_update_check()
+
+    def _apply_icon(self) -> None:
+        png = resource_root() / "data" / "icon.png"
+        ico = resource_root() / "data" / "icon.ico"
+        try:
+            self.root.wm_class("ScanDeck", "ScanDeck")
+        except tk.TclError:
+            pass
+        if png.exists():
+            try:
+                img = tk.PhotoImage(file=str(png))
+                self.root.iconphoto(True, img)
+                self._icon_img = img
+            except tk.TclError:
+                self._icon_img = None
+        if sys.platform == "win32" and ico.exists():
+            try:
+                self.root.iconbitmap(str(ico))
+            except tk.TclError:
+                pass
 
     def _copy_btn(self, parent, kind: str) -> None:
         lbl = tk.Label(
