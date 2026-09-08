@@ -12,6 +12,8 @@
   "waiting_dss": "Esperando un DSS…",
   "for_sale": "A LA VENTA",
   "starting": "Iniciando…",
+  "hud_version": "v{version}",
+  "update_available": "ACTUALIZACIÓN {tag}",
   "nothing_to_copy": "Nada que copiar",
   "copied": "Copiado: {text}",
   "live": "En vivo",

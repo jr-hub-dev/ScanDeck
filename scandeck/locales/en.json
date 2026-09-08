@@ -12,6 +12,8 @@
   "waiting_dss": "Waiting for a DSS…",
   "for_sale": "TO SELL",
   "starting": "Starting…",
+  "hud_version": "v{version}",
+  "update_available": "UPDATE {tag}",
   "nothing_to_copy": "Nothing to copy",
   "copied": "Copied: {text}",
   "live": "Live",

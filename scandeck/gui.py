@@ -7,6 +7,7 @@ import queue
 import subprocess
 import sys
 import threading
+import webbrowser
 import tkinter as tk
 from tkinter import filedialog, font as tkfont
 from pathlib import Path
@@ -15,8 +16,10 @@ from .app import follow_live, prepare_live
 from .config import load as load_config, save as save_config
 from .i18n import is_auto, lang, t
 from .journal import guessed_journal_dir
+from . import __version__
 from .ranks import EXPLORE_RANKS, RANKS, fmt_credits, fmt_threshold, rank_short
 from .scan_value import fmt_scan_cr
+from .update import RELEASES_URL, newer_release
 
 # Palette EDHM Azure Sky : cyan HUD, fond quasi noir, orange seulement en alerte.
 BG = "#05080c"
@@ -348,11 +351,24 @@ class ScanDeckHud:
         tk.Frame(foot, bg=CYAN_DIM, height=1).pack(fill="x", pady=(0, 8))
         self._sheet_btn = _outline_btn(foot, t("open_sheet"), self._open_xlsx)
         self._opt_btn = _outline_btn(foot, t("options"), self._open_options)
+        self._ver_lbl = tk.Label(
+            foot, text=t("hud_version", version=__version__),
+            fg=MUTED, bg=BG, font=_font(8),
+        )
+        self._ver_lbl.pack(side="left", padx=(4, 0))
+        self._upd_lbl = tk.Label(
+            foot, text="", fg=CYAN, bg=BG, font=_font(8, "bold"), cursor="hand2",
+        )
+        self._upd_lbl.pack(side="left", padx=(10, 0))
+        self._upd_lbl.bind("<Button-1>", lambda _e: webbrowser.open(RELEASES_URL))
+        self._upd_lbl.bind("<Enter>", lambda _e: self._upd_lbl.config(fg=TEXT) if self._upd_lbl.cget("text") else None)
+        self._upd_lbl.bind("<Leave>", lambda _e: self._upd_lbl.config(fg=CYAN))
         self.status_lbl = tk.Label(foot, text=t("starting"), fg=MUTED, bg=BG, font=_font(8))
         self.status_lbl.pack(side="right")
 
         self._start_watcher(journal_dir)
         self.root.after(150, self._drain)
+        self._start_update_check()
 
     def _copy_btn(self, parent, kind: str) -> None:
         lbl = tk.Label(
@@ -525,6 +541,20 @@ class ScanDeckHud:
                 self.q.put({"_error": str(exc)})
 
         threading.Thread(target=worker, daemon=True).start()
+
+    def _start_update_check(self) -> None:
+        def worker() -> None:
+            try:
+                tag = newer_release()
+            except Exception:
+                return
+            if tag:
+                self.root.after(0, lambda: self._show_update(tag))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _show_update(self, tag: str) -> None:
+        self._upd_lbl.config(text=t("update_available", tag=tag))
 
     def _drain(self) -> None:
         try:

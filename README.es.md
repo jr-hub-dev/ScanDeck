@@ -85,7 +85,7 @@ En la exobiología de Odyssey, un **género** (en inglés *genus*, plural *gener
 | Panel derecho | Planeta seleccionado: veredicto, géneros, especies, progreso de escaneos |
 | Carril extremo izquierdo | Rango de explorador |
 | Carril extremo derecho | Rango de exobiólogo |
-| Pie | **Abrir la hoja**, **Opciones** |
+| Pie | **Abrir la hoja**, **Opciones**, versión (`v1.0.2`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
 
 Haz clic en un cuerpo a la izquierda para abrirlo a la derecha. Los botones de copia junto al sistema / cuerpo copian ese nombre.
 
