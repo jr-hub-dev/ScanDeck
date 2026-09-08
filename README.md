@@ -87,7 +87,7 @@ In Odyssey exobiology, a **genus** (plural **genera**) is the bio *family* — B
 | Right pane | Selected planet: verdict, genera, species, scan progress |
 | Far left rail | Explorer rank |
 | Far right rail | Exobiologist rank |
-| Footer | **Open spreadsheet**, **Options**, version (`v1.0.2`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
+| Footer | **Open spreadsheet**, **Options**, version (`v1.0.3`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
 
 Click a body on the left to open it on the right. Copy buttons next to the system / body name copy that name.
 

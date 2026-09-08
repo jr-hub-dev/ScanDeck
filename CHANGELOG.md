@@ -6,6 +6,14 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.0.3 — 2026-09-08
+
+### Added
+- App icon (cyan planet / scan rings) in the HUD, taskbar, and Windows `ScanDeck.exe`
+
+### Fixed
+- Crash on launch with Python 3.14 (`wm_class`)
+
 ## 1.0.2 — 2026-09-08
 
 ### Added

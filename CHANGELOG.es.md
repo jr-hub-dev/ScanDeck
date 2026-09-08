@@ -6,6 +6,14 @@ Qué ha cambiado para los jugadores. Zips de Windows: [Releases](https://github.
 
 El enlace de GitHub « Full Changelog » es un **diff de código**, no estas notas.
 
+## 1.0.3 — 2026-09-08
+
+### Añadido
+- Icono de la app (planeta cian / anillos de escaneo) en el HUD, la barra de tareas y `ScanDeck.exe` en Windows
+
+### Corregido
+- Cierre al arrancar con Python 3.14 (`wm_class`)
+
 ## 1.0.2 — 2026-09-08
 
 ### Añadido
