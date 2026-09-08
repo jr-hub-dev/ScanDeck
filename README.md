@@ -10,6 +10,8 @@ The HUD is currently in **English, French, and Spanish**. In-game names (bio fam
 
 This is a companion overlay, not a game mod. It does not inject into the client.
 
+Changelog: [CHANGELOG.md](CHANGELOG.md) · [Releases](https://github.com/jr-hub-dev/ScanDeck/releases)
+
 ## Requirements
 
 - Elite Dangerous **Odyssey**

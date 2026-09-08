@@ -10,6 +10,8 @@ El HUD está ahora en **inglés, francés y español**. Los nombres del juego (f
 
 Es un overlay de acompañamiento, no un mod. No se inyecta en el cliente.
 
+Notas de versión: [CHANGELOG.md](CHANGELOG.md) · [Releases](https://github.com/jr-hub-dev/ScanDeck/releases)
+
 ## Requisitos
 
 - Elite Dangerous **Odyssey**
