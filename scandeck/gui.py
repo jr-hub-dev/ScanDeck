@@ -375,10 +375,6 @@ class ScanDeckHud:
     def _apply_icon(self) -> None:
         png = resource_root() / "data" / "icon.png"
         ico = resource_root() / "data" / "icon.ico"
-        try:
-            self.root.wm_class("ScanDeck", "ScanDeck")
-        except tk.TclError:
-            pass
         if png.exists():
             try:
                 img = tk.PhotoImage(file=str(png))
