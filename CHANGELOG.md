@@ -6,6 +6,11 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.0.5 — 2026-09-09
+
+### Fixed
+- Selling Universal Cartographics now updates the explorer rank remaining (it used to stay on the last journal Progress %)
+
 ## 1.0.4 — 2026-09-08
 
 ### Changed

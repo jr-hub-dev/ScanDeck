@@ -6,6 +6,11 @@ Ce qui a changé pour les joueurs. Zips Windows : [Releases](https://github.com/
 
 Le lien GitHub « Full Changelog » est un **diff de code**, pas ces notes.
 
+## 1.0.5 — 2026-09-09
+
+### Corrigé
+- Vendre à Universal Cartographics met à jour le reste jusqu’au prochain rang explorateur (il restait calé sur le dernier % journal)
+
 ## 1.0.4 — 2026-09-08
 
 ### Modifié
