@@ -67,6 +67,8 @@ class Session:
         self.explore_rank: int | None = None
         self.explore_progress: int | None = None
         self.explore_profits: int | None = None
+        # UC vendus depuis le dernier Progress Explore (le total à vie ne colle pas aux paliers).
+        self.explore_sold_since_progress: int = 0
         self.hold: dict[tuple, int] = {}
         self.carto_hold: dict[tuple, int] = {}
 
@@ -141,7 +143,10 @@ class Session:
             self.exo_rank = int(event["Exobiologist"])
             self._emit_rank()
         if "Explore" in event:
-            self.explore_rank = int(event["Explore"])
+            new_rank = int(event["Explore"])
+            if new_rank != self.explore_rank:
+                self.explore_sold_since_progress = 0
+            self.explore_rank = new_rank
             self._emit_explore_rank()
 
     def on_Progress(self, event: dict) -> None:
@@ -149,7 +154,10 @@ class Session:
             self.exo_progress = int(event["Exobiologist"])
             self._emit_rank()
         if "Explore" in event:
-            self.explore_progress = int(event["Explore"])
+            new_progress = int(event["Explore"])
+            if new_progress != self.explore_progress:
+                self.explore_sold_since_progress = 0
+            self.explore_progress = new_progress
             self._emit_explore_rank()
 
     def on_Promotion(self, event: dict) -> None:
@@ -160,6 +168,7 @@ class Session:
         if "Explore" in event:
             self.explore_rank = int(event["Explore"])
             self.explore_progress = 0
+            self.explore_sold_since_progress = 0
             self._emit_explore_rank()
 
     def on_Statistics(self, event: dict) -> None:
@@ -189,6 +198,7 @@ class Session:
             gained = int(event.get("BaseValue") or 0) + int(event.get("Bonus") or 0)
         if gained:
             self.explore_profits = (self.explore_profits or 0) + gained
+            self.explore_sold_since_progress += gained
             self._emit_explore_rank()
         self._carto_clear()
 
@@ -206,10 +216,20 @@ class Session:
         return snap
 
     def explore_rank_snapshot(self) -> dict:
-        # Aiguille = rang + % journal. « Encore » = restant jusqu'au palier suivant.
+        # Aiguille = rang + % journal. Le total UC à vie ne colle pas aux paliers wiki,
+        # donc « encore » = restant interpolé, moins les ventes depuis le dernier Progress.
         snap = from_journal(
-            self.explore_rank, self.explore_progress, self.explore_profits, EXPLORE_RANKS,
+            self.explore_rank, self.explore_progress, None, EXPLORE_RANKS,
         )
+        sold = self.explore_sold_since_progress
+        remain = snap.get("remain")
+        if sold and remain is not None:
+            snap["remain"] = max(0, remain - sold)
+            idx = snap.get("rank_id")
+            if idx is not None and idx < len(EXPLORE_RANKS) - 1:
+                span = EXPLORE_RANKS[idx + 1]["cr"] - EXPLORE_RANKS[idx]["cr"]
+                if span > 0:
+                    snap["frac"] = max(0.0, min(0.999, 1.0 - snap["remain"] / span))
         snap["_explore_rank"] = True
         snap["game_rank"] = self.explore_rank
         snap["game_progress"] = self.explore_progress
