@@ -5,6 +5,7 @@ Feuille "Echantillons" — une ligne par (planète × genre DSS)
   Créée au DSS, mise à jour au ScanOrganic (Log/Sample/Analyse).
 
 Feuille "Planetes"   — une ligne par planète DSS, vue d'ensemble.
+Feuille "explo"      — systèmes avec ELW / monde aquatique / ammoniaque / phénomènes stellaires.
 
 Clé de ligne : (SystemAddress, BodyID, genre_anglais)
   → identifie la ligne sans ambiguïté même si le journal est relu.
@@ -12,6 +13,7 @@ Clé de ligne : (SystemAddress, BodyID, genre_anglais)
 
 from __future__ import annotations
 
+import sys
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,8 +33,14 @@ from .config import user_data_dir
 from .matcher import value_tier
 from .models import BodyState, OrganicProgress, ScanProgress
 
-# ── default path (user Documents / XDG, not the git tree) ─────────────────
+# ── default path ──────────────────────────────────────────────────────────
 def _default_workbook_path() -> Path:
+    # Personal copy next to the source tree (gitignored). Frozen / other
+    # players keep the workbook in Documents or XDG.
+    if not getattr(sys, "frozen", False):
+        personal = Path(__file__).resolve().parents[1] / "data" / "exobio.xlsx"
+        if personal.exists():
+            return personal
     return user_data_dir() / "scandeck.xlsx"
 
 
@@ -78,6 +86,18 @@ PL_COLS = [
     "Planète terminée",
 ]
 PL_KEY_COL = "clé_interne"
+
+# ── colonnes feuille explo ─────────────────────────────────────────────────
+EX_COLS = [
+    "Date",
+    "Système",
+    "Planète",
+    "ELW",
+    "Monde aquatique",
+    "Monde d'ammoniac",
+    "Phénomènes stellaires",
+]
+EX_KEY_COL = "clé_interne"
 
 # ── couleurs ───────────────────────────────────────────────────────────────
 CLR_HEADER   = "1E3A5F"  # bleu marine
@@ -146,6 +166,7 @@ class ExobioWorkbook:
         self._wb = self._load_or_create()
         self._ec_ws  = self._wb["Echantillons"]
         self._pl_ws  = self._wb["Planetes"]
+        self._ex_ws  = self._ensure_explo_sheet()
         self.catalog = catalog
         self._defer_save = False
         self._ensure_interest_column()
@@ -159,6 +180,7 @@ class ExobioWorkbook:
         # index en mémoire : clé → numéro de ligne (1-based)
         self._ec_index: dict[str, int] = {}
         self._pl_index: dict[str, int] = {}
+        self._ex_index: dict[str, int] = {}
         self._rebuild_index()
         self._normalize_dates()
         self._backfill_interest()
@@ -175,8 +197,10 @@ class ExobioWorkbook:
         ws_ec = wb.active
         ws_ec.title = "Echantillons"
         ws_pl = wb.create_sheet("Planetes")
+        ws_ex = wb.create_sheet("explo")
         self._init_sheet(ws_ec, EC_COLS + [EC_KEY_COL])
         self._init_sheet(ws_pl, PL_COLS + [PL_KEY_COL])
+        self._init_sheet(ws_ex, EX_COLS + [EX_KEY_COL])
         return wb
 
     def _init_sheet(self, ws, cols: list[str]) -> None:
@@ -194,13 +218,29 @@ class ExobioWorkbook:
         ws.column_dimensions[get_column_letter(len(cols))].hidden = True
         ws.auto_filter.ref = ws.dimensions
 
+    def _ensure_explo_sheet(self):
+        names = {n.casefold(): n for n in self._wb.sheetnames}
+        existing = names.get("explo")
+        wanted = EX_COLS + [EX_KEY_COL]
+        if existing:
+            ws = self._wb[existing]
+            headers = [c.value for c in ws[1]]
+            if headers == wanted:
+                return ws
+            self._wb.remove(ws)
+        ws = self._wb.create_sheet("explo")
+        self._init_sheet(ws, wanted)
+        return ws
+
     # ── index en mémoire ──────────────────────────────────────────────────
 
     def _rebuild_index(self) -> None:
         self._ec_index = {}
         self._pl_index = {}
+        self._ex_index = {}
         key_col_ec = len(EC_COLS) + 1   # dernière colonne
         key_col_pl = len(PL_COLS) + 1
+        key_col_ex = len(EX_COLS) + 1
         for row in self._ec_ws.iter_rows(min_row=2, values_only=False):
             k = row[key_col_ec - 1].value
             if k:
@@ -211,6 +251,10 @@ class ExobioWorkbook:
             k = row[key_col_pl - 1].value
             if k:
                 self._pl_index[k] = row[0].row
+        for row in self._ex_ws.iter_rows(min_row=2, values_only=False):
+            k = row[key_col_ex - 1].value
+            if k:
+                self._ex_index[str(k)] = row[0].row
 
     def _ensure_column(self, ws, name: str, *, after: str) -> None:
         headers = [c.value for c in ws[1]]
@@ -270,7 +314,7 @@ class ExobioWorkbook:
     def _normalize_dates(self) -> bool:
         """Convertit les anciennes dates (texte avec heure ou datetime) en jj/mm/aaaa."""
         changed = False
-        for ws in (self._ec_ws, self._pl_ws):
+        for ws in (self._ec_ws, self._pl_ws, self._ex_ws):
             for row in ws.iter_rows(min_row=2, min_col=1, max_col=1):
                 cell = row[0]
                 parsed = _coerce_date(cell.value)
@@ -505,16 +549,17 @@ class ExobioWorkbook:
 
         self._save()
 
-    def unsold_hold(self, catalog=None) -> dict[tuple, int]:
-        """Analyses pas encore vendues : (system, body_id, species) → crédits de base."""
+    def unsold_hold(self, catalog=None) -> tuple[dict[tuple, int], dict[tuple, int]]:
+        """Analyses pas encore vendues : base et First logged."""
         cat = catalog or self.catalog
         col = {h: i + 1 for i, h in enumerate(EC_COLS) if h}
         if "Échantillon" not in col or "Espèce" not in col:
-            return {}
+            return {}, {}
         sold_col = col.get("Vendu")
         key_col = len(EC_COLS) + 1
         done_label = SAMPLE_LABEL[ScanProgress.ANALYSE]
         hold: dict[tuple, int] = {}
+        hold_first: dict[tuple, int] = {}
         for row_num in range(2, self._ec_ws.max_row + 1):
             stage = self._ec_ws.cell(row_num, col["Échantillon"]).value
             if stage != done_label:
@@ -531,6 +576,7 @@ class ExobioWorkbook:
             if sp is None and cat:
                 sp = cat.get(species_shown)
             value = sp.value_cr if sp else 0
+            first = sp.first_logged_cr if sp else 0
             raw_key = self._ec_ws.cell(row_num, key_col).value or ""
             parts = str(raw_key).split("|")
             try:
@@ -539,8 +585,10 @@ class ExobioWorkbook:
             except ValueError:
                 address, body_id = None, None
             species_name = sp.name if sp else name
-            hold[(address, body_id, species_name)] = value
-        return hold
+            key = (address, body_id, species_name)
+            hold[key] = value
+            hold_first[key] = first
+        return hold, hold_first
 
     def mark_all_sold(self) -> None:
         """Vista Genomics vend tout le stock d'un coup."""
@@ -560,6 +608,46 @@ class ExobioWorkbook:
         if changed:
             self._save()
 
+    def upsert_explo_find(
+        self,
+        *,
+        key: str,
+        timestamp: str | None = None,
+        system: str,
+        planet: str = "",
+        elw: int | None = None,
+        ww: int | None = None,
+        aw: int | None = None,
+        nsp: str = "",
+    ) -> None:
+        """Une ligne par trouvaille (planète rare ou phénomène), filtrable."""
+        if not elw and not ww and not aw and not (nsp or "").strip():
+            return
+        date_str = _parse_ts(timestamp).strftime("%d/%m/%Y")
+        values = [
+            date_str,
+            system,
+            planet or "",
+            elw or "",
+            ww or "",
+            aw or "",
+            (nsp or "").strip(),
+            key,
+        ]
+        if key in self._ex_index:
+            row_num = self._ex_index[key]
+            previous = self._ex_ws.cell(row_num, 1).value
+            if previous:
+                values[0] = previous
+            self._write_row(self._ex_ws, row_num, values)
+        else:
+            self._ex_ws.append([None] * len(values))
+            row_num = self._ex_ws.max_row
+            self._ex_index[key] = row_num
+            self._write_row(self._ex_ws, row_num, values)
+        self._ex_ws.auto_filter.ref = self._ex_ws.dimensions
+        self._save()
+
     # ── sauvegarde ────────────────────────────────────────────────────────
 
     def _save(self) -> None:
@@ -576,6 +664,7 @@ class ExobioWorkbook:
     def _fit_sheets(self) -> None:
         self._fit_sheet(self._ec_ws, len(EC_COLS))
         self._fit_sheet(self._pl_ws, len(PL_COLS))
+        self._fit_sheet(self._ex_ws, len(EX_COLS))
 
     def _fit_sheet(self, ws, visible_cols: int) -> None:
         longest = [0] * visible_cols

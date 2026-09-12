@@ -510,6 +510,8 @@ def snapshot_system(
     *,
     fss_body_count: int | None = None,
     fss_complete: bool = False,
+    nsp_count: int = 0,
+    nsp_items: list | None = None,
 ) -> dict:
     rank = {"high": 0, "good": 1, "ok": 2, "low": 3, "muted": 4}
     rows = sorted(
@@ -546,6 +548,17 @@ def snapshot_system(
     else:
         header = t("header_no_bio")
         empty = t("empty_honk")
+    items = list(nsp_items or [])
+    if items:
+        nsp_count = len(items)
+    named = [str(it.get("name") or "").strip() for it in items if it.get("name")]
+    leftover = nsp_count - len(named)
+    lines = list(named)
+    if leftover == 1:
+        lines.append(t("nsp_one"))
+    elif leftover > 1:
+        lines.append(t("nsp_many", n=leftover))
+    nsp_label = "\n".join(lines)
     return {
         "system": system_name,
         "system_bodies": rows,
@@ -554,6 +567,8 @@ def snapshot_system(
         "sys_empty": empty,
         "fss_body_count": fss_body_count,
         "fss_complete": fss_complete,
+        "nsp_count": nsp_count,
+        "nsp_label": nsp_label,
     }
 
 

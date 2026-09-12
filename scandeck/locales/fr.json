@@ -13,6 +13,8 @@
   "for_sale": "À VENDRE",
   "for_sale_carto": "UC  À VENDRE",
   "for_sale_bio": "VISTA  À VENDRE",
+  "for_sale_carto_fc": "UC  À VENDRE FC",
+  "for_sale_bio_fc": "VISTA  À VENDRE FC",
   "starting": "Démarrage…",
   "hud_version": "v{version}",
   "update_available": "MAJ {tag}",
@@ -105,5 +107,7 @@
   "tier_high": "★ Flamme",
   "tier_good": "● Bon",
   "tier_ok": "● Moyen",
-  "tier_low": "● Faible"
+  "tier_low": "● Faible",
+  "nsp_one": "Phénomène stellaire remarquable",
+  "nsp_many": "{n} phénomènes stellaires remarquables"
 }

@@ -6,6 +6,16 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.0.6 — 2026-09-12
+
+### Added
+- Notable stellar phenomena: cyan banner in the left list after the honk; Codex name after you scan them
+- Spreadsheet **explo** sheet: Earth-like worlds, water worlds, ammonia worlds, and stellar phenomena (one row per find)
+- UC / Vista to sell show **base** and **First logged** on one line, plus an **FC** line (what you keep after crew + fleet carrier tax)
+
+### Changed
+- Hold amounts use **Md** / **Bn** from one billion; each amount turns green on its own when it covers the next rank
+
 ## 1.0.5 — 2026-09-09
 
 ### Fixed

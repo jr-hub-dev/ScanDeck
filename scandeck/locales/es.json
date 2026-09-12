@@ -13,6 +13,8 @@
   "for_sale": "A LA VENTA",
   "for_sale_carto": "UC  A LA VENTA",
   "for_sale_bio": "VISTA  A LA VENTA",
+  "for_sale_carto_fc": "UC  A LA VENTA FC",
+  "for_sale_bio_fc": "VISTA  A LA VENTA FC",
   "starting": "Iniciando…",
   "hud_version": "v{version}",
   "update_available": "ACTUALIZACIÓN {tag}",
@@ -105,5 +107,7 @@
   "tier_high": "★ Alto",
   "tier_good": "● Bueno",
   "tier_ok": "● Medio",
-  "tier_low": "● Bajo"
+  "tier_low": "● Bajo",
+  "nsp_one": "Fenómeno estelar notable",
+  "nsp_many": "{n} fenómenos estelares notables"
 }

@@ -6,7 +6,9 @@ __pycache__/
 venv/
 .env
 .env.*
+# Personal workbook — never publish
 *.xlsx
+data/exobio.xlsx
 .DS_Store
 dist/
 build/

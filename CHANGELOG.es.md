@@ -6,6 +6,16 @@ Qué ha cambiado para los jugadores. Zips de Windows: [Releases](https://github.
 
 El enlace de GitHub « Full Changelog » es un **diff de código**, no estas notas.
 
+## 1.0.6 — 2026-09-12
+
+### Añadido
+- Fenómenos estelares notables: banda cian en la lista izquierda tras el honk; el nombre del Codex después de escanearlos
+- Hoja **explo**: mundos similares a la Tierra, mundos acuáticos, mundos de amoníaco y fenómenos estelares (una fila por hallazgo)
+- UC / Vista a la venta muestran **base** y **First logged** en una línea, más una línea **FC** (lo que queda tras tripulación + tasa del fleet carrier)
+
+### Cambiado
+- Los importes usan **Md** desde mil millones; cada uno pasa a verde por su cuenta cuando cubre el siguiente rango
+
 ## 1.0.5 — 2026-09-09
 
 ### Corregido

@@ -47,10 +47,24 @@ MAP_HIGH = 500_000
 MAP_GOOD = 100_000
 MAP_OK = 50_000
 
+# Vente sur ce fleet carrier : 3 NPC + taxe services (calage vente Vista du 2026-09-12).
+FC_CREW_COUNT = 3
+FC_POCKET = 0.64
+
+
+def fc_sale_credits(gross: int) -> int:
+    """Ce qui reste en poche après équipage + taxe FC, à partir du brut (First logged)."""
+    if gross <= 0:
+        return 0
+    return int(round(gross * FC_POCKET))
+
 
 def fmt_scan_cr(value: int) -> str:
     from .i18n import decimal_sep
     sep = decimal_sep()
+    if value >= 1_000_000_000:
+        text = f"{value / 1_000_000_000:.2f}".replace(".", sep)
+        return f"{text} Md" if sep == "," else f"{text} Bn"
     if value >= 1_000_000:
         n = value / 1_000_000
         text = f"{n:.1f}".replace(".", sep).rstrip("0").rstrip(sep)
@@ -124,9 +138,10 @@ def star_value(star_type: str, mass_sol: float, *, first_discoverer: bool = Fals
     return int(round(max(SCAN_MIN, value)))
 
 
-def carto_stock_value(body: BodyState) -> int:
-    """Ce que UC paierait maintenant pour ce corps (FSS, ou DSS si déjà cartographié)."""
-    first_disc = body.was_discovered is False
+def carto_stock_value(body: BodyState, *, first: bool = False) -> int:
+    """Ce que UC paierait pour ce corps. `first=True` = first discovery (+ first map si DSS)."""
+    first_disc = bool(first)
+    first_map = bool(first)
     if body.star_class and body.stellar_mass is not None and not body.planet_class:
         return star_value(body.star_class, body.stellar_mass, first_discoverer=first_disc)
     if not body.planet_class or body.mass_em is None:
@@ -137,7 +152,7 @@ def carto_stock_value(body: BodyState) -> int:
         body.mass_em,
         terraformable=bool(body.terraformable),
         first_discoverer=first_disc,
-        first_mapper=body.was_mapped is False,
+        first_mapper=first_map and mapped,
         mapped=mapped,
         efficient=mapped,
         odyssey=True,

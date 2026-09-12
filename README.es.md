@@ -87,7 +87,7 @@ En la exobiología de Odyssey, un **género** (en inglés *genus*, plural *gener
 | Panel derecho | Planeta seleccionado: veredicto, géneros, especies, progreso de escaneos |
 | Carril extremo izquierdo | Rango de explorador |
 | Carril extremo derecho | Rango de exobiólogo |
-| Pie | **Abrir la hoja**, **Opciones**, versión (`v1.0.5`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
+| Pie | **Abrir la hoja**, **Opciones**, versión (`v1.0.6`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
 
 Haz clic en un cuerpo a la izquierda para abrirlo a la derecha. Los botones de copia junto al sistema / cuerpo copian ese nombre.
 
@@ -95,7 +95,7 @@ Los veredictos son una pista para aterrizar (alto valor, opcional, pasar), no un
 
 ### Hoja de cálculo
 
-**Abrir la hoja** escribe `scandeck.xlsx` junto a la config (Documents / ScanDeck en Windows). Una fila por planeta × género DSS, actualizada al muestrear. Hace falta `openpyxl` (incluido en el zip de Windows).
+**Abrir la hoja** escribe `scandeck.xlsx` junto a la config (Documents / ScanDeck en Windows). Una fila por planeta × género DSS, actualizada al muestrear. La hoja **explo** anota mundos similares a la Tierra, mundos acuáticos, mundos de amoníaco y fenómenos estelares notables. Hace falta `openpyxl` (incluido en el zip de Windows).
 
 ## Lo que ScanDeck no sabe
 

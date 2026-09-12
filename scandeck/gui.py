@@ -62,6 +62,32 @@ def _font(size: int, weight: str = "normal") -> tuple:
     return (FONT, size, weight)
 
 
+def _make_hold_line(parent, *, right: bool, pady, with_count: bool) -> dict:
+    row = tk.Frame(parent, bg=BG)
+    row.pack(fill="x", pady=pady)
+    kw = dict(fg=MUTED, bg=BG, font=_font(8, "bold"))
+    prefix = tk.Label(row, **kw)
+    base = tk.Label(row, **kw)
+    dash = tk.Label(row, **kw)
+    fl = tk.Label(row, **kw)
+    count = tk.Label(row, **kw) if with_count else None
+    if right:
+        if count is not None:
+            count.pack(side="right")
+        fl.pack(side="right")
+        dash.pack(side="right")
+        base.pack(side="right")
+        prefix.pack(side="right")
+    else:
+        prefix.pack(side="left")
+        base.pack(side="left")
+        dash.pack(side="left")
+        fl.pack(side="left")
+        if count is not None:
+            count.pack(side="left")
+    return {"prefix": prefix, "base": base, "dash": dash, "fl": fl, "count": count}
+
+
 def _outline_btn(parent, text: str, command) -> tk.Label:
     wrap = tk.Frame(parent, bg=CYAN)
     wrap.pack(side="left", padx=(0, 8))
@@ -245,11 +271,9 @@ class ScanDeckHud:
         )
         self.sys_meta.pack(fill="x", pady=(2, 8))
         tk.Frame(left_head, bg=CYAN, height=1).pack(fill="x")
-        self.carto_hold_lbl = tk.Label(
-            left_head, text=f"{t('for_sale_carto')}  —", fg=MUTED, bg=BG, font=_font(8, "bold"),
-            anchor="w",
-        )
-        self.carto_hold_lbl.pack(fill="x", pady=(8, 0))
+        self._carto_hold = _make_hold_line(left_head, right=False, pady=(8, 0), with_count=True)
+        self._carto_hold["prefix"].config(text=f"{t('for_sale_carto')}  —")
+        self._carto_fc = _make_hold_line(left_head, right=False, pady=(1, 0), with_count=False)
 
         tk.Frame(heads, bg=LINE, width=1).pack(side="left", fill="y")
 
@@ -274,11 +298,9 @@ class ScanDeckHud:
         )
         self.meta_lbl.pack(fill="x", pady=(2, 8))
         tk.Frame(self._header, bg=CYAN, height=1).pack(fill="x")
-        self.hold_lbl = tk.Label(
-            self._header, text=f"{t('for_sale_bio')}  —", fg=MUTED, bg=BG, font=_font(8, "bold"),
-            anchor="e",
-        )
-        self.hold_lbl.pack(fill="x", pady=(8, 0))
+        self._bio_hold = _make_hold_line(self._header, right=True, pady=(8, 0), with_count=True)
+        self._bio_hold["prefix"].config(text=f"{t('for_sale_bio')}  —")
+        self._bio_fc = _make_hold_line(self._header, right=True, pady=(1, 0), with_count=False)
 
         self.scan_lbl = tk.Label(
             self._right_top, text="", fg=CYAN, bg=BG,
@@ -416,24 +438,84 @@ class ScanDeckHud:
             return READY
         return CYAN
 
+    def _paint_hold_line(
+        self,
+        line: dict,
+        *,
+        prefix: str,
+        empty: bool,
+        hide: bool = False,
+        base_cr: int = 0,
+        fl_cr: int = 0,
+        remain=None,
+        n: int | None = None,
+    ) -> None:
+        count = line["count"]
+        if empty:
+            line["prefix"].config(text="" if hide else f"{prefix}  —", fg=MUTED)
+            line["base"].config(text="", fg=MUTED)
+            line["dash"].config(text="", fg=MUTED)
+            line["fl"].config(text="", fg=MUTED)
+            if count is not None:
+                count.config(text="", fg=MUTED)
+            return
+        line["prefix"].config(text=f"{prefix}  ", fg=CYAN)
+        line["base"].config(text=fmt_scan_cr(base_cr), fg=self._hold_fg(base_cr, remain))
+        line["dash"].config(text=" - ", fg=CYAN)
+        line["fl"].config(text=fmt_scan_cr(fl_cr), fg=self._hold_fg(fl_cr, remain))
+        if count is not None:
+            count.config(text=f"  ·  {n}", fg=CYAN)
+
     def _render_hold(self, snap: dict) -> None:
         carto_n = int(snap.get("carto_n") or 0)
         carto_cr = int(snap.get("carto_cr") or 0)
+        carto_fl = int(snap.get("carto_first_cr") or 0)
+        remain_ex = self.explore_rail.snap.get("remain")
         if carto_n <= 0:
-            self.carto_hold_lbl.config(text=f"{t('for_sale_carto')}  —", fg=MUTED)
+            self._paint_hold_line(self._carto_hold, prefix=t("for_sale_carto"), empty=True)
+            self._paint_hold_line(self._carto_fc, prefix=t("for_sale_carto_fc"), empty=True, hide=True)
         else:
-            self.carto_hold_lbl.config(
-                text=f"{t('for_sale_carto')}  {fmt_scan_cr(carto_cr)}  ·  {carto_n}",
-                fg=self._hold_fg(carto_cr, self.explore_rail.snap.get("remain")),
+            self._paint_hold_line(
+                self._carto_hold,
+                prefix=t("for_sale_carto"),
+                empty=False,
+                base_cr=carto_cr,
+                fl_cr=carto_fl,
+                remain=remain_ex,
+                n=carto_n,
+            )
+            self._paint_hold_line(
+                self._carto_fc,
+                prefix=t("for_sale_carto_fc"),
+                empty=False,
+                base_cr=int(snap.get("carto_fc_cr") or 0),
+                fl_cr=int(snap.get("carto_fc_first_cr") or 0),
+                remain=remain_ex,
             )
         n = int(snap.get("bio_n") if snap.get("bio_n") is not None else snap.get("n") or 0)
         cr = int(snap.get("bio_cr") if snap.get("bio_cr") is not None else snap.get("cr") or 0)
+        bio_fl = int(snap.get("bio_first_cr") or 0)
+        remain_bio = self.rail.snap.get("remain")
         if n <= 0:
-            self.hold_lbl.config(text=f"{t('for_sale_bio')}  —", fg=MUTED)
+            self._paint_hold_line(self._bio_hold, prefix=t("for_sale_bio"), empty=True)
+            self._paint_hold_line(self._bio_fc, prefix=t("for_sale_bio_fc"), empty=True, hide=True)
         else:
-            self.hold_lbl.config(
-                text=f"{t('for_sale_bio')}  {fmt_scan_cr(cr)}  ·  {n}",
-                fg=self._hold_fg(cr, self.rail.snap.get("remain")),
+            self._paint_hold_line(
+                self._bio_hold,
+                prefix=t("for_sale_bio"),
+                empty=False,
+                base_cr=cr,
+                fl_cr=bio_fl,
+                remain=remain_bio,
+                n=n,
+            )
+            self._paint_hold_line(
+                self._bio_fc,
+                prefix=t("for_sale_bio_fc"),
+                empty=False,
+                base_cr=int(snap.get("bio_fc_cr") or 0),
+                fl_cr=int(snap.get("bio_fc_first_cr") or 0),
+                remain=remain_bio,
             )
 
     def _on_right_configure(self, event) -> None:
@@ -673,6 +755,8 @@ class ScanDeckHud:
             str(self._selected_id),
             self._sys.get("sys_value") or "",
             self._sys.get("sys_empty") or "",
+            str(self._sys.get("nsp_count") or 0),
+            self._sys.get("nsp_label") or "",
         ]
         for row in rows:
             sig_parts.append(
@@ -688,6 +772,16 @@ class ScanDeckHud:
             child.destroy()
         self.sys_lbl.config(text=self._sys.get("system") or "SCANDECK")
         self.sys_meta.config(text=self._sys.get("sys_value") or "")
+        nsp = int(self._sys.get("nsp_count") or 0)
+        if nsp:
+            tk.Label(
+                self._left_list,
+                text=self._sys.get("nsp_label") or "",
+                fg=CYAN_HI, bg=CYAN_DEEP,
+                font=_font(9, "bold"),
+                justify="left", anchor="w",
+                wraplength=240, padx=10, pady=8,
+            ).pack(fill="x", padx=4, pady=(4, 8))
         if not rows:
             tk.Label(
                 self._left_list,

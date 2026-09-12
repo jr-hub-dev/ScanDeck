@@ -24,6 +24,7 @@ BIO_EVENTS = {
     "CarrierJump",
     "Scan",
     "FSSDiscoveryScan",
+    "FSSSignalDiscovered",
     "FSSAllBodiesFound",
     "FSSBodySignals",
     "SAAScanComplete",
@@ -151,6 +152,31 @@ def geo_count_from_signals(signals: list[dict] | None) -> int | None:
         }:
             return int(sig.get("Count", 0))
     return None
+
+
+def is_notable_stellar_phenomenon(event: dict) -> bool:
+    """Honk FSSSignalDiscovered for Notable Stellar Phenomena (clouds / rings)."""
+    name = event.get("SignalName") or ""
+    if name.startswith("$Fixed_Event_Life_"):
+        return True
+    loc = (event.get("SignalName_Localised") or "").casefold()
+    needles = (
+        "notable stellar",
+        "phénomène stellaire",
+        "phenomene stellaire",
+        "fenómeno estelar",
+        "fenomeno estelar",
+    )
+    return any(n in loc for n in needles)
+
+
+def is_nsp_codex(event: dict) -> bool:
+    """Codex scan of a notable stellar phenomenon (not a planetary bio)."""
+    dest = event.get("NearestDestination") or ""
+    if dest.startswith("$Fixed_Event_Life_"):
+        return True
+    name = event.get("Name") or ""
+    return name.startswith("$Codex_Ent_L_")
 
 
 def genuses_from_event(event: dict) -> list[str]:

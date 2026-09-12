@@ -9,6 +9,7 @@ from .criteria import CriteriaEngine
 from .display import (
     print_block,
     render_body,
+    short_body_name,
     snapshot_body,
     snapshot_system,
     snapshot_system_row,
@@ -24,6 +25,8 @@ from .journal import (
     resolve_journal_dir,
     genuses_from_event,
     gravity_g,
+    is_notable_stellar_phenomenon,
+    is_nsp_codex,
     latest_journal,
     pressure_atm,
     recent_journals,
@@ -32,7 +35,13 @@ from .journal import (
 from .matcher import Matcher, verdict
 from .models import BodyState, OrganicProgress, ScanProgress
 from .ranks import EXPLORE_RANKS, from_credits, from_journal
-from .scan_value import carto_stock_value
+from .scan_value import carto_stock_value, fc_sale_credits
+
+RARE_PLANETS = {
+    "Earthlike body": "elw",
+    "Water world": "ww",
+    "Ammonia world": "aw",
+}
 
 
 class Session:
@@ -70,7 +79,10 @@ class Session:
         # UC vendus depuis le dernier Progress Explore (le total à vie ne colle pas aux paliers).
         self.explore_sold_since_progress: int = 0
         self.hold: dict[tuple, int] = {}
+        self.hold_first: dict[tuple, int] = {}
         self.carto_hold: dict[tuple, int] = {}
+        self.carto_hold_first: dict[tuple, int] = {}
+        self.nsp_by_system: dict[int, list[dict]] = defaultdict(list)
 
     def body(self, system_address: int | None, body_id: int | None, name: str = "") -> BodyState:
         key = (system_address, body_id)
@@ -247,15 +259,23 @@ class Session:
 
     def hold_snapshot(self) -> dict:
         bio_cr = sum(self.hold.values())
+        bio_first = sum(self.hold_first.values())
         carto_cr = sum(self.carto_hold.values())
+        carto_first = sum(self.carto_hold_first.values())
         return {
             "_hold": True,
             "cr": bio_cr,
             "n": len(self.hold),
             "bio_cr": bio_cr,
             "bio_n": len(self.hold),
+            "bio_first_cr": bio_first,
+            "bio_fc_cr": fc_sale_credits(bio_cr),
+            "bio_fc_first_cr": fc_sale_credits(bio_first),
             "carto_cr": carto_cr,
             "carto_n": len(self.carto_hold),
+            "carto_first_cr": carto_first,
+            "carto_fc_cr": fc_sale_credits(carto_cr),
+            "carto_fc_first_cr": fc_sale_credits(carto_first),
         }
 
     def _emit_hold(self) -> None:
@@ -266,15 +286,18 @@ class Session:
     def seed_hold_from_workbook(self) -> None:
         if not self.wb:
             return
-        self.hold = self.wb.unsold_hold(self.catalog)
+        self.hold, self.hold_first = self.wb.unsold_hold(self.catalog)
 
     def _hold_add(self, address, body_id, species_name: str) -> None:
         sp = self.catalog.get(species_name)
-        self.hold[(address, body_id, species_name)] = sp.value_cr if sp else 0
+        key = (address, body_id, species_name)
+        self.hold[key] = sp.value_cr if sp else 0
+        self.hold_first[key] = sp.first_logged_cr if sp else 0
         self._emit_hold()
 
     def _hold_clear(self) -> None:
         self.hold.clear()
+        self.hold_first.clear()
         if self.wb:
             self.wb.mark_all_sold()
         self._emit_hold()
@@ -282,16 +305,20 @@ class Session:
     def _carto_refresh(self, body: BodyState) -> None:
         if _is_clutter(body):
             return
-        val = carto_stock_value(body)
         key = (body.system_address, body.body_id)
-        if val:
-            self.carto_hold[key] = val
+        base = carto_stock_value(body, first=False)
+        fl = carto_stock_value(body, first=True)
+        if base:
+            self.carto_hold[key] = base
+            self.carto_hold_first[key] = fl
         else:
             self.carto_hold.pop(key, None)
+            self.carto_hold_first.pop(key, None)
         self._emit_hold()
 
     def _carto_clear(self) -> None:
         self.carto_hold.clear()
+        self.carto_hold_first.clear()
         self._emit_hold()
 
     def on_Touchdown(self, event: dict) -> None:
@@ -368,6 +395,25 @@ class Session:
             self.maybe_display(body, select=False)
         else:
             self._emit_system()
+        self._maybe_note_explo(event.get("timestamp") or "")
+
+    def on_FSSSignalDiscovered(self, event: dict) -> None:
+        if not is_notable_stellar_phenomenon(event):
+            return
+        addr = event.get("SystemAddress", self.system_address)
+        if addr is None:
+            return
+        addr = int(addr)
+        self.system_address = addr
+        self.nsp_by_system[addr].append({
+            "signal": event.get("SignalName") or "",
+            "generic": event.get("SignalName_Localised") or "",
+            "name": None,
+            "body_id": None,
+            "planet": "",
+        })
+        self._maybe_note_explo(event.get("timestamp") or "")
+        self._emit_system()
 
     def on_FSSBodySignals(self, event: dict) -> None:
         addr = event.get("SystemAddress", self.system_address)
@@ -499,6 +545,9 @@ class Session:
                     self.wb.mark_planet_done(body)
 
     def on_CodexEntry(self, event: dict) -> None:
+        if is_nsp_codex(event):
+            self._on_nsp_codex(event)
+            return
         sub = (event.get("SubCategory_Localised") or event.get("SubCategory") or "").lower()
         if "organ" not in sub:
             return
@@ -563,11 +612,15 @@ class Session:
                     progress=self.progress.get((body.system_address, body.body_id)),
                 )
             )
+        nsp_items = []
+        if self.system_address is not None:
+            nsp_items = self.nsp_by_system.get(self.system_address, [])
         payload = snapshot_system(
             rows,
             self.system_name,
             fss_body_count=self.fss_body_count,
             fss_complete=self.fss_complete,
+            nsp_items=nsp_items,
         )
         payload["selected_id"] = selected_id
         return payload
@@ -579,6 +632,8 @@ class Session:
             str(payload.get("fss_body_count")),
             str(payload.get("fss_complete")),
             payload.get("sys_value") or "",
+            str(payload.get("nsp_count") or 0),
+            payload.get("nsp_label") or "",
         ]
         for row in payload.get("system_bodies") or []:
             parts.append(
@@ -586,6 +641,75 @@ class Session:
                 f"{row.get('lo')}|{row.get('hi')}|{row.get('status')}|{row.get('tier')}"
             )
         return "|".join(parts)
+
+    def _on_nsp_codex(self, event: dict) -> None:
+        addr = event.get("SystemAddress", self.system_address)
+        if addr is None:
+            return
+        addr = int(addr)
+        self.system_address = addr
+        self.system_name = event.get("System") or self.system_name
+        name = (event.get("Name_Localised") or event.get("Name") or "").strip()
+        dest = event.get("NearestDestination") or ""
+        records = self.nsp_by_system[addr]
+        matched = False
+        for rec in records:
+            if rec.get("name"):
+                continue
+            sig = rec.get("signal") or ""
+            if dest and (dest == sig or dest.startswith("$Fixed_Event_Life_")):
+                rec["name"] = name
+                matched = True
+                break
+        if not matched and name:
+            records.append({
+                "signal": dest,
+                "generic": event.get("NearestDestination_Localised") or "",
+                "name": name,
+                "body_id": event.get("BodyID"),
+                "planet": "",
+            })
+        self._maybe_note_explo(event.get("timestamp") or "")
+        self._emit_system()
+
+    def _maybe_note_explo(self, timestamp: str = "") -> None:
+        if self.wb is None or self.system_address is None:
+            return
+        addr = self.system_address
+        wrote = False
+        for body in self.bodies.values():
+            if body.system_address != addr:
+                continue
+            slot = RARE_PLANETS.get(body.planet_class or "")
+            if not slot:
+                continue
+            short = short_body_name(body.system_name, body.body_name)
+            self.wb.upsert_explo_find(
+                key=f"p|{addr}|{body.body_id}|{slot}",
+                timestamp=timestamp,
+                system=body.system_name or self.system_name,
+                planet=short,
+                elw=1 if slot == "elw" else None,
+                ww=1 if slot == "ww" else None,
+                aw=1 if slot == "aw" else None,
+                nsp="",
+            )
+            wrote = True
+        for i, rec in enumerate(self.nsp_by_system.get(addr, [])):
+            label = rec.get("name") or rec.get("generic") or ""
+            self.wb.upsert_explo_find(
+                key=f"n|{addr}|{i}",
+                timestamp=timestamp,
+                system=self.system_name,
+                planet=rec.get("planet") or "",
+                elw=None,
+                ww=None,
+                aw=None,
+                nsp=label,
+            )
+            wrote = True
+        if not wrote:
+            return
 
     def _emit_system(self) -> None:
         if self.catching_up or not self.on_update:

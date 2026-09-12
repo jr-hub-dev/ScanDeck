@@ -6,6 +6,16 @@ Ce qui a changé pour les joueurs. Zips Windows : [Releases](https://github.com/
 
 Le lien GitHub « Full Changelog » est un **diff de code**, pas ces notes.
 
+## 1.0.6 — 2026-09-12
+
+### Ajouté
+- Phénomènes stellaires remarquables : bandeau cyan dans la liste de gauche après le honk ; le nom Codex après le scan
+- Onglet **explo** du classeur : ELW, mondes aquatiques, mondes d’ammoniac, phénomènes stellaires (une ligne par trouvaille)
+- UC / Vista à vendre : montant de base et First logged sur une ligne, plus une ligne **FC** (ce qui reste après équipage + taxe fleet carrier)
+
+### Modifié
+- Les montants passent en **Md** à partir d’un milliard ; chacun passe au vert de son côté s’il couvre le palier suivant
+
 ## 1.0.5 — 2026-09-09
 
 ### Corrigé

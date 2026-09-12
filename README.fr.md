@@ -87,7 +87,7 @@ En exobiologie Odyssey, un **genre** (en anglais *genus*, pluriel *genera*) est 
 | Panneau droit | Planète sélectionnée : verdict, genres, espèces, progression des scans |
 | Frise tout à gauche | Rang explorateur |
 | Frise tout à droite | Rang exobiologiste |
-| Pied de fenêtre | **Ouvrir le classeur**, **Options**, version (`v1.0.5`). S’il existe une Release GitHub plus récente, **MAJ v…** s’affiche — un clic ouvre la page de téléchargement. |
+| Pied de fenêtre | **Ouvrir le classeur**, **Options**, version (`v1.0.6`). S’il existe une Release GitHub plus récente, **MAJ v…** s’affiche — un clic ouvre la page de téléchargement. |
 
 Clique un corps à gauche pour l’ouvrir à droite. Les boutons de copie à côté du système / du corps copient ce nom.
 
@@ -95,7 +95,7 @@ Les verdicts sont une indication d’atterrissage (haute valeur, optionnel, pass
 
 ### Classeur
 
-**Ouvrir le classeur** écrit `scandeck.xlsx` à côté de la config (Documents / ScanDeck sous Windows). Une ligne par planète × genre DSS, mise à jour au fur et à mesure des échantillons. Il faut `openpyxl` (inclus dans le zip Windows).
+**Ouvrir le classeur** écrit `scandeck.xlsx` à côté de la config (Documents / ScanDeck sous Windows). Une ligne par planète × genre DSS, mise à jour au fur et à mesure des échantillons. L’onglet **explo** note les ELW, mondes aquatiques, mondes d’ammoniac et phénomènes stellaires remarquables. Il faut `openpyxl` (inclus dans le zip Windows).
 
 ## Ce que ScanDeck ne sait pas
 

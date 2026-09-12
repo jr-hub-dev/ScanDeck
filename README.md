@@ -87,7 +87,7 @@ In Odyssey exobiology, a **genus** (plural **genera**) is the bio *family* — B
 | Right pane | Selected planet: verdict, genera, species, scan progress |
 | Far left rail | Explorer rank |
 | Far right rail | Exobiologist rank |
-| Footer | **Open spreadsheet**, **Options**, version (`v1.0.5`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
+| Footer | **Open spreadsheet**, **Options**, version (`v1.0.6`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
 
 Click a body on the left to open it on the right. Copy buttons next to the system / body name copy that name.
 
@@ -95,7 +95,7 @@ Verdicts are a landing hint (high value, optional, skip), not a guarantee the sp
 
 ### Spreadsheet
 
-**Open spreadsheet** writes `scandeck.xlsx` next to the config (Documents / ScanDeck on Windows). One row per planet × DSS genus, updated as you sample. Needs `openpyxl` (included in the Windows zip).
+**Open spreadsheet** writes `scandeck.xlsx` next to the config (Documents / ScanDeck on Windows). One row per planet × DSS genus, updated as you sample. The **explo** sheet records Earth-like worlds, water worlds, ammonia worlds, and notable stellar phenomena. Needs `openpyxl` (included in the Windows zip).
 
 ## What ScanDeck does *not* know
 

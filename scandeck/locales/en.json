@@ -13,6 +13,8 @@
   "for_sale": "TO SELL",
   "for_sale_carto": "UC  TO SELL",
   "for_sale_bio": "VISTA  TO SELL",
+  "for_sale_carto_fc": "UC  TO SELL FC",
+  "for_sale_bio_fc": "VISTA  TO SELL FC",
   "starting": "Starting…",
   "hud_version": "v{version}",
   "update_available": "UPDATE {tag}",
@@ -105,5 +107,7 @@
   "tier_high": "★ High",
   "tier_good": "● Good",
   "tier_ok": "● Medium",
-  "tier_low": "● Low"
+  "tier_low": "● Low",
+  "nsp_one": "Notable stellar phenomenon",
+  "nsp_many": "{n} notable stellar phenomena"
 }
