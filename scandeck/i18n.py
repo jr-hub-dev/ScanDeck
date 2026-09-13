@@ -58,9 +58,9 @@ def apply_fileheader(language: str | None) -> None:
     set_lang(language.split("/", 1)[0], auto=True)
 
 
-def t(key: str, **kwargs) -> str:
+def t(msgid: str, **kwargs) -> str:
     _load()
-    text = _ui.get(_lang, {}).get(key) or _ui["en"].get(key) or key
+    text = _ui.get(_lang, {}).get(msgid) or _ui["en"].get(msgid) or msgid
     if kwargs:
         return text.format(**kwargs)
     return text

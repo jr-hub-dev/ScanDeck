@@ -6,6 +6,12 @@ Ce qui a changé pour les joueurs. Zips Windows : [Releases](https://github.com/
 
 Le lien GitHub « Full Changelog » est un **diff de code**, pas ces notes.
 
+## 1.2.0 — 2026-09-13
+
+### Ajouté
+- Colonne **Macros** : enregistrer une séquence de touches (maintien + appuis) et la rejouer dans Elite avec une touche de lancement. Les macros restent sur **ce** PC
+- Lecture Linux et Windows (Elite en fenêtré / borderless ; touche de lancement non bindée en jeu)
+
 ## 1.1.0 — 2026-09-13
 
 ### Ajouté

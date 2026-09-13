@@ -16,8 +16,8 @@ Journal des versions : [Français](CHANGELOG.fr.md) · [English](CHANGELOG.md) �
 
 - Elite Dangerous **Odyssey**
 - Journaux activés (défaut Windows : `%USERPROFILE%\Saved Games\Frontier Developments\Elite Dangerous`)
-- **Zip Windows :** rien d’autre
-- **Depuis les sources :** Python 3.11+ avec Tk. `openpyxl` est optionnel (classeur)
+- **Zip Windows :** rien d’autre (macros comprises)
+- **Depuis les sources :** Python 3.11+ avec Tk. `openpyxl` est optionnel (classeur). Sous Linux les macros ont besoin de `xdotool` (`pacman -S xdotool`, `apt install xdotool`, …)
 
 ## Installation
 
@@ -87,8 +87,9 @@ En exobiologie Odyssey, un **genre** (en anglais *genus*, pluriel *genera*) est 
 | Liste gauche | Corps du système en cours |
 | Panneau droit | Planète sélectionnée : verdict, genres, espèces, progression des scans |
 | Frise tout à gauche | Rang explorateur |
-| Frise tout à droite | Rang exobiologiste |
-| Pied de fenêtre | **Ouvrir le classeur**, **Options**, **LOGS EDDN**, **INARA**, version (`v1.1.0`). S’il existe une Release GitHub plus récente, **MAJ v…** s’affiche — un clic ouvre la page de téléchargement. |
+| Colonne tout à droite | **Macros** (tes séquences de touches ; uniquement sur ce PC) |
+| Frise intérieure droite | Rang exobiologiste |
+| Pied de fenêtre | **Ouvrir le classeur**, **Options**, **LOGS EDDN**, **INARA**, version (`v1.2.0`). S’il existe une Release GitHub plus récente, **MAJ v…** s’affiche — un clic ouvre la page de téléchargement. |
 
 Clique un corps à gauche pour l’ouvrir à droite. Les boutons de copie à côté du système / du corps copient ce nom.
 
@@ -97,6 +98,18 @@ Les verdicts sont une indication d’atterrissage (haute valeur, optionnel, pass
 ### Classeur
 
 **Ouvrir le classeur** écrit `scandeck.xlsx` à côté de la config (Documents / ScanDeck sous Windows). Une ligne par planète × genre DSS, mise à jour au fur et à mesure des échantillons. L’onglet **explo** note les ELW, mondes aquatiques, mondes d’ammoniac et phénomènes stellaires remarquables. Il faut `openpyxl` (inclus dans le zip Windows).
+
+### Macros
+
+La colonne **MACROS** à droite enregistre des séquences de touches et les rejoue dans la fenêtre Elite (maintien pour décoller, navigation de panneaux, etc.). Tes macros restent sur **ce** PC (`~/.local/share/ScanDeck/macros.json` sous Linux, `Documents\ScanDeck\macros.json` sous Windows). Elles ne sont ni envoyées ni dans le dépôt GitHub.
+
+Pour qu’un maintien (par ex. **R** 3,8 s puis **L**) tienne **en jeu** :
+
+- Passe Elite en **fenêtré** ou **borderless**. Le plein écran exclusif avale souvent les touches injectées.
+- **Désassigne** la touche de lancement dans les contrôles Elite (celle qui démarre la macro, ex. Num0). Sinon le jeu et la macro se marchent dessus.
+- Laisse ScanDeck ouvert. Appuie sur la touche de lancement avec Elite au focus, ou clique le nom de la macro dans le HUD pour tester.
+
+Sous Linux il faut `xdotool`. Sous Windows le zip suffit ; Elite et ScanDeck sur la même session.
 
 ## Ce que ScanDeck ne sait pas
 

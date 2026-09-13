@@ -6,6 +6,12 @@ Qué ha cambiado para los jugadores. Zips de Windows: [Releases](https://github.
 
 El enlace de GitHub « Full Changelog » es un **diff de código**, no estas notas.
 
+## 1.2.0 — 2026-09-13
+
+### Añadido
+- Columna **Macros**: grabar una secuencia de teclas (mantener + pulsaciones) y reproducirla en Elite con una tecla de lanzamiento. Las macros se quedan en **ese** PC
+- Reproducción en Linux y Windows (Elite en ventana / borderless; tecla de lanzamiento sin bindear en el juego)
+
 ## 1.1.0 — 2026-09-13
 
 ### Añadido

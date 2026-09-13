@@ -7,6 +7,7 @@ import queue
 import subprocess
 import sys
 import threading
+import time
 import webbrowser
 import tkinter as tk
 from tkinter import filedialog, font as tkfont
@@ -18,6 +19,19 @@ from .eddn import get_hub
 from .i18n import is_auto, lang, t
 from .inara import sync as inara_sync
 from .journal import guessed_journal_dir
+from .macros import (
+    HOLD_TAP_MS,
+    HotkeyGrabber,
+    binds_map,
+    delete_macro,
+    format_hold_s,
+    hotkey_in_use,
+    is_playing,
+    load_macros,
+    play_macro,
+    pretty_key,
+    upsert_macro,
+)
 from . import __version__
 from .paths import resource_root
 from .ranks import EXPLORE_RANKS, RANKS, fmt_credits, fmt_threshold, rank_short
@@ -49,6 +63,9 @@ TIER_BAR = {
 }
 FONT = "Fira Sans Condensed"
 SCROLL_W = 8
+# Largeurs fixes : explo à gauche, macros à droite, exo au centre (le reste).
+LEFT_COL_W = 400
+MACRO_COL_W = 280
 
 
 def _pick_font(root: tk.Tk) -> None:
@@ -90,12 +107,14 @@ def _make_hold_line(parent, *, right: bool, pady, with_count: bool) -> dict:
     return {"prefix": prefix, "base": base, "dash": dash, "fl": fl, "count": count}
 
 
-def _outline_btn(parent, text: str, command) -> tk.Label:
+def _outline_btn(parent, text: str, command, *, padx: int = 10, pady: int = 5) -> tk.Label:
+    """Bouton cyan (pied de HUD, éditeur de macro). padx/pady = taille du clic."""
     wrap = tk.Frame(parent, bg=CYAN)
     wrap.pack(side="left", padx=(0, 8))
     lbl = tk.Label(
         wrap, text=text, fg=CYAN, bg=BG,
         font=_font(9, "bold"), cursor="hand2",
+        padx=padx, pady=pady,
     )
     lbl.pack(padx=1, pady=1)
     lbl.bind("<Button-1>", lambda _e: command())
@@ -240,8 +259,8 @@ class ScanDeckHud:
         self._apply_icon()
         _pick_font(self.root)
         self.root.configure(bg=BG)
-        self.root.geometry("1120x780")
-        self.root.minsize(980, 600)
+        self.root.geometry("1420x780")
+        self.root.minsize(1280, 600)
         self.root.attributes("-topmost", True)
 
         edge = tk.Frame(self.root, bg=CYAN, width=2)
@@ -252,8 +271,9 @@ class ScanDeckHud:
 
         heads = tk.Frame(main, bg=BG)
         heads.pack(fill="x")
+        # Trois colonnes dès l’en-tête, avec le même trait que explo | exo.
 
-        left_heads = tk.Frame(heads, bg=BG, width=400)
+        left_heads = tk.Frame(heads, bg=BG, width=LEFT_COL_W)
         left_heads.pack(side="left", fill="y")
         left_heads.pack_propagate(False)
 
@@ -278,6 +298,22 @@ class ScanDeckHud:
         self._carto_fc = _make_hold_line(left_head, right=False, pady=(1, 0), with_count=False)
 
         tk.Frame(heads, bg=LINE, width=1).pack(side="left", fill="y")
+
+        self._macro_heads = tk.Frame(heads, bg=BG, width=MACRO_COL_W)
+        self._macro_heads.pack(side="right", fill="y")
+        self._macro_heads.pack_propagate(False)
+        tk.Frame(heads, bg=LINE, width=1).pack(side="right", fill="y")
+        macro_head = tk.Frame(self._macro_heads, bg=BG)
+        macro_head.pack(fill="x", padx=12, pady=(12, 0))
+        tk.Label(
+            macro_head, text=t("macros_title"), fg=CYAN, bg=BG,
+            font=_font(12, "bold"), anchor="w",
+        ).pack(fill="x")
+        tk.Label(
+            macro_head, text=" ", fg=BG, bg=BG,
+            font=_font(8), anchor="w",
+        ).pack(fill="x", pady=(2, 8))
+        tk.Frame(macro_head, bg=CYAN, height=1).pack(fill="x")
 
         self._right_top = tk.Frame(heads, bg=BG)
         self._right_top.pack(side="left", fill="both", expand=True)
@@ -329,7 +365,13 @@ class ScanDeckHud:
         band = tk.Frame(main, bg=BG)
         band.pack(fill="both", expand=True)
 
-        self._left = tk.Frame(band, bg=BG, width=400)
+        self._macro_col = tk.Frame(band, bg=BG, width=MACRO_COL_W)
+        self._macro_col.pack(side="right", fill="y")
+        self._macro_col.pack_propagate(False)
+        tk.Frame(band, bg=LINE, width=1).pack(side="right", fill="y")
+        self._build_macro_col()
+
+        self._left = tk.Frame(band, bg=BG, width=LEFT_COL_W)
         self._left.pack(side="left", fill="y")
         self._left.pack_propagate(False)
 
@@ -397,6 +439,11 @@ class ScanDeckHud:
         self._start_watcher(journal_dir)
         self.root.after(150, self._drain)
         self._start_update_check()
+        # Touche de lancement : callback sur le thread Tk (le grabber tourne à part).
+        self._hotkeys = HotkeyGrabber(lambda row: self.root.after(0, lambda r=row: self._macro_play(r)))
+        self._hotkeys.start()
+        self._sync_macro_hotkeys()
+        self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def _apply_icon(self) -> None:
         png = resource_root() / "data" / "icon.png"
@@ -553,16 +600,36 @@ class ScanDeckHud:
         self.canvas.yview_scroll(steps, "units")
 
     def _on_wheel(self, event) -> None:
+        if self._eddn_wheel(-1 if event.delta > 0 else 1, event):
+            return
+        if self._pointer_in(self._macro_col, event):
+            self._macro_pane.wheel(-1 if event.delta > 0 else 1)
+            return
         if self._pointer_in(self._left_pane.wrap, event):
             self._left_pane.wheel(-1 if event.delta > 0 else 1)
         elif self._pointer_in(self.canvas, event) or self._pointer_in(self._scroll, event):
             self._wheel(-1 if event.delta > 0 else 1)
 
     def _on_button_wheel(self, event, steps: int) -> None:
+        if self._eddn_wheel(steps, event):
+            return
+        if self._pointer_in(self._macro_col, event):
+            self._macro_pane.wheel(steps)
+            return
         if self._pointer_in(self._left_pane.wrap, event):
             self._left_pane.wheel(steps)
         elif self._pointer_in(self.canvas, event) or self._pointer_in(self._scroll, event):
             self._wheel(steps)
+
+    def _eddn_wheel(self, steps: int, event) -> bool:
+        overlay = getattr(self, "_eddn_overlay", None)
+        box = getattr(self, "_eddn_box", None)
+        if overlay is None or box is None or not overlay.winfo_exists():
+            return False
+        if not self._pointer_in(overlay, event):
+            return False
+        box.yview_scroll(steps, "units")
+        return True
 
     def _scroll_needed(self) -> bool:
         bbox = self.canvas.bbox("all")
@@ -1010,6 +1077,8 @@ class ScanDeckHud:
         shade = tk.Frame(self.root, bg=BG)
         shade.place(relx=0, rely=0, relwidth=1, relheight=1)
         self._eddn_overlay = shade
+        self._eddn_log_fp = None
+        self._pause_hotkeys()
         border = tk.Frame(shade, bg=CYAN)
         border.place(relx=0.5, rely=0.5, anchor="center")
         pad = tk.Frame(border, bg=BG, width=640, height=420)
@@ -1022,22 +1091,95 @@ class ScanDeckHud:
             font=_font(11, "bold"), anchor="w",
         )
         self._eddn_title.pack(side="left", fill="x", expand=True)
+        body = tk.Frame(pad, bg=CARD)
+        body.pack(fill="both", expand=True, padx=14, pady=(0, 8))
         box = tk.Text(
-            pad, bg=CARD, fg=TEXT, insertbackground=CYAN, bd=0,
-            highlightthickness=0, font=_font(8), wrap="word",
+            body, bg=CARD, fg=TEXT, insertbackground=CYAN, bd=0,
+            highlightthickness=0, font=_font(8), wrap="none",
+            cursor="xterm", undo=False, takefocus=True,
         )
-        box.pack(fill="both", expand=True, padx=14, pady=(0, 8))
+        scroll = tk.Scrollbar(
+            body, orient="vertical", command=box.yview,
+            bg=BG, troughcolor=CARD, activebackground=CYAN,
+            highlightthickness=0, bd=0, width=10,
+        )
+        box.configure(yscrollcommand=scroll.set)
+        box.pack(side="left", fill="both", expand=True)
+        scroll.pack(side="right", fill="y")
+        self._eddn_box = box
         box.tag_config("ok", foreground=READY)
         box.tag_config("rejected", foreground=WARN)
         box.tag_config("error", foreground=TIER_BAR["low"])
         box.tag_config("muted", foreground=MUTED)
+        box.tag_config("sel", background=CYAN_DEEP, foreground=CYAN_HI)
+        hint = tk.Label(pad, text="", fg=MUTED, bg=BG, font=_font(8), anchor="w")
+        hint.pack(fill="x", padx=14, pady=(0, 4))
         btns = tk.Frame(pad, bg=BG)
         btns.pack(fill="x", padx=14, pady=(0, 12))
 
         def close(_e=None) -> None:
+            aid = getattr(self, "_eddn_after", None)
+            if aid is not None:
+                try:
+                    self.root.after_cancel(aid)
+                except tk.TclError:
+                    pass
+            self._eddn_after = None
             self.root.unbind("<Escape>")
             shade.destroy()
             self._eddn_overlay = None
+            self._eddn_box = None
+            self._resume_hotkeys()
+
+        def _selected() -> str:
+            try:
+                return box.get("sel.first", "sel.last")
+            except tk.TclError:
+                return ""
+
+        def _copy_text(text: str, ok_key: str) -> None:
+            text = text.strip()
+            if not text:
+                hint.config(text=t("nothing_to_copy"), fg=TIER_BAR["low"])
+                return
+            self.root.clipboard_clear()
+            self.root.clipboard_append(text)
+            self.root.update_idletasks()
+            preview = text.splitlines()[0]
+            if len(preview) > 48:
+                preview = preview[:48] + "…"
+            extra = f"  ·  {len(text.splitlines())}" if "\n" in text else ""
+            hint.config(text=t(ok_key, text=preview) + extra, fg=READY)
+
+        def copy_sel(_e=None):
+            chunk = _selected()
+            _copy_text(chunk, "copied")
+            return "break"
+
+        def copy_all(_e=None):
+            _copy_text(box.get("1.0", "end-1c"), "copied")
+            return "break"
+
+        def select_all(_e=None):
+            box.tag_add("sel", "1.0", "end-1c")
+            box.mark_set("insert", "1.0")
+            return "break"
+
+        def copy_or_all(_e=None):
+            return copy_sel() if _selected() else copy_all()
+
+        def on_key(event):
+            ctrl = bool(event.state & 0x4)
+            if ctrl and event.keysym.lower() == "c":
+                return copy_or_all()
+            if ctrl and event.keysym.lower() == "a":
+                return select_all()
+            if event.keysym in {
+                "Up", "Down", "Left", "Right", "Prior", "Next",
+                "Home", "End", "Shift_L", "Shift_R", "Control_L", "Control_R",
+            }:
+                return None
+            return "break"
 
         def refresh() -> None:
             if getattr(self, "_eddn_overlay", None) is None:
@@ -1052,24 +1194,587 @@ class ScanDeckHud:
                     error=counts.get("error", 0),
                 )
             )
-            box.delete("1.0", "end")
             rows = hub.logs()
-            if not rows:
-                box.insert("end", t("eddn_log_empty") + "\n", "muted")
-            for row in reversed(rows):
-                tag = row.get("status") or "muted"
-                code = row.get("code")
-                extra = f"  HTTP {code}" if code else ""
-                line = f"{row.get('ts','')}  {row.get('status','').upper()}  {row.get('event','')}  {row.get('schema','')}{extra}"
-                box.insert("end", line + "\n", tag if tag in {"ok", "rejected", "error"} else "muted")
-                detail = (row.get("detail") or "").strip()
-                if detail and tag != "ok":
-                    box.insert("end", f"    {detail}\n", "muted")
-            self.root.after(1500, refresh)
+            last = rows[-1] if rows else {}
+            fp = (
+                len(rows),
+                last.get("ts"),
+                last.get("event"),
+                last.get("status"),
+                counts.get("ok", 0),
+                counts.get("rejected", 0),
+                counts.get("error", 0),
+            )
+            if fp != self._eddn_log_fp:
+                self._eddn_log_fp = fp
+                view = box.yview()
+                try:
+                    sel = (box.index("sel.first"), box.index("sel.last"))
+                except tk.TclError:
+                    sel = None
+                box.delete("1.0", "end")
+                if not rows:
+                    box.insert("end", t("eddn_log_empty") + "\n", "muted")
+                for row in reversed(rows):
+                    tag = row.get("status") or "muted"
+                    code = row.get("code")
+                    extra = f"  HTTP {code}" if code else ""
+                    line = (
+                        f"{row.get('ts','')}  {row.get('status','').upper()}  "
+                        f"{row.get('event','')}  {row.get('schema','')}{extra}"
+                    )
+                    box.insert(
+                        "end", line + "\n",
+                        tag if tag in {"ok", "rejected", "error"} else "muted",
+                    )
+                    detail = (row.get("detail") or "").strip()
+                    if detail and tag != "ok":
+                        box.insert("end", f"    {detail}\n", "muted")
+                box.yview_moveto(view[0])
+                if sel is not None:
+                    try:
+                        box.tag_add("sel", sel[0], sel[1])
+                    except tk.TclError:
+                        pass
+            self._eddn_after = self.root.after(1500, refresh)
 
+        box.bind("<Key>", on_key)
+        box.bind("<Control-c>", copy_or_all)
+        box.bind("<Control-a>", select_all)
+        _outline_btn(btns, t("eddn_copy_sel"), copy_sel)
+        _outline_btn(btns, t("eddn_copy_all"), copy_all)
         _outline_btn(btns, t("options_cancel"), close)
         self.root.bind("<Escape>", close)
         refresh()
+        box.focus_set()
+
+    def _build_macro_col(self) -> None:
+        """Liste des macros (le titre MACROS est dans l’en-tête, aligné sur Vista)."""
+        inner = tk.Frame(self._macro_col, bg=BG)
+        inner.pack(fill="both", expand=True)
+        new_row = tk.Frame(inner, bg=BG)
+        new_row.pack(fill="x", padx=12, pady=(10, 8))
+        _outline_btn(new_row, t("macros_new"), self._macro_new)
+        self._macro_hint = tk.Label(
+            inner, text=t("macros_hint"), fg=MUTED, bg=BG,
+            font=_font(7), anchor="w", justify="left", wraplength=MACRO_COL_W - 28,
+        )
+        self._macro_hint.pack(fill="x", padx=12, pady=(0, 8))
+        self._macro_pane = ThinPane(inner)
+        self._macro_pane.wrap.pack(fill="both", expand=True, pady=(0, 8))
+        self._macro_list = self._macro_pane.inner
+        self._refresh_macros()
+
+    def _refresh_macros(self) -> None:
+        for child in self._macro_list.winfo_children():
+            child.destroy()
+        rows = load_macros()
+        if not rows:
+            tk.Label(
+                self._macro_list, text=t("macros_empty"), fg=MUTED, bg=BG,
+                font=_font(8), anchor="w", justify="left", wraplength=MACRO_COL_W - 32,
+            ).pack(fill="x", padx=8, pady=8)
+            self.root.after(20, self._macro_pane._on_inner)
+            self._sync_macro_hotkeys()
+            return
+        for row in rows:
+            self._macro_row(row)
+        self.root.after(20, self._macro_pane._on_inner)
+        self._sync_macro_hotkeys()
+
+    def _macro_row(self, row: dict) -> None:
+        wrap = tk.Frame(self._macro_list, bg=CARD)
+        wrap.pack(fill="x", padx=12, pady=(0, 8))
+        top = tk.Frame(wrap, bg=CARD)
+        top.pack(fill="x", padx=6, pady=(6, 2))
+        name = tk.Label(
+            top, text=row.get("name") or "?", fg=CYAN, bg=CARD,
+            font=_font(9, "bold"), anchor="w", cursor="hand2", wraplength=MACRO_COL_W - 90,
+            justify="left",
+        )
+        name.pack(side="left", fill="x", expand=True)
+        name.bind("<Button-1>", lambda _e, m=row: self._macro_play(m))
+        wrap.bind("<Button-1>", lambda _e, m=row: self._macro_play(m))
+        bind = (row.get("hotkey") or "").strip()
+        tk.Label(
+            top, text=f"[{pretty_key(bind)}]" if bind else "", fg=CYAN_HI, bg=CARD,
+            font=_font(8, "bold"),
+        ).pack(side="right")
+        btns = tk.Frame(wrap, bg=CARD)
+        btns.pack(fill="x", padx=6, pady=(0, 6))
+        edit = tk.Label(
+            btns, text=t("macros_edit"), fg=MUTED, bg=CARD,
+            font=_font(7, "bold"), cursor="hand2",
+        )
+        edit.pack(side="left")
+        edit.bind("<Button-1>", lambda _e, m=row: self._macro_edit(m))
+        tk.Label(btns, text=" · ", fg=LINE, bg=CARD, font=_font(7)).pack(side="left")
+        delete = tk.Label(
+            btns, text=t("macros_delete"), fg=MUTED, bg=CARD,
+            font=_font(7, "bold"), cursor="hand2",
+        )
+        delete.pack(side="left")
+        delete.bind("<Button-1>", lambda _e, m=row: self._macro_delete(m))
+
+    def _on_close(self) -> None:
+        grabber = getattr(self, "_hotkeys", None)
+        if grabber is not None:
+            grabber.stop()
+        self.root.destroy()
+
+    def _sync_macro_hotkeys(self) -> None:
+        grabber = getattr(self, "_hotkeys", None)
+        if grabber is not None:
+            grabber.set_macros(binds_map())
+
+    def _pause_hotkeys(self) -> None:
+        """Coupe l’écoute pendant l’éditeur / Options, sinon la touche lance la macro."""
+        grabber = getattr(self, "_hotkeys", None)
+        if grabber is not None:
+            grabber.pause()
+
+    def _resume_hotkeys(self) -> None:
+        grabber = getattr(self, "_hotkeys", None)
+        if grabber is not None:
+            grabber.resume()
+            grabber.set_macros(binds_map())
+
+    def _macro_play(self, row: dict) -> None:
+        """Clic sur le nom ou touche de lancement → envoi vers Elite."""
+        if is_playing():
+            self.status_lbl.config(text=t("macros_busy"), fg=TIER_BAR["low"])
+            return
+        self.status_lbl.config(text=t("macros_playing", name=row.get("name") or ""), fg=MUTED)
+        self._pause_hotkeys()
+
+        def done(err: str | None) -> None:
+            def apply() -> None:
+                self._resume_hotkeys()
+                if err == "need_xdotool":
+                    self.status_lbl.config(text=t("macros_need_xdotool"), fg=TIER_BAR["low"])
+                elif err == "no_window":
+                    self.status_lbl.config(text=t("macros_no_window"), fg=TIER_BAR["low"])
+                elif err == "empty":
+                    self.status_lbl.config(text=t("macros_empty_play"), fg=TIER_BAR["low"])
+                elif err:
+                    self.status_lbl.config(text=t("macros_fail"), fg=TIER_BAR["low"])
+                else:
+                    self.status_lbl.config(text=t("macros_done", name=row.get("name") or ""), fg=READY)
+            self.root.after(0, apply)
+
+        err = play_macro(row, on_done=done)
+        if err == "busy":
+            self._resume_hotkeys()
+            self.status_lbl.config(text=t("macros_busy"), fg=TIER_BAR["low"])
+        elif err == "empty":
+            self._resume_hotkeys()
+            self.status_lbl.config(text=t("macros_empty_play"), fg=TIER_BAR["low"])
+
+    def _macro_delete(self, row: dict) -> None:
+        delete_macro(str(row.get("id") or ""))
+        self._refresh_macros()
+
+    def _macro_new(self) -> None:
+        self._macro_editor(None)
+
+    def _macro_edit(self, row: dict) -> None:
+        self._macro_editor(row)
+
+    def _macro_editor(self, existing: dict | None) -> None:
+        """Overlay : nom, touche de lancement, enregistrement type VoiceAttack (pas un champ texte)."""
+        prev = getattr(self, "_macro_overlay", None)
+        if prev is not None and prev.winfo_exists():
+            prev.lift()
+            return
+        shade = tk.Frame(self.root, bg=BG)
+        shade.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self._macro_overlay = shade
+        self._pause_hotkeys()
+        border = tk.Frame(shade, bg=CYAN)
+        border.place(relx=0.5, rely=0.5, anchor="center")
+        pad = tk.Frame(border, bg=BG, width=560, height=560)
+        pad.pack(padx=1, pady=1)
+        pad.pack_propagate(False)
+        tk.Label(
+            pad, text=t("macros_editor"), fg=CYAN, bg=BG,
+            font=_font(11, "bold"), anchor="w",
+        ).pack(fill="x", padx=16, pady=(14, 8))
+        tk.Label(
+            pad, text=t("macros_name"), fg=MUTED, bg=BG, font=_font(8), anchor="w",
+        ).pack(fill="x", padx=16)
+        name_var = tk.StringVar(value=(existing or {}).get("name") or "")
+        pad.configure(takefocus=True)
+        try:
+            shade.grab_set()
+        except tk.TclError:
+            pass
+        name_ent = tk.Entry(
+            pad, textvariable=name_var, bg=CARD, fg=TEXT, insertbackground=CYAN,
+            highlightbackground=CYAN_DIM, highlightcolor=CYAN, highlightthickness=1,
+            bd=0, font=_font(10), disabledforeground=TEXT, readonlybackground=CARD,
+        )
+        name_ent.pack(fill="x", padx=16, pady=(4, 8), ipady=4)
+        tk.Label(
+            pad, text=t("macros_hotkey"), fg=MUTED, bg=BG, font=_font(8), anchor="w",
+        ).pack(fill="x", padx=16)
+        hot_state = {"key": (existing or {}).get("hotkey") or "", "listen": False}
+        hot_btn = tk.Label(
+            pad, text="", fg=CYAN, bg=CARD, font=_font(10, "bold"),
+            cursor="hand2", pady=6, padx=8, anchor="w", takefocus=True,
+        )
+        hot_btn.pack(fill="x", padx=16, pady=(4, 8))
+        rec_lbl = tk.Label(
+            pad, text=t("macros_rec_idle"), fg=MUTED, bg=BG,
+            font=_font(8), anchor="w", justify="left", wraplength=520,
+        )
+        rec_lbl.pack(fill="x", padx=16, pady=(0, 6))
+        # Boutons en bas d’abord : la zone d’enregistrement (expand) ne doit pas les écraser.
+        hint = tk.Label(pad, text="", fg=TIER_BAR["low"], bg=BG, font=_font(8), anchor="w")
+        btns = tk.Frame(pad, bg=BG)
+        btns.pack(side="bottom", fill="x", padx=16, pady=(12, 18))
+        hint.pack(side="bottom", fill="x", padx=16, pady=(0, 4))
+        seq_wrap = tk.Frame(pad, bg=CARD)
+        seq_wrap.pack(fill="both", expand=True, padx=16, pady=(0, 8))
+        seq_canvas = tk.Canvas(seq_wrap, bg=CARD, highlightthickness=0, bd=0, takefocus=False)
+        seq_bar = tk.Scrollbar(
+            seq_wrap, orient="vertical", command=seq_canvas.yview, width=10,
+            bg=BG, troughcolor=CARD, highlightthickness=0, bd=0,
+        )
+        seq_inner = tk.Frame(seq_canvas, bg=CARD)
+        seq_win = seq_canvas.create_window((0, 0), window=seq_inner, anchor="nw")
+        seq_canvas.configure(yscrollcommand=seq_bar.set)
+        seq_canvas.pack(side="left", fill="both", expand=True)
+        seq_bar.pack(side="right", fill="y")
+        seq_inner.bind(
+            "<Configure>",
+            lambda _e: seq_canvas.configure(scrollregion=seq_canvas.bbox("all") or (0, 0, 0, 0)),
+        )
+        seq_canvas.bind(
+            "<Configure>",
+            lambda e: seq_canvas.itemconfigure(seq_win, width=max(e.width, 1)),
+        )
+        state = {
+            "recording": False,
+            "steps": list((existing or {}).get("steps") or []),
+            "down": {},
+            "last_up": None,
+            "tick": None,
+            "pending_up": {},
+        }
+        live_labels: dict[str, tk.Label] = {}
+        skip = {
+            "Shift_L", "Shift_R", "Control_L", "Control_R",
+            "Alt_L", "Alt_R", "Super_L", "Super_R", "Caps_Lock", "Num_Lock",
+        }
+        capture_widgets = (shade, pad, hot_btn, seq_canvas, seq_inner)
+
+        def lock_name(lock: bool) -> None:
+            name_ent.config(state="readonly" if lock else "normal")
+            if lock:
+                pad.focus_set()
+
+        def capturing() -> bool:
+            return bool(hot_state["listen"] or state["recording"])
+
+        def show_hot() -> None:
+            key = hot_state["key"]
+            if hot_state["listen"]:
+                hot_btn.config(text=t("macros_hotkey_listen"), fg=READY)
+            elif key:
+                hot_btn.config(text=t("macros_hotkey_set", key=pretty_key(key)), fg=CYAN)
+            else:
+                hot_btn.config(text=t("macros_hotkey_none"), fg=MUTED)
+
+        def clear_seq() -> None:
+            for child in seq_inner.winfo_children():
+                child.destroy()
+
+        def add_plus() -> None:
+            tk.Label(
+                seq_inner, text="+", fg=CYAN, bg=CARD, font=_font(11, "bold"),
+            ).pack(anchor="w", padx=12, pady=(4, 2))
+
+        def add_key_block(key: str, hold_ms: int | None, *, live: bool = False) -> tk.Label | None:
+            block = tk.Frame(seq_inner, bg=CARD)
+            block.pack(anchor="w", padx=12, pady=(0, 2))
+            tk.Label(
+                block, text=pretty_key(key), fg=CYAN_HI, bg=CARD,
+                font=_font(14, "bold"), anchor="w",
+            ).pack(anchor="w")
+            show_hold = live or (hold_ms is not None and hold_ms > HOLD_TAP_MS)
+            if not show_hold:
+                return None
+            text = format_hold_s(hold_ms or 0) if (hold_ms or 0) > HOLD_TAP_MS else ""
+            hold_lbl = tk.Label(
+                block, text=text, fg=MUTED, bg=CARD,
+                font=_font(8), anchor="w",
+            )
+            hold_lbl.pack(anchor="w")
+            return hold_lbl
+
+        def show_steps() -> None:
+            live_labels.clear()
+            clear_seq()
+            keys = [s for s in state["steps"] if s.get("key")]
+            live = list(state["down"].items())
+            if not keys and not live:
+                tk.Label(
+                    seq_inner, text=t("macros_no_steps"), fg=MUTED, bg=CARD,
+                    font=_font(8), anchor="w", justify="left",
+                ).pack(anchor="w", padx=12, pady=10)
+                return
+            first = True
+            for step in keys:
+                if not first:
+                    add_plus()
+                first = False
+                add_key_block(str(step.get("key")), int(step.get("hold_ms") or 0))
+            now = time.monotonic()
+            for key, t0 in live:
+                if not first:
+                    add_plus()
+                first = False
+                hold_lbl = add_key_block(key, int((now - t0) * 1000), live=True)
+                if hold_lbl is not None:
+                    live_labels[key] = hold_lbl
+            seq_canvas.yview_moveto(1.0)
+
+        def stop_tick() -> None:
+            aid = state.get("tick")
+            if aid is not None:
+                try:
+                    pad.after_cancel(aid)
+                except tk.TclError:
+                    pass
+                state["tick"] = None
+
+        def tick_live() -> None:
+            state["tick"] = None
+            if not (state["recording"] and state["down"]):
+                return
+            now = time.monotonic()
+            for key, t0 in state["down"].items():
+                lbl = live_labels.get(key)
+                if lbl is None:
+                    continue
+                ms = int((now - t0) * 1000)
+                lbl.config(text=format_hold_s(ms) if ms > HOLD_TAP_MS else "")
+            state["tick"] = pad.after(80, tick_live)
+
+        def flush_pending_ups() -> None:
+            for aid in list(state["pending_up"].values()):
+                try:
+                    pad.after_cancel(aid)
+                except tk.TclError:
+                    pass
+            state["pending_up"].clear()
+
+        def unbind_capture() -> None:
+            self.root.unbind_all("<KeyPress>")
+            self.root.unbind_all("<KeyRelease>")
+            for w in capture_widgets:
+                w.unbind("<KeyPress>")
+                w.unbind("<KeyRelease>")
+
+        def bind_capture(press, release=None) -> None:
+            unbind_capture()
+            self.root.bind_all("<KeyPress>", press)
+            self.root.bind_all("<KeyRelease>", release or (lambda _e: "break"))
+            for w in capture_widgets:
+                w.bind("<KeyPress>", press)
+                w.bind("<KeyRelease>", release or (lambda _e: "break"))
+
+        def commit_key(key: str, t_up: float) -> None:
+            t0 = state["down"].pop(key, None)
+            if t0 is None:
+                return
+            hold = int((t_up - t0) * 1000)
+            state["steps"].append({"key": key, "hold_ms": max(hold, 40)})
+            state["last_up"] = t_up
+            if not state["down"]:
+                stop_tick()
+            show_steps()
+
+        def stop_rec() -> None:
+            if not state["recording"]:
+                return
+            stop_tick()
+            flush_pending_ups()
+            state["recording"] = False
+            now = time.monotonic()
+            for key, t0 in list(state["down"].items()):
+                hold = int((now - t0) * 1000)
+                state["steps"].append({"key": key, "hold_ms": max(hold, 40)})
+            state["down"].clear()
+            unbind_capture()
+            rec_lbl.config(text=t("macros_rec_idle"), fg=MUTED)
+            lock_name(False)
+            show_steps()
+
+        def on_hot_press(event) -> str:
+            if not hot_state["listen"]:
+                return "break"
+            if event.keysym in skip or event.keysym == "Escape":
+                if event.keysym == "Escape":
+                    hot_state["listen"] = False
+                    unbind_capture()
+                    lock_name(False)
+                    show_hot()
+                return "break"
+            except_id = (existing or {}).get("id")
+            if hotkey_in_use(event.keysym, except_id=except_id):
+                hint.config(text=t("macros_hotkey_taken", key=pretty_key(event.keysym)))
+                return "break"
+            hot_state["key"] = event.keysym
+            hot_state["listen"] = False
+            unbind_capture()
+            lock_name(False)
+            hint.config(text="")
+            show_hot()
+            return "break"
+
+        def start_hot(_e=None) -> None:
+            if state["recording"]:
+                return
+            hot_state["listen"] = True
+            hint.config(text="")
+            lock_name(True)
+            hot_btn.focus_set()
+            try:
+                hot_btn.focus_force()
+            except tk.TclError:
+                pad.focus_set()
+            show_hot()
+            bind_capture(on_hot_press)
+
+        def on_press(event) -> str:
+            if event.keysym == "Escape":
+                stop_rec()
+                return "break"
+            if event.keysym in skip:
+                return "break"
+            aid = state["pending_up"].pop(event.keysym, None)
+            if aid is not None:
+                try:
+                    pad.after_cancel(aid)
+                except tk.TclError:
+                    pass
+                return "break"
+            if event.keysym in state["down"]:
+                return "break"
+            now = time.monotonic()
+            state["down"][event.keysym] = now
+            show_steps()
+            if state["tick"] is None:
+                tick_live()
+            return "break"
+
+        def on_release(event) -> str:
+            key = event.keysym
+            if key not in state["down"] or key in state["pending_up"]:
+                return "break"
+            t_up = time.monotonic()
+
+            def confirm(k=key, when=t_up) -> None:
+                state["pending_up"].pop(k, None)
+                commit_key(k, when)
+
+            state["pending_up"][key] = pad.after(40, confirm)
+            return "break"
+
+        def start_rec() -> None:
+            hot_state["listen"] = False
+            state["recording"] = True
+            flush_pending_ups()
+            state["steps"] = []
+            state["down"] = {}
+            state["last_up"] = None
+            rec_lbl.config(text=t("macros_rec_live"), fg=READY)
+            lock_name(True)
+            pad.focus_set()
+            show_steps()
+            bind_capture(on_press, on_release)
+
+        def close(_e=None) -> None:
+            stop_rec()
+            hot_state["listen"] = False
+            unbind_capture()
+            self.root.unbind("<Escape>")
+            try:
+                shade.grab_release()
+            except tk.TclError:
+                pass
+            shade.destroy()
+            self._macro_overlay = None
+            self._resume_hotkeys()
+
+        def on_escape(_e=None):
+            if hot_state["listen"]:
+                hot_state["listen"] = False
+                unbind_capture()
+                lock_name(False)
+                show_hot()
+                return "break"
+            if state["recording"]:
+                stop_rec()
+                return "break"
+            close()
+
+        def save() -> None:
+            stop_rec()
+            name = name_var.get().strip()
+            if not name:
+                hint.config(text=t("macros_need_name"))
+                return
+            if not hot_state["key"]:
+                hint.config(text=t("macros_need_hotkey"))
+                return
+            if not state["steps"]:
+                hint.config(text=t("macros_need_steps"))
+                return
+            upsert_macro(
+                {
+                    "name": name,
+                    "hotkey": hot_state["key"],
+                    "steps": state["steps"],
+                },
+                replace_id=(existing or {}).get("id"),
+            )
+            close()
+            self._refresh_macros()
+
+        def on_name_keypress(event):
+            if hot_state["listen"]:
+                return on_hot_press(event)
+            if state["recording"]:
+                return on_press(event)
+            return None
+
+        def on_name_keyrelease(event):
+            if state["recording"]:
+                return on_release(event)
+            if hot_state["listen"]:
+                return "break"
+            return None
+
+        def on_name_focus(_e):
+            if capturing():
+                pad.focus_set()
+                return "break"
+            return None
+
+        name_ent.bind("<KeyPress>", on_name_keypress)
+        name_ent.bind("<KeyRelease>", on_name_keyrelease)
+        name_ent.bind("<FocusIn>", on_name_focus)
+        hot_btn.bind("<Button-1>", start_hot)
+        seq_canvas.bind("<Button-1>", lambda _e: pad.focus_set() if capturing() else None)
+        show_hot()
+        _outline_btn(btns, t("macros_record"), start_rec, padx=14, pady=7)
+        _outline_btn(btns, t("macros_save"), save, padx=14, pady=7)
+        _outline_btn(btns, t("options_cancel"), close, padx=14, pady=7)
+        self.root.bind("<Escape>", on_escape)
+        show_steps()
+        pad.focus_set()
 
     def _open_xlsx(self) -> None:
         if not self.workbook_path or not self.workbook_path.exists():
@@ -1093,6 +1798,7 @@ class ScanDeckHud:
         shade = tk.Frame(self.root, bg=BG)
         shade.place(relx=0, rely=0, relwidth=1, relheight=1)
         self._opt_overlay = shade
+        self._pause_hotkeys()
 
         border = tk.Frame(shade, bg=CYAN)
         border.place(relx=0.5, rely=0.5, anchor="center")
@@ -1196,6 +1902,7 @@ class ScanDeckHud:
             self.root.unbind("<Escape>")
             shade.destroy()
             self._opt_overlay = None
+            self._resume_hotkeys()
 
         def save() -> None:
             folder = path_var.get().strip()

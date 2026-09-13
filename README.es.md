@@ -16,8 +16,8 @@ Notas de versión: [Español](CHANGELOG.es.md) · [English](CHANGELOG.md) · [Fr
 
 - Elite Dangerous **Odyssey**
 - Journals activados (por defecto: `%USERPROFILE%\Saved Games\Frontier Developments\Elite Dangerous`)
-- **Zip de Windows:** nada más
-- **Desde el código:** Python 3.11+ con Tk. `openpyxl` es opcional (hoja de cálculo)
+- **Zip de Windows:** nada más (macros incluidas)
+- **Desde el código:** Python 3.11+ con Tk. `openpyxl` es opcional (hoja de cálculo). En Linux las macros necesitan `xdotool` (`pacman -S xdotool`, `apt install xdotool`, …)
 
 ## Instalación
 
@@ -87,8 +87,9 @@ En la exobiología de Odyssey, un **género** (en inglés *genus*, plural *gener
 | Lista izquierda | Cuerpos del sistema actual |
 | Panel derecho | Planeta seleccionado: veredicto, géneros, especies, progreso de escaneos |
 | Carril extremo izquierdo | Rango de explorador |
-| Carril extremo derecho | Rango de exobiólogo |
-| Pie | **Abrir la hoja**, **Opciones**, **LOGS EDDN**, **INARA**, versión (`v1.1.0`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
+| Columna extrema derecha | **Macros** (tus secuencias de teclas; solo en este PC) |
+| Carril interior derecho | Rango de exobiólogo |
+| Pie | **Abrir la hoja**, **Opciones**, **LOGS EDDN**, **INARA**, versión (`v1.2.0`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
 
 Haz clic en un cuerpo a la izquierda para abrirlo a la derecha. Los botones de copia junto al sistema / cuerpo copian ese nombre.
 
@@ -97,6 +98,18 @@ Los veredictos son una pista para aterrizar (alto valor, opcional, pasar), no un
 ### Hoja de cálculo
 
 **Abrir la hoja** escribe `scandeck.xlsx` junto a la config (Documents / ScanDeck en Windows). Una fila por planeta × género DSS, actualizada al muestrear. La hoja **explo** anota mundos similares a la Tierra, mundos acuáticos, mundos de amoníaco y fenómenos estelares notables. Hace falta `openpyxl` (incluido en el zip de Windows).
+
+### Macros
+
+La columna **MACROS** de la derecha graba secuencias de teclas y las reproduce en la ventana de Elite (mantener para despegar, paneles, etc.). Las macros de cada jugador se quedan en **ese** PC (`Documents\ScanDeck\macros.json` en Windows, `~/.local/share/ScanDeck/macros.json` en Linux). No se suben y no están en el repo de GitHub.
+
+Para que un mantenimiento (p. ej. **R** 3,8 s y luego **L**) funcione **en el juego**:
+
+- Pon Elite en **ventana** o **borderless**. El pantalla completa exclusiva suele tragar las teclas inyectadas.
+- **Quita** la tecla de lanzamiento en los controles de Elite (la que arranca la macro, p. ej. Num0). Si el juego la sigue usando, disparan los dos.
+- Deja ScanDeck abierto. Pulsa la tecla de lanzamiento con Elite enfocado, o haz clic en el nombre de la macro en el HUD para probar.
+
+En Linux hace falta `xdotool`. En Windows basta el zip; Elite y ScanDeck en la misma sesión.
 
 ## Lo que ScanDeck no sabe
 

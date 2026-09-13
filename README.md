@@ -16,8 +16,8 @@ Changelog: [English](CHANGELOG.md) · [Français](CHANGELOG.fr.md) · [Español]
 
 - Elite Dangerous **Odyssey**
 - Journals enabled (default: `%USERPROFILE%\Saved Games\Frontier Developments\Elite Dangerous`)
-- **Windows zip:** nothing else
-- **From source:** Python 3.11+ with Tk. `openpyxl` is optional (spreadsheet)
+- **Windows zip:** nothing else (macros included)
+- **From source:** Python 3.11+ with Tk. `openpyxl` is optional (spreadsheet). Linux macros need `xdotool` (`pacman -S xdotool`, `apt install xdotool`, …)
 
 ## Install
 
@@ -87,8 +87,9 @@ In Odyssey exobiology, a **genus** (plural **genera**) is the bio *family* — B
 | Left list | Bodies in the current system |
 | Right pane | Selected planet: verdict, genera, species, scan progress |
 | Far left rail | Explorer rank |
-| Far right rail | Exobiologist rank |
-| Footer | **Open spreadsheet**, **Options**, **EDDN LOGS**, **INARA**, version (`v1.1.0`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
+| Far right column | **Macros** (your own key sequences; stored only on this PC) |
+| Inner right rail | Exobiologist rank |
+| Footer | **Open spreadsheet**, **Options**, **EDDN LOGS**, **INARA**, version (`v1.2.0`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
 
 Click a body on the left to open it on the right. Copy buttons next to the system / body name copy that name.
 
@@ -97,6 +98,18 @@ Verdicts are a landing hint (high value, optional, skip), not a guarantee the sp
 ### Spreadsheet
 
 **Open spreadsheet** writes `scandeck.xlsx` next to the config (Documents / ScanDeck on Windows). One row per planet × DSS genus, updated as you sample. The **explo** sheet records Earth-like worlds, water worlds, ammonia worlds, and notable stellar phenomena. Needs `openpyxl` (included in the Windows zip).
+
+### Macros
+
+The right-hand **MACROS** column records key sequences and plays them into the Elite window (takeoff hold, panel navigation, and so on). Each player’s macros stay on that PC (`Documents\ScanDeck\macros.json` on Windows, `~/.local/share/ScanDeck/macros.json` on Linux). They are not uploaded and not part of the GitHub repo.
+
+For a hold (for example **R** for 3.8 s then **L**) to work in-game:
+
+- Put Elite in **windowed** or **borderless** mode. Exclusive fullscreen often swallows injected keys.
+- **Unbind** the launch key in Elite’s controls (the key that starts the macro, e.g. Num0). If the game still uses that key, both Elite and the macro fire.
+- Keep ScanDeck running. Press the launch key while Elite is focused, or click the macro name in the HUD to test.
+
+Linux needs `xdotool`. Windows uses the built-in zip; run Elite and ScanDeck on the same desktop session.
 
 ## What ScanDeck does *not* know
 

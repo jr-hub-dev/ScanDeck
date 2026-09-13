@@ -6,6 +6,12 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.2.0 — 2026-09-13
+
+### Added
+- **Macros** column: record a key sequence (holds + taps) and play it into Elite with a launch key. Each player’s macros stay on that PC only
+- Linux and Windows playback (windowed / borderless Elite; unbind the launch key in-game)
+
 ## 1.1.0 — 2026-09-13
 
 ### Added
