@@ -32,6 +32,7 @@ BODY_PREFIX = {
 
 @dataclass
 class Clause:
+    """One SrvSurvey query line (range, set, or composition)."""
     raw: str
     prop: str
     kind: str
@@ -192,6 +193,7 @@ def evaluate_clause(clause: Clause, body: BodyState) -> bool | None:
 
 
 class CriteriaEngine:
+    """Per-genus JSON trees: which species_short pass hard body constraints."""
     def __init__(self, criteria_dir: Path) -> None:
         self.trees: dict[str, dict[str, Any]] = {}
         for path in criteria_dir.glob("*.json"):

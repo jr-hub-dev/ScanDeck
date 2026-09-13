@@ -1,4 +1,4 @@
-"""Petit HUD sombre, toujours au-dessus, alimenté par le journal."""
+"""Always-on-top Azure Sky HUD driven by the Elite journal."""
 
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ from .ranks import EXPLORE_RANKS, RANKS, fmt_credits, fmt_threshold, rank_short
 from .scan_value import fmt_scan_cr
 from .update import RELEASES_URL, newer_release
 
-# Palette EDHM Azure Sky : cyan HUD, fond quasi noir, orange seulement en alerte.
+# Palette EDHM Azure Sky: HUD cyan, near-black background, orange only for alerts.
 BG = "#05080c"
 CARD = "#0b1218"
 CARD2 = "#101820"
@@ -53,7 +53,7 @@ WARN = "#ff8c00"
 READY = "#92d050"
 ALERT_BG = "#2a1808"
 ALERT_FG = "#ffc4a0"
-# Pastilles d’intérêt (espèces) — distinctes du cyan HUD.
+# Species interest dots — distinct from HUD cyan.
 TIER_BAR = {
     "high": "#ff7f11",
     "good": "#92d050",
@@ -63,7 +63,7 @@ TIER_BAR = {
 }
 FONT = "Fira Sans Condensed"
 SCROLL_W = 8
-# Largeurs fixes : explo à gauche, macros à droite, exo au centre (le reste).
+# Fixed widths: explo left, macros right, exo fills the centre.
 LEFT_COL_W = 400
 MACRO_COL_W = 280
 
@@ -108,7 +108,7 @@ def _make_hold_line(parent, *, right: bool, pady, with_count: bool) -> dict:
 
 
 def _outline_btn(parent, text: str, command, *, padx: int = 10, pady: int = 5) -> tk.Label:
-    """Bouton cyan (pied de HUD, éditeur de macro). padx/pady = taille du clic."""
+    """Cyan outline button (HUD footer, macro editor). padx/pady = click target."""
     wrap = tk.Frame(parent, bg=CYAN)
     wrap.pack(side="left", padx=(0, 8))
     lbl = tk.Label(
@@ -133,7 +133,7 @@ def _relaunch() -> None:
 
 
 class ThinPane:
-    """Canvas + barre de scroll cyan, masquée si tout tient à l'écran."""
+    """Canvas plus a cyan scrollbar, hidden when content fits."""
 
     def __init__(self, parent) -> None:
         self.wrap = tk.Frame(parent, bg=BG)
@@ -241,6 +241,7 @@ class ThinPane:
 
 
 class ScanDeckHud:
+    """Main window: explo list, exo cards, macros, rank rails, live journal."""
     def __init__(self, journal_dir: str | None = None) -> None:
         self.q: queue.Queue = queue.Queue()
         self.workbook_path: Path | None = None
@@ -271,7 +272,7 @@ class ScanDeckHud:
 
         heads = tk.Frame(main, bg=BG)
         heads.pack(fill="x")
-        # Trois colonnes dès l’en-tête, avec le même trait que explo | exo.
+        # Three columns from the header down, same divider as explo | exo.
 
         left_heads = tk.Frame(heads, bg=BG, width=LEFT_COL_W)
         left_heads.pack(side="left", fill="y")
@@ -439,7 +440,7 @@ class ScanDeckHud:
         self._start_watcher(journal_dir)
         self.root.after(150, self._drain)
         self._start_update_check()
-        # Touche de lancement : callback sur le thread Tk (le grabber tourne à part).
+        # Launch key: callback on the Tk thread (the grabber runs separately).
         self._hotkeys = HotkeyGrabber(lambda row: self.root.after(0, lambda r=row: self._macro_play(r)))
         self._hotkeys.start()
         self._sync_macro_hotkeys()
@@ -1249,7 +1250,7 @@ class ScanDeckHud:
         box.focus_set()
 
     def _build_macro_col(self) -> None:
-        """Liste des macros (le titre MACROS est dans l’en-tête, aligné sur Vista)."""
+        """Macro list (MACROS title lives in the header, aligned with Vista)."""
         inner = tk.Frame(self._macro_col, bg=BG)
         inner.pack(fill="both", expand=True)
         new_row = tk.Frame(inner, bg=BG)
@@ -1328,7 +1329,7 @@ class ScanDeckHud:
             grabber.set_macros(binds_map())
 
     def _pause_hotkeys(self) -> None:
-        """Coupe l’écoute pendant l’éditeur / Options, sinon la touche lance la macro."""
+        """Mute listening while the editor / Options is open, else the key fires."""
         grabber = getattr(self, "_hotkeys", None)
         if grabber is not None:
             grabber.pause()
@@ -1340,7 +1341,7 @@ class ScanDeckHud:
             grabber.set_macros(binds_map())
 
     def _macro_play(self, row: dict) -> None:
-        """Clic sur le nom ou touche de lancement → envoi vers Elite."""
+        """Click the name or press the launch key → send to Elite."""
         if is_playing():
             self.status_lbl.config(text=t("macros_busy"), fg=TIER_BAR["low"])
             return
@@ -1381,7 +1382,7 @@ class ScanDeckHud:
         self._macro_editor(row)
 
     def _macro_editor(self, existing: dict | None) -> None:
-        """Overlay : nom, touche de lancement, enregistrement type VoiceAttack (pas un champ texte)."""
+        """Overlay: name, launch key, VoiceAttack-style recording (not a text field)."""
         prev = getattr(self, "_macro_overlay", None)
         if prev is not None and prev.winfo_exists():
             prev.lift()
@@ -1428,7 +1429,7 @@ class ScanDeckHud:
             font=_font(8), anchor="w", justify="left", wraplength=520,
         )
         rec_lbl.pack(fill="x", padx=16, pady=(0, 6))
-        # Boutons en bas d’abord : la zone d’enregistrement (expand) ne doit pas les écraser.
+        # Buttons first at the bottom so the recording pane (expand) cannot crush them.
         hint = tk.Label(pad, text="", fg=TIER_BAR["low"], bg=BG, font=_font(8), anchor="w")
         btns = tk.Frame(pad, bg=BG)
         btns.pack(side="bottom", fill="x", padx=16, pady=(12, 18))
@@ -1933,6 +1934,7 @@ class ScanDeckHud:
 
 
 class RankRail(tk.Canvas):
+    """Vertical rank ladder (Explore left, Exobiology right)."""
     def __init__(self, parent, *, mirror: bool = False, ranks: list | None = None) -> None:
         super().__init__(parent, width=152, bg=BG, highlightthickness=0, bd=0)
         self.snap: dict = {}
@@ -2038,4 +2040,5 @@ class RankRail(tk.Canvas):
 
 
 def run_gui(journal_dir: str | None = None) -> None:
+    """Blocking Tk mainloop."""
     ScanDeckHud(journal_dir).run()

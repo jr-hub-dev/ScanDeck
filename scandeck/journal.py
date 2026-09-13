@@ -1,3 +1,5 @@
+"""Journal folder detect, JSONL parse, and tail-follow of the live file."""
+
 from __future__ import annotations
 
 import json
@@ -7,6 +9,7 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 
 JOURNAL_CANDIDATES = [
+    # Native Windows, Proton/Wine prefixes, Steam compatdata, Heroic.
     Path.home() / "Saved Games/Frontier Developments/Elite Dangerous",
     Path.home() / "Games/EliteDangerous/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous",
     Path.home() / ".local/share/Steam/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous",
@@ -18,6 +21,7 @@ GRAVITY_MS2_TO_G = 9.81
 PRESSURE_PA_TO_ATM = 101325.0
 
 BIO_EVENTS = {
+    # Events Session.handle cares about (plus watch extras below).
     "Fileheader",
     "Location",
     "FSDJump",
@@ -97,7 +101,7 @@ def latest_journal(journal_dir: Path) -> Path | None:
 
 
 def recent_journals(journal_dir: Path, *, days: int = 7, limit: int = 40) -> list[Path]:
-    """Journaux récents, du plus ancien au plus récent (reprise après extinction)."""
+    """Recent journals, oldest first (resume after the game was closed)."""
     files = sorted(journal_dir.glob("Journal.*.log"), key=lambda p: p.name)
     if not files:
         return []
@@ -194,6 +198,7 @@ def genuses_from_event(event: dict) -> list[str]:
 
 
 class JournalWatcher:
+    """Poll the journal folder; yield new events from the current file."""
     def __init__(self, journal_dir: Path, poll_s: float = 0.25) -> None:
         self.journal_dir = journal_dir
         self.poll_s = poll_s

@@ -1,3 +1,5 @@
+"""Shared dataclasses: body, species, sampler progress, match verdicts."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -6,12 +8,14 @@ from typing import Any
 
 
 class Certainty(str, Enum):
+    """How sure we are a species can live on this body."""
     CERTAIN = "certain"
     PLAUSIBLE = "plausible"
     INCOMPATIBLE = "incompatible"
 
 
 class ScanProgress(str, Enum):
+    """Genetic Sampler stages: none → log → sample → analyse."""
     NONE = "none"
     LOG = "log"
     SAMPLE = "sample"
@@ -20,6 +24,7 @@ class ScanProgress(str, Enum):
 
 @dataclass
 class Species:
+    """One catalog row (Vista payouts, colony range, spotting, constraints)."""
     genus: str
     name: str
     species_short: str
@@ -34,6 +39,7 @@ class Species:
 
 @dataclass
 class BodyState:
+    """One planet or star in the current (or recently visited) system."""
     system_name: str = ""
     system_address: int | None = None
     body_name: str = ""
@@ -74,6 +80,7 @@ class BodyState:
 
 @dataclass
 class OrganicProgress:
+    """Sampler progress for one species on one body."""
     genus: str
     species_name: str
     variant: str | None = None
@@ -87,6 +94,7 @@ class OrganicProgress:
 
 @dataclass
 class MatchResult:
+    """One species candidate shown on the HUD / CLI for a body."""
     species: Species
     certainty: Certainty
     reasons: list[str] = field(default_factory=list)

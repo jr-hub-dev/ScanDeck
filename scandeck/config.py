@@ -1,4 +1,4 @@
-"""User settings (language, journal folder) next to the workbook."""
+"""User settings (language, journal folder, EDDN/Inara) next to the workbook."""
 
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ _DEFAULTS = {
 
 
 def user_data_dir() -> Path:
+    """Linux: ~/.local/share/ScanDeck. Windows: Documents/ScanDeck."""
     if os.name == "nt":
         base = Path.home() / "Documents" / "ScanDeck"
     else:

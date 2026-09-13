@@ -1,3 +1,5 @@
+"""CLI entry: HUD by default, --cli for text, replay/catalog subcommands."""
+
 from __future__ import annotations
 
 import argparse

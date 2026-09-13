@@ -1,8 +1,8 @@
-"""Seuils de rang Exobiologiste (Vista Genomics, post Update 14)
-et Explorateur (Universal Cartographics, wiki Elite Dangerous).
+"""Exobiologist rank rungs (Vista Genomics, post Update 14)
+and Explorer (Universal Cartographics, Elite Dangerous wiki).
 
-Sources exo : wiki / Aunty Sledge. Elite IV et V exo sont estimés.
-Sources explo : wiki Explorer — Elite I–V Odyssey.
+Exo sources: wiki / Aunty Sledge. Elite IV and V exo are estimates.
+Explore sources: wiki Explorer — Elite I–V Odyssey.
 """
 
 from __future__ import annotations
@@ -93,7 +93,7 @@ def rank_short(row: dict) -> str:
 
 
 def from_credits(profits: int | None, ranks: list[dict] | None = None) -> dict:
-    """Position sur la frise à partir du profit cumulé."""
+    """Position on the rail from cumulative profit."""
     table = ranks if ranks is not None else RANKS
     if profits is None or profits < 0:
         return {
@@ -140,7 +140,7 @@ def from_journal(
     profits: int | None,
     ranks: list[dict] | None = None,
 ) -> dict:
-    """Rang jeu + % ; les crédits affinent le reste à gagner si on les a."""
+    """Game rank + %; credits refine remaining-to-next when we have them."""
     table = ranks if ranks is not None else RANKS
     if rank_id is None:
         return from_credits(profits, table)

@@ -1,3 +1,3 @@
-"""ScanDeck — HUD exploration & exobiologie Elite Dangerous Odyssey."""
+"""ScanDeck — Elite Dangerous Odyssey exploration & exobiology HUD."""
 
 __version__ = "1.2.0"

@@ -1,3 +1,5 @@
+"""Load species.json / genera.json and resolve journal aliases (Tussock/Touradon)."""
+
 from __future__ import annotations
 
 import json
@@ -11,6 +13,7 @@ DATA_DIR = resource_root() / "data"
 
 
 class Catalog:
+    """In-memory species index keyed by name, codex id, and genus."""
     def __init__(self, data_dir: Path | None = None) -> None:
         self.data_dir = data_dir or DATA_DIR
         species_raw = json.loads((self.data_dir / "species.json").read_text(encoding="utf-8"))

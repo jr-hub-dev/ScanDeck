@@ -59,6 +59,7 @@ def apply_fileheader(language: str | None) -> None:
 
 
 def t(msgid: str, **kwargs) -> str:
+    """Look up a HUD string. First arg is msgid so `key=` format kwargs work."""
     _load()
     text = _ui.get(_lang, {}).get(msgid) or _ui["en"].get(msgid) or msgid
     if kwargs:

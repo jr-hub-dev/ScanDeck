@@ -1,11 +1,11 @@
-"""Valeur DSS estimée (formule MattG / EDDI).
+"""Estimated DSS value (MattG / EDDI formula).
 
-base = k + k × 0,56591828 × masse_⊕^0,2
-puis multiplicateurs cartographie, bonus Odyssey, efficacité, first discovery.
+base = k + k × 0.56591828 × mass_earth^0.2
+then mapping multipliers, Odyssey bonus, efficiency, first discovery.
 
-k dépend du type ; le bonus terraformable s’ajoute si le journal le dit
-(ELW : toujours, c’est dans le barème).
-On suppose un DSS efficace — c’est le gain si tu cartographies maintenant.
+k depends on type; terraformable bonus if the journal says so
+(ELW: always, it is in the tariff).
+Assumes an efficient DSS — the gain if you map now.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ MAP_ALREADY = 3.3333333333
 ODYSSEY_MAP = 0.3
 ODYSSEY_MAP_FLOOR = 555.0
 
-# k de base (journal PlanetClass).
+# k base (journal PlanetClass).
 _K: dict[str, int] = {
     "Metal rich body": 21790,
     "Ammonia world": 96932,
@@ -35,7 +35,7 @@ _K: dict[str, int] = {
 }
 _K_DEFAULT = 300
 
-# Bonus terraformable (100 % — le jeu a une échelle 0–100 % inconnue).
+# Terraformable bonus (100% — the game has an unknown 0–100% scale).
 _K_TF: dict[str, int] = {
     "High metal content body": 100677,
     "Water world": 116295,
@@ -47,13 +47,13 @@ MAP_HIGH = 500_000
 MAP_GOOD = 100_000
 MAP_OK = 50_000
 
-# Vente sur ce fleet carrier : 3 NPC + taxe services (calage vente Vista du 2026-09-12).
+# Sale on this fleet carrier: 3 NPC + services tax (calibrated on a Vista sale 2026-09-12).
 FC_CREW_COUNT = 3
 FC_POCKET = 0.64
 
 
 def fc_sale_credits(gross: int) -> int:
-    """Ce qui reste en poche après équipage + taxe FC, à partir du brut (First logged)."""
+    """Credits in pocket after crew + FC tax, from gross (First logged)."""
     if gross <= 0:
         return 0
     return int(round(gross * FC_POCKET))
@@ -76,7 +76,7 @@ def fmt_scan_cr(value: int) -> str:
 
 def _k(planet_class: str, terraformable: bool) -> int:
     k = _K.get(planet_class, _K_DEFAULT)
-    # Les ELW embarquent le bonus « terraformable » du barème, même sans flag.
+    # ELW always include the tariff terraformable bonus, even without the flag.
     if planet_class == "Earthlike body" or terraformable:
         k += _K_TF.get(planet_class, _K_TF_DEFAULT)
     return k
@@ -93,10 +93,10 @@ def body_value(
     efficient: bool = True,
     odyssey: bool = True,
 ) -> int:
-    """Crédits UC estimés. `mapped=True` = tu DSS maintenant."""
+    """Estimated UC credits. `mapped=True` = you DSS now."""
     mass = max(float(mass_em), 1e-6)
     k = _k(planet_class, terraformable)
-    # Bulle pré-Odyssey : first discoverer mais déjà cartographié par un autre.
+    # Pre-Odyssey bubble: first discoverer but already mapped by someone else.
     bubble = first_discoverer and not first_mapper
 
     mapping = 1.0
@@ -121,7 +121,7 @@ def body_value(
 
 
 def star_value(star_type: str, mass_sol: float, *, first_discoverer: bool = False) -> int:
-    """Valeur FSS d'une étoile (MattG / EDDI)."""
+    """FSS value of a star (MattG / EDDI)."""
     mass = max(float(mass_sol), 0.0)
     kind = (star_type or "").strip()
     if kind in {"H", "N"}:
@@ -139,7 +139,7 @@ def star_value(star_type: str, mass_sol: float, *, first_discoverer: bool = Fals
 
 
 def carto_stock_value(body: BodyState, *, first: bool = False) -> int:
-    """Ce que UC paierait pour ce corps. `first=True` = first discovery (+ first map si DSS)."""
+    """What UC would pay for this body. `first=True` = first discovery (+ first map if DSS)."""
     first_disc = bool(first)
     first_map = bool(first)
     if body.star_class and body.stellar_mass is not None and not body.planet_class:
@@ -160,7 +160,7 @@ def carto_stock_value(body: BodyState, *, first: bool = False) -> int:
 
 
 def map_estimate(body: BodyState) -> tuple[int, str]:
-    """Retourne (crédits DSS efficaces, palier high/good/ok/low). 0 si incalculable."""
+    """Return (efficient DSS credits, high/good/ok/low tier). 0 if unknown."""
     if not body.planet_class or body.mass_em is None:
         return 0, "muted"
     first_disc = body.was_discovered is False

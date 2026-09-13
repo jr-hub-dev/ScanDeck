@@ -1,19 +1,19 @@
-"""Macros clavier : enregistrement, stockage, lecture vers Elite.
+"""Keyboard macros: record, store locally, play into Elite.
 
-Chaque joueur a son propre fichier (jamais dans git) :
+Per-player file (never in git):
   Linux    ~/.local/share/ScanDeck/macros.json
   Windows  Documents/ScanDeck/macros.json
 
-Une macro = nom + touche de lancement + étapes
-  {"key", "hold_ms"}  appui ou maintien
-  {"delay_ms"}        pause ; à la lecture on ignore celles > 0,2 s
-                      (temps mort pendant l’enregistrement, pas un ordre)
+A macro is name + launch key + steps:
+  {"key", "hold_ms"}  tap or hold
+  {"delay_ms"}        pause; playback skips delays longer than 0.2 s
+                      (dead time while recording, not an intended wait)
 
-Linux   : XTEST / xdotool, écoute XI2 (la touche marche même si Elite a le focus).
-Windows : SendInput en scancodes, hook clavier bas niveau (équivalent XI2).
+Linux   : XTEST / xdotool, XI2 listen (hotkey works while Elite has focus).
+Windows : SendInput scancodes, low-level keyboard hook (XI2 equivalent).
 
-Pour que le maintien tienne en jeu : Elite en fenêtré ou borderless, et la
-touche de lancement non assignée dans les contrôles Elite.
+Holds stick in-game only in windowed/borderless, with the launch key
+unbound in Elite's controls.
 """
 
 from __future__ import annotations
@@ -30,15 +30,15 @@ from pathlib import Path
 
 from .config import user_data_dir
 
-# Un appui plus court que ça s’affiche comme un tap, pas un maintien.
+# Shorter than this shows as a tap, not a hold.
 HOLD_TAP_MS = 70
-# Relancer keydown / revérifier le focus pendant un long maintien.
+# Re-send keydown / re-check focus during a long hold.
 HOLD_REFRESH_S = 0.04
 FOCUS_CHECK_S = 0.12
-# Petit trou entre deux touches à la lecture (après une pause d’enregistrement ignorée).
+# Small gap between keys after a skipped recording pause.
 INTER_KEY_S = 0.08
 MAX_PLAY_DELAY_S = 0.20
-# Noms xdotool pour les touches spéciales (lettres/chiffres passent tels quels).
+# xdotool names for special keys (letters/digits pass through).
 XDOTOOL_NAMES = {
     "space": "space",
     "BackSpace": "BackSpace",
@@ -127,11 +127,11 @@ WIN_VK = {
 }
 
 _play_lock = threading.Lock()
-_playing = False  # une seule lecture à la fois (évite deux macros en parallèle)
+_playing = False  # one playback at a time (no overlapping macros)
 
 
 def macros_path() -> Path:
-    """Fichier perso des macros, à côté de config.json."""
+    """Player-owned macros file, next to config.json."""
     return user_data_dir() / "macros.json"
 
 
@@ -183,7 +183,7 @@ def delete_macro(macro_id: str) -> list[dict]:
 
 
 def pretty_key(key: str) -> str:
-    """Libellé HUD : r → R, KP_0 → Num0."""
+    """HUD label: r → R, KP_0 → Num0."""
     aliases = {
         "space": "Space",
         "BackSpace": "BackSpace",
@@ -243,7 +243,7 @@ def is_playing() -> bool:
 
 
 def play_macro(macro: dict, *, on_done=None) -> str | None:
-    """Lance la lecture en fond. Erreur immédiate, ou None si ça a démarré."""
+    """Start playback in the background. Immediate error, or None if started."""
     global _playing
     steps = list(macro.get("steps") or [])
     if not steps:
@@ -270,14 +270,14 @@ def play_macro(macro: dict, *, on_done=None) -> str | None:
 
 
 def _play_steps(steps: list[dict]) -> str | None:
-    """Backend clavier selon l’OS. Ne pas mélanger xdotool et SendInput."""
+    """OS keyboard backend. Do not mix xdotool and SendInput."""
     if sys.platform == "win32":
         return _play_windows(steps)
     return _play_linux(steps)
 
 
 def _play_linux(steps: list[dict]) -> str | None:
-    """Trouve la fenêtre Elite, lui donne le focus, rejoue les touches via XTEST."""
+    """Find Elite, focus it, replay keys via XTEST."""
     if not _which("xdotool"):
         return "need_xdotool"
     wid = _elite_window()
@@ -322,7 +322,7 @@ def _elite_focused(wid: str) -> bool:
 
 
 def _hold_linux(sender: "_XKeySender", wid: str, name: str, hold_ms: int) -> None:
-    """Maintien : keydown, refresh XTEST, récupère le focus si ScanDeck l’a volé."""
+    """Hold: keydown, refresh XTEST, steal focus back if ScanDeck took it."""
     _activate_elite(wid)
     sender.down(name)
     if not sender.ok:
@@ -347,7 +347,7 @@ def _hold_linux(sender: "_XKeySender", wid: str, name: str, hold_ms: int) -> Non
 
 
 class _XKeySender:
-    """XTEST : la touche reste enfoncée au niveau X11 (un tap unique ne suffit pas en jeu)."""
+    """XTEST: keep the key down at X11 (a single tap is not enough in-game)."""
 
     def __init__(self) -> None:
         self._dpy = None
@@ -422,7 +422,7 @@ class _XKeySender:
 
 
 def _play_windows(steps: list[dict]) -> str | None:
-    """Même séquence que Linux, via SendInput + focus de la fenêtre Elite."""
+    """Same sequence as Linux, via SendInput plus Elite window focus."""
     hwnd = _elite_hwnd()
     if not hwnd:
         return "no_window"
@@ -463,7 +463,7 @@ def _xdo_key(keysym: str) -> str:
 
 
 def _elite_window() -> str:
-    """Id xdotool de Elite - Dangerous (CLIENT), pas le lanceur."""
+    """xdotool id of Elite - Dangerous (CLIENT), not the launcher."""
     proc = _run(["xdotool", "search", "--onlyvisible", "--name", "Elite"], timeout=3)
     wids = [w for w in (proc.stdout.split() if proc and proc.returncode == 0 else []) if w.isdigit()]
     if not wids:
@@ -504,7 +504,7 @@ def _run(cmd: list[str], timeout: int = 5):
 
 
 def _win_vk(keysym: str) -> int | None:
-    """Tk keysym (r, KP_0, F5…) → virtual-key Windows."""
+    """Tk keysym (r, KP_0, F5…) → Windows virtual-key."""
     if keysym in WIN_VK:
         return WIN_VK[keysym]
     if len(keysym) == 1:
@@ -520,7 +520,7 @@ def _win_vk(keysym: str) -> int | None:
     return None
 
 
-# Flèches, Inser, pavé / : bit KEYEVENTF_EXTENDEDKEY pour SendInput.
+# Arrows, Insert, numpad / : KEYEVENTF_EXTENDEDKEY bit for SendInput.
 _WIN_EXTENDED_VK = {
     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
     0x2D, 0x2E, 0x6F, 0xA3, 0xA5,
@@ -528,7 +528,7 @@ _WIN_EXTENDED_VK = {
 
 
 def _win_send(vk: int, *, down: bool) -> None:
-    """Envoi scancode : Elite (DirectInput) ignore souvent le virtual-key seul."""
+    """Send scancode: Elite (DirectInput) often ignores virtual-key alone."""
     import ctypes
     user32 = ctypes.windll.user32
     scan = int(user32.MapVirtualKeyW(vk, 0))
@@ -545,7 +545,7 @@ def _win_send(vk: int, *, down: bool) -> None:
 
 
 def _elite_hwnd() -> int:
-    """HWND de la fenêtre Elite (score : CLIENT / Dangerous, ignore ScanDeck)."""
+    """HWND of the Elite window (score CLIENT / Dangerous, ignore ScanDeck)."""
     import ctypes
     user32 = ctypes.windll.user32
     found: list[tuple[int, int]] = []
@@ -583,7 +583,7 @@ def _elite_hwnd() -> int:
 
 
 def _activate_elite_win(hwnd: int) -> None:
-    """AttachThreadInput : SetForegroundWindow seul échoue souvent depuis un overlay."""
+    """AttachThreadInput: SetForegroundWindow alone often fails from an overlay."""
     import ctypes
     user32 = ctypes.windll.user32
     kernel32 = ctypes.windll.kernel32
@@ -600,7 +600,7 @@ def _activate_elite_win(hwnd: int) -> None:
 
 
 def _hold_windows(hwnd: int, vk: int, hold_ms: int) -> None:
-    """Maintien SendInput ; remet Elite au premier plan si le HUD a pris le focus."""
+    """SendInput hold; restore Elite if the HUD stole focus."""
     import ctypes
     user32 = ctypes.windll.user32
     _activate_elite_win(hwnd)
@@ -667,7 +667,7 @@ Mod2Mask = 1 << 4
 _MOD_COMBOS = (0, LockMask, Mod2Mask, LockMask | Mod2Mask)
 XIAllDevices = 0
 XI_RawKeyPress = 13
-# NumLock off : le pavé envoie KP_Insert au lieu de KP_0, etc.
+# NumLock off: keypad sends KP_Insert instead of KP_0, etc.
 _KEYPAD_TWINS = {
     "KP_0": "KP_Insert",
     "KP_Insert": "KP_0",
@@ -695,7 +695,7 @@ _KEYPAD_TWINS = {
 
 
 def _lookup_names(keysym: str) -> list[str]:
-    """KP_0, KP_Insert et 0 du haut sont la même touche de lancement."""
+    """KP_0, KP_Insert and top-row 0 are the same launch key."""
     names = [keysym]
     twin = _KEYPAD_TWINS.get(keysym)
     if twin:
@@ -780,7 +780,7 @@ class XEvent(ctypes.Union):
 
 
 class HotkeyGrabber:
-    """Touche de lancement même quand Elite a le focus (XI2 Linux / hook LL Windows)."""
+    """Launch key even while Elite has focus (XI2 Linux / LL hook Windows)."""
 
     def __init__(self, on_key) -> None:
         self.on_key = on_key
@@ -877,7 +877,7 @@ class HotkeyGrabber:
         return False
 
     def _loop_x11(self) -> None:
-        """Linux : XI2 raw (Elite a le focus) + XGrabKey en secours."""
+        """Linux: XI2 raw (Elite has focus) plus XGrabKey fallback."""
         import select
         from ctypes.util import find_library
 
@@ -1026,7 +1026,7 @@ class HotkeyGrabber:
             x11.XCloseDisplay(dpy)
 
     def _loop_win(self) -> None:
-        """Windows : hook WH_KEYBOARD_LL ; RegisterHotKey si le hook est refusé."""
+        """Windows: WH_KEYBOARD_LL hook; RegisterHotKey if the hook is denied."""
         import ctypes
         user32 = ctypes.windll.user32
         kernel32 = ctypes.windll.kernel32
@@ -1157,7 +1157,7 @@ class HotkeyGrabber:
 
 
 def hotkey_in_use(keysym: str, *, except_id: str | None = None) -> bool:
-    """True si une autre macro a déjà cette touche (pavé et rangée du haut = même)."""
+    """True if another macro already uses this key (keypad and top row count as one)."""
     keysym = (keysym or "").strip()
     if not keysym:
         return False
@@ -1172,7 +1172,7 @@ def hotkey_in_use(keysym: str, *, except_id: str | None = None) -> bool:
 
 
 def binds_map() -> dict[str, dict]:
-    """Touche de lancement → macro, pour le grabber."""
+    """Launch key → macro, for the grabber."""
     out: dict[str, dict] = {}
     for row in load_macros():
         key = (row.get("hotkey") or "").strip()

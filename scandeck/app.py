@@ -1,3 +1,10 @@
+"""ScanDeck core: a Session builds game state from Elite journal events.
+
+`handle()` dispatches `event["event"]` to `on_Scan`, `on_SAASignalsFound`, etc.
+The HUD subscribes via `on_update` (snapshots). The CLI prints text blocks.
+`prepare_live` / `follow_live` replay recent journals, then follow the live file.
+"""
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -46,6 +53,11 @@ RARE_PLANETS = {
 
 
 class Session:
+    """One play session: system, bodies, bios, UC/Vista holds, ranks.
+
+    Body keys are (SystemAddress, BodyID). UC sales since the last Explore
+    Progress event adjust the rank countdown (journal % is not enough).
+    """
     def __init__(
         self,
         catalog: Catalog,
@@ -65,7 +77,7 @@ class Session:
         self.bodies: dict[tuple[int | None, int | None], BodyState] = {}
         self.progress: dict[tuple[int | None, int], dict[str, OrganicProgress]] = defaultdict(dict)
         self.catching_up = False
-        self._on_ground = False   # True après Touchdown, False après Liftoff
+        self._on_ground = False   # True after Touchdown, False after Liftoff
         self.on_update = None
         self._focus_id: int | None = None
         self._sys_sig: str | None = None
@@ -77,7 +89,7 @@ class Session:
         self.explore_rank: int | None = None
         self.explore_progress: int | None = None
         self.explore_profits: int | None = None
-        # UC vendus depuis le dernier Progress Explore (le total à vie ne colle pas aux paliers).
+        # UC sold since the last Explore Progress (lifetime total does not match wiki rungs).
         self.explore_sold_since_progress: int = 0
         self.hold: dict[tuple, int] = {}
         self.hold_first: dict[tuple, int] = {}
@@ -103,10 +115,13 @@ class Session:
         return state
 
     def handle(self, event: dict) -> None:
+        """Dispatch a journal event. Unknown event names are ignored."""
         name = event.get("event")
         handler = getattr(self, f"on_{name}", None)
         if handler:
             handler(event)
+
+    # --- location / jumps --------------------------------------------------
 
     def on_Fileheader(self, event: dict) -> None:
         apply_fileheader(event.get("language"))
@@ -150,6 +165,8 @@ class Session:
         ts = event.get("timestamp") or ""
         if ts:
             body.last_ts = ts
+
+    # --- ranks and sales (UC / Vista) --------------------------------------
 
     def on_Rank(self, event: dict) -> None:
         if "Exobiologist" in event:
@@ -229,8 +246,8 @@ class Session:
         return snap
 
     def explore_rank_snapshot(self) -> dict:
-        # Aiguille = rang + % journal. Le total UC à vie ne colle pas aux paliers wiki,
-        # donc « encore » = restant interpolé, moins les ventes depuis le dernier Progress.
+        # Needle = journal rank + %. Lifetime UC does not match wiki rungs, so
+        # "remain" is the interpolated leftover minus sales since last Progress.
         snap = from_journal(
             self.explore_rank, self.explore_progress, None, EXPLORE_RANKS,
         )
@@ -322,6 +339,8 @@ class Session:
         self.carto_hold_first.clear()
         self._emit_hold()
 
+    # --- FSS / DSS / surface scans -----------------------------------------
+
     def on_Touchdown(self, event: dict) -> None:
         self._on_ground = True
 
@@ -329,6 +348,7 @@ class Session:
         self._on_ground = False
 
     def on_Scan(self, event: dict) -> None:
+        """FSS or nav scan: body type, carto value, parent star."""
         system = event.get("StarSystem") or self.system_name
         address = event.get("SystemAddress", self.system_address)
         if event.get("StarType"):
@@ -463,6 +483,7 @@ class Session:
             self._emit_system()
 
     def on_SAASignalsFound(self, event: dict) -> None:
+        """DSS: bio genera revealed (not the exact species yet)."""
         body = self.body(event.get("SystemAddress"), event.get("BodyID"), event.get("BodyName", ""))
         count = bio_count_from_signals(event.get("Signals"))
         if count is not None:
@@ -503,6 +524,7 @@ class Session:
         return genus, local
 
     def on_ScanOrganic(self, event: dict) -> None:
+        """Genetic Sampler: Log / Sample / Analyse (1/3 → 3/3)."""
         address = event.get("SystemAddress")
         body_id = event.get("Body")
         genus, species_name = self._english_species(event)
@@ -518,7 +540,7 @@ class Session:
             if self._on_ground:
                 org.stage = ScanProgress.LOG
                 org.sample_count = max(org.sample_count, 1)
-            # sinon : Nomad en vol → espèce/variante connues, pas un échantillon
+            # else: Nomad in flight — species/variant known, not a sample
         elif scan_type == "sample":
             org.sample_count = min(max(org.sample_count + 1, 2), 2)
             org.stage = ScanProgress.SAMPLE
@@ -538,7 +560,7 @@ class Session:
                 stage=org.stage,
                 catalog=self.catalog,
             )
-            # vérifier si la planète est terminée
+            # mark the planet done once every bio is analysed
             if org.stage == ScanProgress.ANALYSE:
                 bucket = self.progress[key]
                 done_count = sum(1 for o in bucket.values() if o.stage == ScanProgress.ANALYSE)
@@ -546,6 +568,7 @@ class Session:
                     self.wb.mark_planet_done(body)
 
     def on_CodexEntry(self, event: dict) -> None:
+        """Codex / Nomad: species ID, sometimes before you sample."""
         if is_nsp_codex(event):
             self._on_nsp_codex(event)
             return
@@ -781,6 +804,7 @@ class Session:
 
 
 def build_stack(data_dir: Path | None = None) -> tuple[Catalog, Matcher]:
+    """Species catalog plus the SrvSurvey criteria engine."""
     catalog = Catalog(data_dir)
     criteria = CriteriaEngine((data_dir or DATA_DIR) / "criteria")
     return catalog, Matcher(catalog, criteria)
@@ -799,6 +823,7 @@ def prepare_live(
     live_display: bool = True,
     on_update=None,
 ):
+    """Open the workbook, replay ~7 days of journals (no EDDN), start the watcher."""
     catalog, matcher = build_stack()
     path = resolve_journal_dir(journal_dir)
     wb = None
@@ -859,6 +884,7 @@ def prepare_live(
 
 
 def follow_live(session, watcher, path, current, caught_offset) -> None:
+    """Blocking loop: new journal lines plus live EDDN uploads."""
     latest = latest_journal(path)
     offset = caught_offset if latest == current else None
     hub = get_hub()
@@ -927,6 +953,7 @@ def _parent_star_id(event: dict) -> int | None:
 
 
 def run_replay(paths: list[Path]) -> None:
+    """CLI: replay journal files and print distinct DSS results."""
     catalog, matcher = build_stack()
     session = Session(catalog, matcher, live_display=True)
     session.replay_display_all_dss(replay_files(paths))

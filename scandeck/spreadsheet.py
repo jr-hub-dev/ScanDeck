@@ -1,14 +1,13 @@
-"""
-Gestion du classeur exobio.xlsx.
+"""exobio.xlsx workbook.
 
-Feuille "Echantillons" — une ligne par (planète × genre DSS)
-  Créée au DSS, mise à jour au ScanOrganic (Log/Sample/Analyse).
+Sheet "Echantillons" — one row per (planet × DSS genus)
+  Created at DSS, updated on ScanOrganic (Log/Sample/Analyse).
 
-Feuille "Planetes"   — une ligne par planète DSS, vue d'ensemble.
-Feuille "explo"      — systèmes avec ELW / monde aquatique / ammoniaque / phénomènes stellaires.
+Sheet "Planetes"   — one row per DSS planet, overview.
+Sheet "explo"      — systems with ELW / water world / ammonia / stellar phenomena.
 
-Clé de ligne : (SystemAddress, BodyID, genre_anglais)
-  → identifie la ligne sans ambiguïté même si le journal est relu.
+Row key: (SystemAddress, BodyID, english_genus)
+  so a journal replay finds the same row unambiguously.
 """
 
 from __future__ import annotations
@@ -46,7 +45,7 @@ def _default_workbook_path() -> Path:
 
 DEFAULT_PATH = None  # resolved on first workbook open via _default_workbook_path()
 
-# ── colonnes feuille Echantillons ──────────────────────────────────────────
+# ── Echantillons columns ───────────────────────────────────────────────────
 EC_COLS = [
     "Date DSS",
     "Système",
@@ -68,9 +67,9 @@ EC_COLS = [
     "Planète terminée",
     "Vendu",
 ]
-EC_KEY_COL = "clé_interne"   # colonne cachée en fin de ligne pour retrouver la ligne
+EC_KEY_COL = "clé_interne"   # hidden last column, used to find the row again
 
-# ── colonnes feuille Planetes ──────────────────────────────────────────────
+# ── Planetes columns ───────────────────────────────────────────────────────
 PL_COLS = [
     "Date DSS",
     "Système",
@@ -87,7 +86,7 @@ PL_COLS = [
 ]
 PL_KEY_COL = "clé_interne"
 
-# ── colonnes feuille explo ─────────────────────────────────────────────────
+# ── explo columns ──────────────────────────────────────────────────────────
 EX_COLS = [
     "Date",
     "Système",
@@ -99,24 +98,24 @@ EX_COLS = [
 ]
 EX_KEY_COL = "clé_interne"
 
-# ── couleurs ───────────────────────────────────────────────────────────────
-CLR_HEADER   = "1E3A5F"  # bleu marine
-CLR_DONE     = "C6EFCE"  # vert clair
-CLR_ONGOING  = "FFEB9C"  # jaune
-CLR_TODO     = "FFFFFF"  # blanc
+# ── colours ────────────────────────────────────────────────────────────────
+CLR_HEADER   = "1E3A5F"  # navy
+CLR_DONE     = "C6EFCE"  # light green
+CLR_ONGOING  = "FFEB9C"  # yellow
+CLR_TODO     = "FFFFFF"  # white
 
 TIER_LABEL = {
-    # Emoji (🔥🟢🟡🔴) : OnlyOffice ne les affiche pas → symboles BMP
+    # Emoji (🔥🟢🟡🔴): OnlyOffice does not render them → BMP symbols
     "high": "★ Flamme",
     "good": "● Bon",
     "ok":   "● Moyen",
     "low":  "● Faible",
 }
 TIER_FILL = {
-    "high": "F4A261",  # orange flamme
-    "good": "92D050",  # vert
-    "ok":   "FFC000",  # orange
-    "low":  "FF6B6B",  # rouge
+    "high": "F4A261",  # flame orange
+    "good": "92D050",  # green
+    "ok":   "FFC000",  # amber
+    "low":  "FF6B6B",  # red
 }
 TIER_FONT = {
     "high": "7A2E00",
@@ -157,6 +156,7 @@ def _planet_key(system_address: int | None, body_id: int | None) -> str:
 
 
 class ExobioWorkbook:
+    """openpyxl wrapper: Echantillons / Planetes / explo next to config.json."""
     def __init__(self, path: Path | None = None, catalog=None) -> None:
         if not HAS_OPENPYXL:
             raise ImportError(
@@ -177,7 +177,7 @@ class ExobioWorkbook:
         self._ensure_column(self._ec_ws, "Vendu", after="Planète terminée")
         self._ec_ws.column_dimensions[get_column_letter(len(EC_COLS))].hidden = False
         self._ec_ws.column_dimensions[get_column_letter(len(EC_COLS) + 1)].hidden = True
-        # index en mémoire : clé → numéro de ligne (1-based)
+        # in-memory index: key → 1-based row number
         self._ec_index: dict[str, int] = {}
         self._pl_index: dict[str, int] = {}
         self._ex_index: dict[str, int] = {}
@@ -187,13 +187,13 @@ class ExobioWorkbook:
         self._fit_sheets()
         self._save()
 
-    # ── chargement / création ──────────────────────────────────────────────
+    # ── load / create ──────────────────────────────────────────────────────
 
     def _load_or_create(self):
         if self.path.exists():
             return load_workbook(self.path)
         wb = openpyxl.Workbook()
-        # feuille par défaut renommée
+        # rename the default sheet
         ws_ec = wb.active
         ws_ec.title = "Echantillons"
         ws_pl = wb.create_sheet("Planetes")
@@ -210,11 +210,11 @@ class ExobioWorkbook:
             cell.font = Font(color="FFFFFF", bold=True)
             cell.fill = PatternFill("solid", fgColor=CLR_HEADER)
             cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-            # largeur auto approximative
+            # approximate auto-width
             ws.column_dimensions[get_column_letter(col_idx)].width = max(MIN_COL_WIDTH, min(MAX_COL_WIDTH, len(col_name) + 2))
         ws.row_dimensions[1].height = 28
         ws.freeze_panes = "A2"
-        # colonne clé cachée
+        # hide the key column
         ws.column_dimensions[get_column_letter(len(cols))].hidden = True
         ws.auto_filter.ref = ws.dimensions
 
@@ -232,13 +232,13 @@ class ExobioWorkbook:
         self._init_sheet(ws, wanted)
         return ws
 
-    # ── index en mémoire ──────────────────────────────────────────────────
+    # ── in-memory index ───────────────────────────────────────────────────
 
     def _rebuild_index(self) -> None:
         self._ec_index = {}
         self._pl_index = {}
         self._ex_index = {}
-        key_col_ec = len(EC_COLS) + 1   # dernière colonne
+        key_col_ec = len(EC_COLS) + 1   # last column
         key_col_pl = len(PL_COLS) + 1
         key_col_ex = len(EX_COLS) + 1
         for row in self._ec_ws.iter_rows(min_row=2, values_only=False):
@@ -312,7 +312,7 @@ class ExobioWorkbook:
         cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
     def _normalize_dates(self) -> bool:
-        """Convertit les anciennes dates (texte avec heure ou datetime) en jj/mm/aaaa."""
+        """Convert old dates (text with time, or datetime) to dd/mm/yyyy."""
         changed = False
         for ws in (self._ec_ws, self._pl_ws, self._ex_ws):
             for row in ws.iter_rows(min_row=2, min_col=1, max_col=1):
@@ -327,7 +327,7 @@ class ExobioWorkbook:
                     changed = True
         return changed
 
-    # ── écriture d'une ligne ───────────────────────────────────────────────
+    # ── write a row ────────────────────────────────────────────────────────
 
     DATE_FMT = "DD/MM/YYYY"
 
@@ -358,7 +358,7 @@ class ExobioWorkbook:
             self._ec_ws.cell(row_num, col).fill = fill
         self._paint_interest_cell(row_num)
 
-    # ── API principale ─────────────────────────────────────────────────────
+    # ── public API ─────────────────────────────────────────────────────────
 
     def on_dss(
         self,
@@ -367,15 +367,15 @@ class ExobioWorkbook:
         catalog=None,
     ) -> None:
         """
-        Appelé quand SAASignalsFound arrive avec des genres bio.
-        Crée une ligne par genre dans Echantillons (espèce vide tant que non samplée).
-        Crée/màj une ligne dans Planetes.
+        Called when SAASignalsFound arrives with bio genera.
+        One Echantillons row per genus (species empty until sampled).
+        Create/update a Planetes row.
         """
         date_str = _parse_ts(timestamp).strftime("%d/%m/%Y")
         star = body.parent_star or ""
         dist = _fmt_dist(body.distance_ls)
 
-        # ── Feuille Planetes ──────────────────────────────────────────────
+        # ── Planetes sheet ──────────────────────────────────────────────────
         pk = _planet_key(body.system_address, body.body_id)
         done_planet = "Non"
         if pk in self._pl_index:
@@ -403,22 +403,22 @@ class ExobioWorkbook:
             self._pl_index[pk] = self._pl_ws.max_row
             self._write_row(self._pl_ws, self._pl_index[pk], pl_row)
 
-        # ── Feuille Echantillons — une ligne par genre ────────────────────
+        # ── Echantillons sheet — one row per genus ─────────────────────────
         for genus in body.dss_genuses:
             rk = _row_key(body.system_address, body.body_id, genus, catalog or self.catalog)
             shown_genus = (catalog or self.catalog).display_genus(genus) if (catalog or self.catalog) else genus
             if rk in self._ec_index:
                 self._patch_star_dist(self._ec_ws, self._ec_index[rk], star, dist)
-                continue   # ligne déjà créée (ex: replay double SAASignalsFound)
+                continue   # row already exists (e.g. replay of a duplicate SAASignalsFound)
 
-            # prix min/max du genre si catalog disponible
+            # min/max payout for the genus if catalog is available
             price_base = ""
             price_fl   = ""
             if catalog:
                 species_list = catalog.species_for_genus(genus)
                 if species_list:
                     vals = sorted(s.value_cr for s in species_list)
-                    # on met la fourchette "min - max" en texte si plusieurs espèces possibles
+                    # write "min - max" as text when several species are possible
                     if len(vals) == 1:
                         price_base = _mcr(vals[0])
                         price_fl   = _mcr(vals[0] * 5)
@@ -441,9 +441,9 @@ class ExobioWorkbook:
                 dist,
                 body.bio_count or "",
                 shown_genus,
-                "",           # Espèce — vide
-                "",           # Variante — vide
-                label,        # Intérêt (meilleur du genre tant que l'espèce n'est pas connue)
+                "",           # Species — empty until sampled
+                "",           # Variant — empty
+                label,        # Interest (best of the genus until the species is known)
                 SAMPLE_LABEL[ScanProgress.NONE],
                 price_base,
                 price_fl,
@@ -476,20 +476,20 @@ class ExobioWorkbook:
         catalog=None,
     ) -> None:
         """
-        Appelé à chaque ScanOrganic (Log, Sample, Analyse).
-        Met à jour la ligne correspondante dans Echantillons.
-        Si Analyse : marque la planète terminée si tous les bios sont faits.
+        Called on every ScanOrganic (Log, Sample, Analyse).
+        Updates the matching Echantillons row.
+        On Analyse: mark the planet done if every bio is finished.
         """
         rk = _row_key(body.system_address, body.body_id, genus, catalog or self.catalog)
         row_num = self._ec_index.get(rk)
         if row_num is None:
-            # ancienne clé journal FR (Touradon) avant normalisation
+            # old French journal key (Touradon) before normalisation
             rk_raw = f"{body.system_address}|{body.body_id}|{(genus or '').lower()}"
             row_num = self._ec_index.get(rk_raw)
             if row_num is not None:
                 rk = rk_raw
         if row_num is None:
-            # la ligne n'existe pas encore (ex: sampler avant DSS) → on crée
+            # row does not exist yet (e.g. sampler before DSS) → create it
             self.on_dss(body, catalog=catalog)
             row_num = self._ec_index.get(rk)
             if row_num is None:
@@ -501,7 +501,7 @@ class ExobioWorkbook:
         shown_species = cat.display_species(species_name) if cat else species_name
         shown_genus = cat.display_genus(genus) if cat else genus
 
-        # prix exact dès que l'espèce est identifiée
+        # exact price once the species is identified
         price_base = ""
         price_fl   = ""
         if catalog and species_name:
@@ -532,11 +532,11 @@ class ExobioWorkbook:
         self._save()
 
     def mark_planet_done(self, body: BodyState) -> None:
-        """Marque 'Planète terminée = Oui' dans les deux feuilles."""
+        """Set 'Planète terminée = Oui' on both sheets."""
         pk = _planet_key(body.system_address, body.body_id)
         pl_row = self._pl_index.get(pk)
         if pl_row:
-            col_done = len(PL_COLS)   # "Planète terminée" est la dernière colonne avant clé
+            col_done = len(PL_COLS)   # "Planète terminée" is the last column before the key
             self._pl_ws.cell(pl_row, col_done).value = "Oui"
             self._pl_ws.cell(pl_row, col_done).fill = PatternFill("solid", fgColor=CLR_DONE)
 
@@ -550,7 +550,7 @@ class ExobioWorkbook:
         self._save()
 
     def unsold_hold(self, catalog=None) -> tuple[dict[tuple, int], dict[tuple, int]]:
-        """Analyses pas encore vendues : base et First logged."""
+        """Analyses not yet sold: base and First logged."""
         cat = catalog or self.catalog
         col = {h: i + 1 for i, h in enumerate(EC_COLS) if h}
         if "Échantillon" not in col or "Espèce" not in col:
@@ -591,7 +591,7 @@ class ExobioWorkbook:
         return hold, hold_first
 
     def mark_all_sold(self) -> None:
-        """Vista Genomics vend tout le stock d'un coup."""
+        """Vista Genomics sells the whole stock in one go."""
         col = {h: i + 1 for i, h in enumerate(EC_COLS) if h}
         if "Vendu" not in col or "Échantillon" not in col:
             return
@@ -620,7 +620,7 @@ class ExobioWorkbook:
         aw: int | None = None,
         nsp: str = "",
     ) -> None:
-        """Une ligne par trouvaille (planète rare ou phénomène), filtrable."""
+        """One row per find (rare planet or phenomenon), filterable."""
         if not elw and not ww and not aw and not (nsp or "").strip():
             return
         date_str = _parse_ts(timestamp).strftime("%d/%m/%Y")
@@ -693,7 +693,7 @@ class ExobioWorkbook:
                 need = _wrapped_line_count(text, usable)
                 if need > lines:
                     lines = need
-            # ~18 pt par ligne + marge, sans plafond trop bas
+            # ~18 pt per line + margin, without a too-low cap
             height = 20 * lines + 8 if r == 1 else 18 * lines + 6
             ws.row_dimensions[r].height = max(20, min(140, height))
         ws.freeze_panes = "A2"
@@ -704,7 +704,7 @@ class ExobioWorkbook:
 # ── helpers ────────────────────────────────────────────────────────────────
 
 def _parse_ts(ts: str | None):
-    """Retourne un objet date Python (pas une chaîne) pour qu'openpyxl applique le format cellule."""
+    """Python date object (not a string) so openpyxl can apply the cell format."""
     parsed = _coerce_date(ts)
     if parsed is not None:
         return parsed
@@ -712,7 +712,7 @@ def _parse_ts(ts: str | None):
 
 
 def _coerce_date(value):
-    """Accepte date, datetime, ou chaîne journal / ancienne cellule Excel."""
+    """Accept date, datetime, or a journal / old Excel cell string."""
     if value is None:
         return None
     if hasattr(value, "hour") and hasattr(value, "date"):
@@ -780,7 +780,7 @@ def _fmt_dist(distance_ls: float | None):
 
 
 def _wrapped_line_count(text: str, width: int) -> int:
-    """Nombre de lignes après retour à la ligne (coupure sur les mots)."""
+    """Line count after wrapping (break on words)."""
     width = max(4, width)
     if not text:
         return 1

@@ -1,11 +1,11 @@
-"""Couleurs FSS Elite Dangerous (barre d’analyse spectrale + classes stellaires)."""
+"""Elite Dangerous FSS colours (spectral analysis bar + stellar classes)."""
 
 from __future__ import annotations
 
 from .models import BodyState
 
-# Planètes : pastilles de la barre FSS (gauche → droite), calées sur le jeu.
-# Astéroïdes (blanc) volontairement absents — ignorés dans la liste.
+# Planets: FSS bar dots (left → right), matched to the game.
+# Asteroids (white) left out on purpose — ignored in the list.
 PLANET_FSS = {
     "Metal rich body": "#c9b56b",
     "High metal content body": "#7a7368",
@@ -28,7 +28,7 @@ PLANET_FSS = {
     "Helium gas giant": "#c9a04a",
 }
 
-# Étoiles : couleurs apparentes Elite (carte / FSS), séquence O→Y.
+# Stars: Elite apparent colours (map / FSS), O→Y sequence.
 STAR_LETTER = {
     "O": "#6b8cff",
     "B": "#8fb0ff",

@@ -1,4 +1,8 @@
-"""Envoi manuel du profil exploration vers Inara."""
+"""Manual Inara profile push (API key in Options).
+
+App name must stay 'ScanDeck' — Artie white-lists it. Unknown apps get
+'no access allowed'. Uses commander/system/ranks already seen by EDDN.
+"""
 
 from __future__ import annotations
 
@@ -30,6 +34,7 @@ def _now() -> str:
 
 
 def sync() -> dict:
+    """POST travel location + explore/exo ranks. Returns {ok, detail}."""
     cfg = load_config()
     key = (cfg.get("inara_api_key") or "").strip()
     if not key:

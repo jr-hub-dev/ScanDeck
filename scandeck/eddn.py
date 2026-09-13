@@ -1,4 +1,8 @@
-"""Envoi live vers EDDN + journal des acceptations / rejets."""
+"""Live EDDN upload plus a log of accepts / rejects.
+
+Strips personal journal fields (fuel, fines, lat/long) before posting.
+FSS honks are batched; other events go as journal or dedicated schemas.
+"""
 
 from __future__ import annotations
 
@@ -48,6 +52,7 @@ def _now() -> str:
 
 
 def filter_localised(data: Any) -> Any:
+    """EDDN forbids *_Localised keys; drop them recursively."""
     if isinstance(data, dict):
         return {
             k: filter_localised(v)
@@ -60,6 +65,7 @@ def filter_localised(data: Any) -> Any:
 
 
 class EddnHub:
+    """Background sender. `observe` tracks cmdr/system; `offer` queues a packet."""
     def __init__(self) -> None:
         self.enabled = True
         self.cmdr = ""
@@ -98,6 +104,7 @@ class EddnHub:
             return dict(self._counts)
 
     def observe(self, event: dict) -> None:
+        """Track cmdr, system, ranks — always, even when upload is off."""
         name = event.get("event")
         if name == "Fileheader":
             self.gameversion = str(event.get("gameversion") or self.gameversion)
@@ -133,6 +140,7 @@ class EddnHub:
                 self.exo_progress = int(event["Exobiologist"])
 
     def offer(self, event: dict) -> None:
+        """Queue an upload if this event maps to an EDDN schema."""
         if not self.enabled:
             return
         name = event.get("event")
@@ -330,6 +338,7 @@ _hub_lock = threading.Lock()
 
 
 def get_hub() -> EddnHub:
+    """Process-wide hub (journal thread + HUD share one sender)."""
     global _hub
     with _hub_lock:
         if _hub is None:

@@ -1,3 +1,5 @@
+"""Match DSS genera + planet facts against the species catalog."""
+
 from __future__ import annotations
 
 from .catalog import Catalog
@@ -12,6 +14,7 @@ PRIORITY_OK = 2_000_000
 
 
 def value_tier(species: Species) -> str:
+    """high/good/ok/low from Vista payout; hard-to-spot species are downranked."""
     value = species.value_cr
     spotting = species.spotting
     if spotting == "hard" and value < 8_000_000:
@@ -38,6 +41,7 @@ TIER_ICON = {
 
 
 class Matcher:
+    """Build MatchResult rows: certain (sampler) vs plausible (criteria)."""
     def __init__(self, catalog: Catalog, criteria: CriteriaEngine) -> None:
         self.catalog = catalog
         self.criteria = criteria
@@ -122,7 +126,7 @@ class Matcher:
 
 
 def verdict(matches: list[MatchResult], body: BodyState) -> tuple[str, bool, str]:
-    """Retourne (texte, alerte_haute_valeur, ton)."""
+    """Return (text, high-value alert, tone)."""
     visible = [m for m in matches if m.certainty != Certainty.INCOMPATIBLE]
     if not visible:
         if body.dss_genuses and body.bio_count:

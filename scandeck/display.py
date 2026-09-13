@@ -1,3 +1,5 @@
+"""Format HUD snapshots and CLI text from Session / Matcher output."""
+
 from __future__ import annotations
 
 import sys
@@ -52,7 +54,7 @@ def fmt_mcr_range(lo: int, hi: int) -> str:
 
 
 def fmt_m_compact(lo: int, hi: int) -> str:
-    """Fourchette courte pour la liste système (ex. 12–28 M)."""
+    """Short range for the system list (e.g. 12–28 M)."""
 
     def one(value: int) -> str:
         millions = value / 1_000_000
@@ -80,7 +82,7 @@ def short_body_name(system: str, body: str) -> str:
 
 
 def remaining_value_span(matches: list[MatchResult]) -> tuple[int, int, str]:
-    """Min–max restant (somme par genre) et pastille du meilleur restant."""
+    """Remaining min–max (sum per genus) and the best remaining interest dot."""
     order = {"high": 0, "good": 1, "ok": 2, "low": 3, "muted": 4}
     lo = hi = 0
     best = "muted"
@@ -111,7 +113,7 @@ def remaining_value_span(matches: list[MatchResult]) -> tuple[int, int, str]:
 
 
 def _group_by_genus(matches: list[MatchResult]) -> list[list[MatchResult]]:
-    """Une liste par genre DSS : une planète n’a qu’une espèce par genre."""
+    """One list per DSS genus: a planet has only one species per genus."""
     groups: dict[str, list[MatchResult]] = {}
     order: list[str] = []
     for match in matches:
@@ -275,7 +277,7 @@ def render_body(body: BodyState, matches: list[MatchResult], *, alert: bool = Fa
 
 
 def snapshot_body(body: BodyState, matches: list[MatchResult], *, alert: bool = False, catalog=None) -> dict:
-    """Vue structurée pour le HUD (thread-safe : primitives seulement)."""
+    """Structured HUD view (thread-safe: primitives only)."""
     visible = [m for m in matches if m.certainty != Certainty.INCOMPATIBLE]
     verdict_text, _, verdict_tone = verdict(matches, body)
 
@@ -322,7 +324,7 @@ def snapshot_body(body: BodyState, matches: list[MatchResult], *, alert: bool = 
 
 
 def stub_snapshot(body: BodyState, matches: list[MatchResult] | None = None) -> dict:
-    """Détail avant DSS : résumé planète / étoile, pas les cartes d'espèces."""
+    """Pre-DSS detail: planet / star summary, not species cards."""
     if body.star_type and not body.planet_class:
         spec = body.star_type
         return {
