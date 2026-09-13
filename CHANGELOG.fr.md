@@ -6,6 +6,13 @@ Ce qui a changé pour les joueurs. Zips Windows : [Releases](https://github.com/
 
 Le lien GitHub « Full Changelog » est un **diff de code**, pas ces notes.
 
+## 1.1.0 — 2026-09-13
+
+### Ajouté
+- Envoi **EDDN** en direct (sauts, scans, honk, Codex…) pour les cartes publiques (Spansh, Canonn…). Décoche dans Options si EDDI ou EDMC envoie déjà EDDN
+- **LOGS EDDN** en bas du HUD
+- **Inara** optionnel : colle ta clé API dans Options, puis **INARA** envoie la position actuelle et les rangs explorateur / exobiologiste (ScanDeck doit d’abord être whitelisté par Artie sur Inara)
+
 ## 1.0.6 — 2026-09-12
 
 ### Ajouté

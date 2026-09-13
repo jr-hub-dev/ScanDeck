@@ -36,6 +36,7 @@ from .matcher import Matcher, verdict
 from .models import BodyState, OrganicProgress, ScanProgress
 from .ranks import EXPLORE_RANKS, from_credits, from_journal
 from .scan_value import carto_stock_value, fc_sale_credits
+from .eddn import get_hub
 
 RARE_PLANETS = {
     "Earthlike body": "elw",
@@ -814,6 +815,8 @@ def prepare_live(
     session.on_update = on_update
     watcher = JournalWatcher(path)
     session.catching_up = True
+    hub = get_hub()
+    hub.reload_config()
     if session.wb:
         session.wb._defer_save = True
         session.seed_hold_from_workbook()
@@ -826,6 +829,7 @@ def prepare_live(
         )
     for journal in history:
         for event in watcher.iter_file(journal):
+            hub.observe(event)
             session.handle(event)
     caught_offset = current.stat().st_size if current is not None else 0
     session.catching_up = False
@@ -857,7 +861,10 @@ def prepare_live(
 def follow_live(session, watcher, path, current, caught_offset) -> None:
     latest = latest_journal(path)
     offset = caught_offset if latest == current else None
+    hub = get_hub()
     for event in watcher.follow(from_start=True, start_offset=offset):
+        hub.observe(event)
+        hub.offer(event)
         session.handle(event)
 
 

@@ -54,6 +54,7 @@ Si le HUD ne trouve pas les journaux, clique **Options** (en bas à gauche) :
 
 - **Langue** — Auto / English / Français / Español. D’autres langues de l’interface pourront être ajoutées plus tard ; la liste dans Options s’allongera.
 - **Dossier des journaux** — laisse vide pour la détection auto, ou Parcourir jusqu’au dossier qui contient les `Journal.*.log`
+- **Partage** — envoi EDDN en direct (activé par défaut ; décoche si EDDI/EDMC envoie déjà EDDN). Clé API Inara optionnelle ; envoi avec le bouton **INARA**
 
 Emplacements habituels :
 
@@ -87,7 +88,7 @@ En exobiologie Odyssey, un **genre** (en anglais *genus*, pluriel *genera*) est 
 | Panneau droit | Planète sélectionnée : verdict, genres, espèces, progression des scans |
 | Frise tout à gauche | Rang explorateur |
 | Frise tout à droite | Rang exobiologiste |
-| Pied de fenêtre | **Ouvrir le classeur**, **Options**, version (`v1.0.6`). S’il existe une Release GitHub plus récente, **MAJ v…** s’affiche — un clic ouvre la page de téléchargement. |
+| Pied de fenêtre | **Ouvrir le classeur**, **Options**, **LOGS EDDN**, **INARA**, version (`v1.1.0`). S’il existe une Release GitHub plus récente, **MAJ v…** s’affiche — un clic ouvre la page de téléchargement. |
 
 Clique un corps à gauche pour l’ouvrir à droite. Les boutons de copie à côté du système / du corps copient ce nom.
 

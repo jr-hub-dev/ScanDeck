@@ -54,6 +54,7 @@ Si el HUD no encuentra los journals, pulsa **Opciones** (abajo a la izquierda):
 
 - **Idioma** — Auto / English / Français / Español. Más idiomas de la interfaz se podrán añadir más adelante; la lista en Opciones crecerá.
 - **Carpeta de journals** — déjala vacía para detectar automáticamente, o Examina hasta la carpeta que contiene los `Journal.*.log`
+- **Compartir** — envío EDDN en vivo (activado por defecto; desactívalo si EDDI/EDMC ya envía EDDN). Clave API de Inara opcional; envío con el botón **INARA**
 
 Ubicaciones habituales:
 
@@ -87,7 +88,7 @@ En la exobiología de Odyssey, un **género** (en inglés *genus*, plural *gener
 | Panel derecho | Planeta seleccionado: veredicto, géneros, especies, progreso de escaneos |
 | Carril extremo izquierdo | Rango de explorador |
 | Carril extremo derecho | Rango de exobiólogo |
-| Pie | **Abrir la hoja**, **Opciones**, versión (`v1.0.6`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
+| Pie | **Abrir la hoja**, **Opciones**, **LOGS EDDN**, **INARA**, versión (`v1.1.0`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
 
 Haz clic en un cuerpo a la izquierda para abrirlo a la derecha. Los botones de copia junto al sistema / cuerpo copian ese nombre.
 

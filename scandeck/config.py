@@ -6,7 +6,12 @@ import json
 import os
 from pathlib import Path
 
-_DEFAULTS = {"lang": "auto", "journal_dir": ""}
+_DEFAULTS = {
+    "lang": "auto",
+    "journal_dir": "",
+    "eddn_enabled": True,
+    "inara_api_key": "",
+}
 
 
 def user_data_dir() -> Path:
@@ -37,12 +42,19 @@ def load() -> dict:
     folder = data.get("journal_dir")
     if isinstance(folder, str):
         out["journal_dir"] = folder.strip()
+    if isinstance(data.get("eddn_enabled"), bool):
+        out["eddn_enabled"] = data["eddn_enabled"]
+    key = data.get("inara_api_key")
+    if isinstance(key, str):
+        out["inara_api_key"] = key.strip()
     return out
 
 
 def save(data: dict) -> None:
-    payload = dict(_DEFAULTS)
-    payload.update({k: data[k] for k in _DEFAULTS if k in data})
+    payload = load()
+    for k in _DEFAULTS:
+        if k in data:
+            payload[k] = data[k]
     config_path().write_text(
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",

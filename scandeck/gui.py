@@ -14,7 +14,9 @@ from pathlib import Path
 
 from .app import follow_live, prepare_live
 from .config import load as load_config, save as save_config
+from .eddn import get_hub
 from .i18n import is_auto, lang, t
+from .inara import sync as inara_sync
 from .journal import guessed_journal_dir
 from . import __version__
 from .paths import resource_root
@@ -375,6 +377,8 @@ class ScanDeckHud:
         tk.Frame(foot, bg=CYAN_DIM, height=1).pack(fill="x", pady=(0, 8))
         self._sheet_btn = _outline_btn(foot, t("open_sheet"), self._open_xlsx)
         self._opt_btn = _outline_btn(foot, t("options"), self._open_options)
+        self._eddn_btn = _outline_btn(foot, t("eddn_logs"), self._open_eddn_log)
+        self._inara_btn = _outline_btn(foot, t("inara_send"), self._send_inara)
         self._ver_lbl = tk.Label(
             foot, text=t("hud_version", version=__version__),
             fg=MUTED, bg=BG, font=_font(8),
@@ -963,6 +967,110 @@ class ScanDeckHud:
                 fg=MUTED, bg=CARD, font=_font(8), anchor="w",
             ).pack(fill="x")
 
+    def _send_inara(self) -> None:
+        self.status_lbl.config(text=t("inara_sending"), fg=MUTED)
+
+        def worker() -> None:
+            result = inara_sync()
+            self.root.after(0, lambda: self._inara_done(result))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _inara_done(self, result: dict) -> None:
+        detail = result.get("detail")
+        if result.get("ok"):
+            self.status_lbl.config(text=t("inara_ok"), fg=READY)
+        elif detail == "missing_key":
+            self.status_lbl.config(text=t("inara_need_key"), fg=TIER_BAR["low"])
+        elif detail == "no_cmdr":
+            self.status_lbl.config(text=t("inara_need_cmdr"), fg=TIER_BAR["low"])
+        elif detail == "nothing":
+            self.status_lbl.config(text=t("inara_nothing"), fg=TIER_BAR["low"])
+        elif detail == "app_blocked":
+            self.status_lbl.config(text=t("inara_app_blocked"), fg=TIER_BAR["low"])
+        elif detail == "bad_key":
+            self.status_lbl.config(text=t("inara_bad_key"), fg=TIER_BAR["low"])
+        elif detail == "blocked_html":
+            self.status_lbl.config(text=t("inara_blocked"), fg=TIER_BAR["low"])
+        elif detail == "network":
+            self.status_lbl.config(text=t("inara_network"), fg=TIER_BAR["low"])
+        elif result.get("reason"):
+            self.status_lbl.config(
+                text=t("inara_fail_detail", reason=str(result["reason"])[:80]),
+                fg=TIER_BAR["low"],
+            )
+        else:
+            self.status_lbl.config(text=t("inara_fail"), fg=TIER_BAR["low"])
+
+    def _open_eddn_log(self) -> None:
+        existing = getattr(self, "_eddn_overlay", None)
+        if existing is not None and existing.winfo_exists():
+            existing.lift()
+            return
+        shade = tk.Frame(self.root, bg=BG)
+        shade.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self._eddn_overlay = shade
+        border = tk.Frame(shade, bg=CYAN)
+        border.place(relx=0.5, rely=0.5, anchor="center")
+        pad = tk.Frame(border, bg=BG, width=640, height=420)
+        pad.pack(padx=1, pady=1)
+        pad.pack_propagate(False)
+        head = tk.Frame(pad, bg=BG)
+        head.pack(fill="x", padx=14, pady=(12, 6))
+        self._eddn_title = tk.Label(
+            head, text=t("eddn_log_title"), fg=CYAN, bg=BG,
+            font=_font(11, "bold"), anchor="w",
+        )
+        self._eddn_title.pack(side="left", fill="x", expand=True)
+        box = tk.Text(
+            pad, bg=CARD, fg=TEXT, insertbackground=CYAN, bd=0,
+            highlightthickness=0, font=_font(8), wrap="word",
+        )
+        box.pack(fill="both", expand=True, padx=14, pady=(0, 8))
+        box.tag_config("ok", foreground=READY)
+        box.tag_config("rejected", foreground=WARN)
+        box.tag_config("error", foreground=TIER_BAR["low"])
+        box.tag_config("muted", foreground=MUTED)
+        btns = tk.Frame(pad, bg=BG)
+        btns.pack(fill="x", padx=14, pady=(0, 12))
+
+        def close(_e=None) -> None:
+            self.root.unbind("<Escape>")
+            shade.destroy()
+            self._eddn_overlay = None
+
+        def refresh() -> None:
+            if getattr(self, "_eddn_overlay", None) is None:
+                return
+            hub = get_hub()
+            counts = hub.counts()
+            self._eddn_title.config(
+                text=t(
+                    "eddn_log_counts",
+                    ok=counts.get("ok", 0),
+                    rejected=counts.get("rejected", 0),
+                    error=counts.get("error", 0),
+                )
+            )
+            box.delete("1.0", "end")
+            rows = hub.logs()
+            if not rows:
+                box.insert("end", t("eddn_log_empty") + "\n", "muted")
+            for row in reversed(rows):
+                tag = row.get("status") or "muted"
+                code = row.get("code")
+                extra = f"  HTTP {code}" if code else ""
+                line = f"{row.get('ts','')}  {row.get('status','').upper()}  {row.get('event','')}  {row.get('schema','')}{extra}"
+                box.insert("end", line + "\n", tag if tag in {"ok", "rejected", "error"} else "muted")
+                detail = (row.get("detail") or "").strip()
+                if detail and tag != "ok":
+                    box.insert("end", f"    {detail}\n", "muted")
+            self.root.after(1500, refresh)
+
+        _outline_btn(btns, t("options_cancel"), close)
+        self.root.bind("<Escape>", close)
+        refresh()
+
     def _open_xlsx(self) -> None:
         if not self.workbook_path or not self.workbook_path.exists():
             self.status_lbl.config(text=t("no_sheet"))
@@ -1045,6 +1153,39 @@ class ScanDeckHud:
             pad, text=t("options_auto_path", hint=hint), fg=MUTED, bg=BG,
             font=_font(8), anchor="w", justify="left", wraplength=420,
         ).pack(fill="x", padx=18)
+
+        tk.Label(
+            pad, text=t("options_share").upper(), fg=CYAN, bg=BG,
+            font=_font(8, "bold"), anchor="w",
+        ).pack(fill="x", padx=18, pady=(14, 4))
+        eddn_var = tk.BooleanVar(value=bool(cfg.get("eddn_enabled", True)))
+        tk.Checkbutton(
+            pad, text=t("options_eddn"), variable=eddn_var,
+            fg=TEXT, bg=BG, selectcolor=CYAN_DEEP, activebackground=BG,
+            activeforeground=CYAN, highlightthickness=0, bd=0,
+            font=_font(9), anchor="w", cursor="hand2",
+        ).pack(fill="x", padx=18)
+        tk.Label(
+            pad, text=t("options_eddn_hint"), fg=MUTED, bg=BG,
+            font=_font(8), anchor="w", justify="left", wraplength=420,
+        ).pack(fill="x", padx=18, pady=(0, 8))
+        tk.Label(
+            pad, text=t("options_inara_key"), fg=MUTED, bg=BG,
+            font=_font(8), anchor="w",
+        ).pack(fill="x", padx=18)
+        inara_var = tk.StringVar(value=cfg.get("inara_api_key") or "")
+        inara_entry = tk.Entry(
+            pad, textvariable=inara_var, bg=CARD, fg=TEXT, show="*",
+            insertbackground=CYAN, highlightbackground=CYAN_DIM,
+            highlightcolor=CYAN, highlightthickness=1, bd=0,
+            font=_font(9),
+        )
+        inara_entry.pack(fill="x", padx=18, pady=(4, 0), ipady=4)
+        tk.Label(
+            pad, text=t("options_inara_hint"), fg=MUTED, bg=BG,
+            font=_font(8), anchor="w", justify="left", wraplength=420,
+        ).pack(fill="x", padx=18, pady=(4, 0))
+
         err = tk.Label(pad, text="", fg=TIER_BAR["low"], bg=BG, font=_font(8), anchor="w")
         err.pack(fill="x", padx=18, pady=(8, 0))
 
@@ -1064,7 +1205,12 @@ class ScanDeckHud:
                     err.config(text=t("options_bad_path"))
                     return
                 folder = str(resolved)
-            save_config({"lang": lang_var.get(), "journal_dir": folder})
+            save_config({
+                "lang": lang_var.get(),
+                "journal_dir": folder,
+                "eddn_enabled": bool(eddn_var.get()),
+                "inara_api_key": inara_var.get().strip(),
+            })
             self.root.unbind("<Escape>")
             shade.destroy()
             self._opt_overlay = None

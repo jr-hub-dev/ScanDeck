@@ -43,6 +43,12 @@ BIO_EVENTS = {
     "MultiSellExplorationData",
 }
 
+WATCH_EVENTS = BIO_EVENTS | {
+    "LoadGame",
+    "Docked",
+    "ScanBaryCentre",
+}
+
 
 def find_journal_dir(explicit: str | None = None) -> Path:
     if explicit:
@@ -216,7 +222,7 @@ class JournalWatcher:
             line = self._fh.readline()
             if line:
                 event = parse_line(line)
-                if event and event.get("event") in BIO_EVENTS:
+                if event and event.get("event") in WATCH_EVENTS:
                     yield event
                 continue
             latest = latest_journal(self.journal_dir)
@@ -224,7 +230,7 @@ class JournalWatcher:
                 leftover = self._fh.read()
                 for raw in leftover.splitlines():
                     event = parse_line(raw)
-                    if event and event.get("event") in BIO_EVENTS:
+                    if event and event.get("event") in WATCH_EVENTS:
                         yield event
                 self._open(latest, from_start=True)
                 continue
@@ -232,7 +238,7 @@ class JournalWatcher:
             line = self._fh.readline()
             if line:
                 event = parse_line(line)
-                if event and event.get("event") in BIO_EVENTS:
+                if event and event.get("event") in WATCH_EVENTS:
                     yield event
                 continue
             latest = latest_journal(self.journal_dir)
@@ -240,7 +246,7 @@ class JournalWatcher:
                 leftover = self._fh.read()
                 for raw in leftover.splitlines():
                     event = parse_line(raw)
-                    if event and event.get("event") in BIO_EVENTS:
+                    if event and event.get("event") in WATCH_EVENTS:
                         yield event
                 self._open(latest, from_start=True)
                 continue
@@ -250,7 +256,7 @@ class JournalWatcher:
         with path.open("r", encoding="utf-8", errors="replace") as fh:
             for line in fh:
                 event = parse_line(line)
-                if event and event.get("event") in BIO_EVENTS:
+                if event and event.get("event") in WATCH_EVENTS:
                     yield event
 
 
@@ -259,5 +265,5 @@ def replay_files(paths: list[Path]) -> Iterator[dict]:
         with path.open("r", encoding="utf-8", errors="replace") as fh:
             for line in fh:
                 event = parse_line(line)
-                if event and event.get("event") in BIO_EVENTS:
+                if event and event.get("event") in WATCH_EVENTS:
                     yield event

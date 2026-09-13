@@ -54,6 +54,7 @@ If the HUD says it cannot find journals, click **Options** (bottom left):
 
 - **Language** — Auto / English / Français / Español. More HUD languages can be added later; the list in Options will grow.
 - **Journal folder** — leave empty to auto-detect, or Browse to the folder that contains `Journal.*.log` files
+- **Sharing** — EDDN live uploads (on by default; turn off if EDDI/EDMC already sends EDDN). Optional Inara API key; send with the **INARA** button
 
 Typical locations:
 
@@ -87,7 +88,7 @@ In Odyssey exobiology, a **genus** (plural **genera**) is the bio *family* — B
 | Right pane | Selected planet: verdict, genera, species, scan progress |
 | Far left rail | Explorer rank |
 | Far right rail | Exobiologist rank |
-| Footer | **Open spreadsheet**, **Options**, version (`v1.0.6`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
+| Footer | **Open spreadsheet**, **Options**, **EDDN LOGS**, **INARA**, version (`v1.1.0`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
 
 Click a body on the left to open it on the right. Copy buttons next to the system / body name copy that name.
 

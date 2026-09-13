@@ -6,6 +6,13 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.1.0 — 2026-09-13
+
+### Added
+- Live **EDDN** uploads (jumps, scans, honk, Codex…) so public maps (Spansh, Canonn…) see your finds. Turn it off in Options if EDDI or EDMC already sends EDDN
+- **EDDN LOGS** in the HUD footer
+- Optional **Inara**: paste your API key in Options, then **INARA** sends current location plus explorer / exobiologist ranks (ScanDeck must be white-listed by Artie on Inara first)
+
 ## 1.0.6 — 2026-09-12
 
 ### Added
