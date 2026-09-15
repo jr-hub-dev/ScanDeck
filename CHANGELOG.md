@@ -6,6 +6,11 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.2.1 — 2026-09-15
+
+### Changed
+- **Inara** is approved: ScanDeck is on Artie’s app list. Paste your API key in Options, then **INARA** sends location and explorer / exobiologist ranks
+
 ## 1.2.0 — 2026-09-13
 
 ### Added

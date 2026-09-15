@@ -6,6 +6,11 @@ Qué ha cambiado para los jugadores. Zips de Windows: [Releases](https://github.
 
 El enlace de GitHub « Full Changelog » es un **diff de código**, no estas notas.
 
+## 1.2.1 — 2026-09-15
+
+### Cambiado
+- **Inara** está aprobado: ScanDeck figura en la lista de apps de Artie. Pega tu clave API en Opciones y **INARA** envía la posición y los rangos de explorador / exobiólogo
+
 ## 1.2.0 — 2026-09-13
 
 ### Añadido

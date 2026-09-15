@@ -89,7 +89,7 @@ In Odyssey exobiology, a **genus** (plural **genera**) is the bio *family* — B
 | Far left rail | Explorer rank |
 | Far right column | **Macros** (your own key sequences; stored only on this PC) |
 | Inner right rail | Exobiologist rank |
-| Footer | **Open spreadsheet**, **Options**, **EDDN LOGS**, **INARA**, version (`v1.2.0`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
+| Footer | **Open spreadsheet**, **Options**, **EDDN LOGS**, **INARA**, version (`v1.2.1`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
 
 Click a body on the left to open it on the right. Copy buttons next to the system / body name copy that name.
 

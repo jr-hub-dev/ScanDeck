@@ -1,7 +1,7 @@
 """Manual Inara profile push (API key in Options).
 
-App name must stay 'ScanDeck' — Artie white-lists it. Unknown apps get
-'no access allowed'. Uses commander/system/ranks already seen by EDDN.
+appName stays 'ScanDeck' (whitelisted by Artie). Commander, system, and
+ranks come from the EDDN hub (journal LoadGame / location / Progress).
 """
 
 from __future__ import annotations
@@ -17,8 +17,7 @@ from .eddn import get_hub
 
 INARA_URL = "https://inara.cz/inapi/v1/"
 
-# Inara replies (header.eventStatusText) → HUD codes. App names must be
-# white-listed by Artie; unknown apps get "no access allowed".
+# Inara replies (header.eventStatusText) → HUD codes.
 _STATUS_CODES = {
     "this application has no access allowed": "app_blocked",
     "this application is not allowed to use inara api": "app_blocked",
@@ -78,7 +77,7 @@ def sync() -> dict:
     header = {
         "appName": "ScanDeck",
         "appVersion": __version__,
-        "isBeingDeveloped": True,
+        "isBeingDeveloped": False,
         "APIkey": key,
         "commanderName": hub.cmdr,
     }
