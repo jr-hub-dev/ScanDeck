@@ -84,12 +84,12 @@ En la exobiología de Odyssey, un **género** (en inglés *genus*, plural *gener
 
 | Zona | Qué ves |
 |---|---|
-| Lista izquierda | Cuerpos del sistema actual |
-| Panel derecho | Planeta seleccionado: veredicto, géneros, especies, progreso de escaneos |
+| Lista izquierda | Cuerpos del sistema actual; cola carto bajo el nombre del sistema |
+| Panel derecho | Planeta seleccionado: cola bio, veredicto, géneros, especies, progreso de escaneos |
 | Carril extremo izquierdo | Rango de explorador |
 | Columna extrema derecha | **Macros** (tus secuencias de teclas; solo en este PC) |
 | Carril interior derecho | Rango de exobiólogo |
-| Pie | **Abrir la hoja**, **Opciones**, **LOGS EDDN**, **INARA**, versión (`v1.2.1`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
+| Pie | **Abrir la hoja**, **Opciones**, **AYUDA**, **LOGS EDDN**, **INARA**, versión (`v1.3.0`). Si hay una Release de GitHub más nueva, aparece **ACTUALIZACIÓN v…** — un clic abre la página de descarga. |
 
 Haz clic en un cuerpo a la izquierda para abrirlo a la derecha. Los botones de copia junto al sistema / cuerpo copian ese nombre.
 

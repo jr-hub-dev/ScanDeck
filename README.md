@@ -84,12 +84,12 @@ In Odyssey exobiology, a **genus** (plural **genera**) is the bio *family* — B
 
 | Area | What you see |
 |---|---|
-| Left list | Bodies in the current system |
-| Right pane | Selected planet: verdict, genera, species, scan progress |
+| Left list | Bodies in the current system; mapping queue under the system name |
+| Right pane | Selected planet: bio queue, verdict, genera, species, scan progress |
 | Far left rail | Explorer rank |
 | Far right column | **Macros** (your own key sequences; stored only on this PC) |
 | Inner right rail | Exobiologist rank |
-| Footer | **Open spreadsheet**, **Options**, **EDDN LOGS**, **INARA**, version (`v1.2.1`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
+| Footer | **Open spreadsheet**, **Options**, **HELP**, **EDDN LOGS**, **INARA**, version (`v1.3.0`). If a newer GitHub release exists, **UPDATE v…** appears — click it to open the release page. |
 
 Click a body on the left to open it on the right. Copy buttons next to the system / body name copy that name.
 

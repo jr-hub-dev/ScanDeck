@@ -53,10 +53,20 @@ class Matcher:
     ) -> list[MatchResult]:
         progress = progress or {}
         dss_genera = [g for g in (self.catalog.resolve_genus(x) or x for x in body.dss_genuses) if g]
-        predicted = self.criteria.matching_species(body, dss_genera or None)
+        # FSS Count=0, or DSS with no genera: journal truth. Do not invent species.
+        journal_no_bio = body.bio_count == 0 or (body.dss_complete and not dss_genera)
+        if journal_no_bio:
+            predicted = {}
+            genera_to_show = []
+            for org in progress.values():
+                g = self.catalog.resolve_genus(org.genus) or org.genus
+                if g and g not in genera_to_show:
+                    genera_to_show.append(g)
+        else:
+            predicted = self.criteria.matching_species(body, dss_genera or None)
+            genera_to_show = dss_genera or list(predicted)
 
         results: list[MatchResult] = []
-        genera_to_show = dss_genera or list(predicted)
         confirmed_by_genus: dict[str, str] = {}
         for org in progress.values():
             if org.species_name:
@@ -127,6 +137,8 @@ class Matcher:
 
 def verdict(matches: list[MatchResult], body: BodyState) -> tuple[str, bool, str]:
     """Return (text, high-value alert, tone)."""
+    if body.bio_count == 0 or (body.dss_complete and not body.dss_genuses):
+        return t("skip_no_bio"), False, "low"
     visible = [m for m in matches if m.certainty != Certainty.INCOMPATIBLE]
     if not visible:
         if body.dss_genuses and body.bio_count:

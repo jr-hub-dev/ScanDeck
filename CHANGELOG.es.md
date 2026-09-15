@@ -6,6 +6,17 @@ Qué ha cambiado para los jugadores. Zips de Windows: [Releases](https://github.
 
 El enlace de GitHub « Full Changelog » es un **diff de código**, no estas notas.
 
+## 1.3.0 — 2026-09-15
+
+### Añadido
+- **Colas de aterrizaje**: próximos objetivos carto bajo el sistema (izquierda), próximos aterrizajes bio bajo el planeta (centro). Clic en una línea para abrirla. Un HMC con 1 bio hacia 1,7 M (a menudo Bacterium) no entra en la cola bio
+- **AYUDA** en el pie: una ventana que explica cómo leer cada elemento del HUD
+- Tras un salto, el sistema se marca **virgen** o **conocido** (journal primero, luego una consulta Spansh si hace falta)
+
+### Corregido
+- Los planetas con 0 señales bio ya no muestran especies inventadas
+- La flecha de rango apunta al friso
+
 ## 1.2.1 — 2026-09-15
 
 ### Cambiado

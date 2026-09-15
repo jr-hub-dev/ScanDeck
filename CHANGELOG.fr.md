@@ -6,6 +6,17 @@ Ce qui a changé pour les joueurs. Zips Windows : [Releases](https://github.com/
 
 Le lien GitHub « Full Changelog » est un **diff de code**, pas ces notes.
 
+## 1.3.0 — 2026-09-15
+
+### Ajouté
+- **Files d'atterrissage** : prochaines cibles carto sous le nom du système (gauche), prochaines cibles bio sous le nom de planète (centre). Clique une ligne pour l'ouvrir. Un HMC 1 bio vers 1,7 M (souvent Bacterium) n'entre pas dans la file bio
+- **AIDE** en bas du HUD : une fenêtre qui explique comment lire chaque élément
+- Après un saut, le système est marqué **vierge** ou **connu** (journal d'abord, puis un appel Spansh si besoin)
+
+### Corrigé
+- Les planètes à 0 signal bio n'affichent plus d'espèces inventées
+- La flèche de rang pointe vers la frise
+
 ## 1.2.1 — 2026-09-15
 
 ### Changé

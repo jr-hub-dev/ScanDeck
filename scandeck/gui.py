@@ -255,6 +255,7 @@ class ScanDeckHud:
         self._last = 1.0
         self._drag_off: float | None = None
         self._hold_snap: dict = {}
+        self._help_win = None
         self.root = tk.Tk()
         self.root.title("ScanDeck")
         self._apply_icon()
@@ -288,12 +289,25 @@ class ScanDeckHud:
         )
         self.sys_lbl.pack(side="left", fill="x", expand=True)
         self._copy_btn(sys_row, "sys")
-        self.sys_meta = tk.Label(
-            left_head, text="", fg=MUTED, bg=BG,
-            font=_font(8), anchor="w", wraplength=220, justify="left",
+        meta_row = tk.Frame(left_head, bg=BG)
+        meta_row.pack(fill="x", pady=(2, 4))
+        self.sys_tag = tk.Label(
+            meta_row, text="", fg=CYAN_HI, bg=BG,
+            font=_font(8, "bold"), anchor="w",
         )
-        self.sys_meta.pack(fill="x", pady=(2, 8))
-        tk.Frame(left_head, bg=CYAN, height=1).pack(fill="x")
+        self.sys_tag.pack(side="left")
+        self.sys_sep = tk.Label(
+            meta_row, text="", fg=MUTED, bg=BG, font=_font(8),
+        )
+        self.sys_sep.pack(side="left")
+        self.sys_meta = tk.Label(
+            meta_row, text="", fg=MUTED, bg=BG,
+            font=_font(8), anchor="w", wraplength=180, justify="left",
+        )
+        self.sys_meta.pack(side="left", fill="x", expand=True)
+        self._pin_explo_frame = tk.Frame(left_head, bg=BG)
+        self._left_rule = tk.Frame(left_head, bg=CYAN, height=1)
+        self._left_rule.pack(fill="x")
         self._carto_hold = _make_hold_line(left_head, right=False, pady=(8, 0), with_count=True)
         self._carto_hold["prefix"].config(text=f"{t('for_sale_carto')}  —")
         self._carto_fc = _make_hold_line(left_head, right=False, pady=(1, 0), with_count=False)
@@ -335,8 +349,10 @@ class ScanDeckHud:
             self._header, text="", fg=MUTED, bg=BG,
             font=_font(9), anchor="w", wraplength=420, justify="left",
         )
-        self.meta_lbl.pack(fill="x", pady=(2, 8))
-        tk.Frame(self._header, bg=CYAN, height=1).pack(fill="x")
+        self.meta_lbl.pack(fill="x", pady=(2, 4))
+        self._pin_bio_frame = tk.Frame(self._header, bg=BG)
+        self._right_rule = tk.Frame(self._header, bg=CYAN, height=1)
+        self._right_rule.pack(fill="x")
         self._bio_hold = _make_hold_line(self._header, right=True, pady=(8, 0), with_count=True)
         self._bio_hold["prefix"].config(text=f"{t('for_sale_bio')}  —")
         self._bio_fc = _make_hold_line(self._header, right=True, pady=(1, 0), with_count=False)
@@ -420,6 +436,7 @@ class ScanDeckHud:
         tk.Frame(foot, bg=CYAN_DIM, height=1).pack(fill="x", pady=(0, 8))
         self._sheet_btn = _outline_btn(foot, t("open_sheet"), self._open_xlsx)
         self._opt_btn = _outline_btn(foot, t("options"), self._open_options)
+        self._help_btn = _outline_btn(foot, t("help"), self._open_help)
         self._eddn_btn = _outline_btn(foot, t("eddn_logs"), self._open_eddn_log)
         self._inara_btn = _outline_btn(foot, t("inara_send"), self._send_inara)
         self._ver_lbl = tk.Label(
@@ -471,6 +488,35 @@ class ScanDeckHud:
         lbl.bind("<Button-1>", lambda _e: self._copy(kind))
         lbl.bind("<Enter>", lambda _e: lbl.config(fg=CYAN))
         lbl.bind("<Leave>", lambda _e: lbl.config(fg=CYAN_DIM))
+
+    def _make_pin_row(self, parent) -> dict:
+        row = tk.Frame(parent, bg=BG, cursor="hand2")
+        name = tk.Label(
+            row, text="", fg=TEXT, bg=BG, font=_font(8, "bold"), anchor="w",
+        )
+        name.pack(side="left", padx=(0, 8))
+        rest = tk.Label(
+            row, text="", fg=MUTED, bg=BG, font=_font(8), anchor="w",
+        )
+        rest.pack(side="left", fill="x", expand=True)
+        pin = {"row": row, "name": name, "rest": rest, "body_id": None}
+
+        def _click(_e, slot=pin) -> None:
+            bid = slot.get("body_id")
+            if bid is not None:
+                self._select(bid)
+
+        def _enter(_e, n=name) -> None:
+            n.config(fg=CYAN_HI)
+
+        def _leave(_e, n=name) -> None:
+            n.config(fg=TEXT)
+
+        for w in (row, name, rest):
+            w.bind("<Button-1>", _click)
+            w.bind("<Enter>", _enter)
+            w.bind("<Leave>", _leave)
+        return pin
 
     def _copy(self, kind: str) -> None:
         if kind == "sys":
@@ -837,13 +883,15 @@ class ScanDeckHud:
                 f"{row.get('line2')}|{row.get('fss_color')}|{row.get('prior')}"
             )
         sig = "|".join(sig_parts)
+        self.sys_lbl.config(text=self._sys.get("system") or "SCANDECK")
+        self._paint_sys_tag()
+        self.sys_meta.config(text=self._sys.get("sys_value") or "")
+        self._paint_pins()
         if sig == self._list_sig:
             return
         self._list_sig = sig
         for child in self._left_list.winfo_children():
             child.destroy()
-        self.sys_lbl.config(text=self._sys.get("system") or "SCANDECK")
-        self.sys_meta.config(text=self._sys.get("sys_value") or "")
         nsp = int(self._sys.get("nsp_count") or 0)
         if nsp:
             tk.Label(
@@ -922,9 +970,48 @@ class ScanDeckHud:
         ).pack(side="left", fill="x", expand=True)
         self._bind_click(wrap, lambda _e, body_id=bid: self._select(body_id))
 
+    def _paint_sys_tag(self) -> None:
+        tag = self._sys.get("sys_tag") or ""
+        header = self._sys.get("sys_value") or ""
+        if tag == "new":
+            self.sys_tag.config(text=t("sys_new"), fg=CYAN_HI)
+        elif tag == "known":
+            self.sys_tag.config(text=t("sys_known"), fg=MUTED)
+        else:
+            self.sys_tag.config(text="")
+        self.sys_sep.config(text="  ·  " if tag and header else ("  " if tag else ""))
+
+    def _paint_pins(self) -> None:
+        self._paint_pin_list(
+            self._pin_explo_frame, self._left_rule, self._sys.get("pin_explo"),
+        )
+        self._paint_pin_list(
+            self._pin_bio_frame, self._right_rule, self._sys.get("pin_bio"),
+        )
+
+    def _paint_pin_list(self, frame: tk.Frame, rule: tk.Frame, pins) -> None:
+        if isinstance(pins, dict):
+            pins = [pins] if pins.get("body_id") is not None else []
+        pins = [p for p in (pins or []) if p and p.get("body_id") is not None]
+        for child in frame.winfo_children():
+            child.destroy()
+        for pin in pins:
+            slot = self._make_pin_row(frame)
+            slot["body_id"] = pin["body_id"]
+            slot["name"].config(text=pin.get("short") or "")
+            slot["rest"].config(text=pin.get("line2") or "")
+            slot["row"].pack(fill="x")
+        if pins:
+            if not frame.winfo_ismapped():
+                frame.pack(fill="x", pady=(0, 6), before=rule)
+        elif frame.winfo_ismapped():
+            frame.pack_forget()
+
     def _render_detail(self, snap: dict) -> None:
         self._snap = snap
         self.sys_lbl.config(text=self._sys.get("system") or snap.get("system") or "SCANDECK")
+        self._paint_sys_tag()
+        self._paint_pins()
         has_body = bool(snap.get("body"))
         self.body_lbl.config(
             text=snap.get("body") or t("waiting_dss"),
@@ -1789,6 +1876,68 @@ class ScanDeckHud:
         else:
             subprocess.Popen(["xdg-open", path])
 
+    def _open_help(self) -> None:
+        existing = self._help_win
+        if existing is not None and existing.winfo_exists():
+            existing.lift()
+            existing.focus_force()
+            return
+        win = tk.Toplevel(self.root)
+        self._help_win = win
+        win.title(t("help_title"))
+        win.configure(bg=BG)
+        win.geometry("540x620")
+        win.minsize(400, 360)
+        try:
+            win.attributes("-topmost", True)
+        except tk.TclError:
+            pass
+        win.transient(self.root)
+
+        tk.Label(
+            win, text=t("help_title").upper(), fg=CYAN, bg=BG,
+            font=_font(11, "bold"), anchor="w",
+        ).pack(fill="x", padx=16, pady=(14, 8))
+        tk.Frame(win, bg=CYAN, height=1).pack(fill="x", padx=16)
+
+        pane = ThinPane(win)
+        pane.wrap.pack(fill="both", expand=True, padx=8, pady=8)
+        box = tk.Text(
+            pane.inner, bg=BG, fg=TEXT, font=_font(9),
+            wrap="word", bd=0, highlightthickness=0, padx=8, pady=4,
+            cursor="arrow",
+        )
+        box.pack(fill="both", expand=True)
+        box.tag_configure("h", foreground=CYAN, font=_font(9, "bold"), spacing1=10, spacing3=4)
+        box.tag_configure("p", foreground=TEXT, spacing3=2)
+        for raw in t("help_text").split("\n"):
+            line = raw.rstrip()
+            if line and line == line.upper() and any(c.isalpha() for c in line):
+                box.insert("end", line + "\n", "h")
+            else:
+                box.insert("end", line + "\n", "p")
+        nlines = int(box.index("end-1c").split(".")[0])
+        box.configure(state="disabled", height=max(nlines, 8))
+        box.bind("<Button-4>", lambda e: pane.wheel(-1))
+        box.bind("<Button-5>", lambda e: pane.wheel(1))
+
+        def _wheel(event):
+            pane.wheel(-1 if getattr(event, "delta", 0) > 0 else 1)
+            return "break"
+
+        win.bind("<MouseWheel>", _wheel)
+        win.after_idle(pane._on_inner)
+
+        def _close() -> None:
+            self._help_win = None
+            win.destroy()
+
+        foot = tk.Frame(win, bg=BG)
+        foot.pack(fill="x", padx=16, pady=(0, 14))
+        _outline_btn(foot, t("help_close"), _close)
+        win.protocol("WM_DELETE_WINDOW", _close)
+        win.bind("<Escape>", lambda _e: _close())
+
     def _open_options(self) -> None:
         existing = getattr(self, "_opt_overlay", None)
         if existing is not None and existing.winfo_exists():
@@ -2008,13 +2157,14 @@ class RankRail(tk.Canvas):
             pos = min(last, max(0.0, rid + frac))
             y = pad_top + usable * (1 - pos / last)
             if self.mirror:
+                # Left rail: sit with the names, tip points at the vertical line.
                 self.create_polygon(
-                    x + 9, y, x + 2, y - 5, x + 2, y + 5,
+                    x + 2, y, x + 9, y - 5, x + 9, y + 5,
                     fill=CYAN_HI, outline="",
                 )
             else:
                 self.create_polygon(
-                    x - 9, y, x - 2, y - 5, x - 2, y + 5,
+                    x - 2, y, x - 9, y - 5, x - 9, y + 5,
                     fill=CYAN_HI, outline="",
                 )
 

@@ -7,7 +7,8 @@ The HUD subscribes via `on_update` (snapshots). The CLI prints text blocks.
 
 from __future__ import annotations
 
-from collections import defaultdict
+import threading
+from collections import OrderedDict, defaultdict
 from pathlib import Path
 
 from .i18n import apply_fileheader, t
@@ -44,12 +45,23 @@ from .models import BodyState, OrganicProgress, ScanProgress
 from .ranks import EXPLORE_RANKS, from_credits, from_journal
 from .scan_value import carto_stock_value, fc_sale_credits
 from .eddn import get_hub
+from .spansh import system_on_public_map
+
+_SPANSH_CACHE: OrderedDict[int, bool] = OrderedDict()
+_SPANSH_CACHE_MAX = 256
+_SPANSH_LOCK = threading.Lock()
 
 RARE_PLANETS = {
     "Earthlike body": "elw",
     "Water world": "ww",
     "Ammonia world": "aw",
 }
+
+
+def _pin_sig(pins) -> str:
+    if isinstance(pins, dict):
+        return str(pins.get("body_id") or "")
+    return ",".join(str(p.get("body_id") or "") for p in (pins or []))
 
 
 class Session:
@@ -96,6 +108,9 @@ class Session:
         self.carto_hold: dict[tuple, int] = {}
         self.carto_hold_first: dict[tuple, int] = {}
         self.nsp_by_system: dict[int, list[dict]] = defaultdict(list)
+        self._sys_journal_known: bool | None = None
+        self._sys_spansh_known: bool | None = None
+        self._sys_lookup_addr: int | None = None
 
     def body(self, system_address: int | None, body_id: int | None, name: str = "") -> BodyState:
         key = (system_address, body_id)
@@ -142,10 +157,14 @@ class Session:
             self._touch(body, event)
 
     def on_FSDJump(self, event: dict) -> None:
+        prev = self.system_address
         self.on_Location(event)
         self._focus_id = None
         self.fss_body_count = None
         self.fss_complete = False
+        if self.system_address != prev:
+            self._reset_sys_known()
+        self._maybe_spansh()
         self._emit_system()
 
     def on_CarrierJump(self, event: dict) -> None:
@@ -374,9 +393,11 @@ class Session:
             body.distance_ls = event.get("DistanceFromArrivalLS")
             if "WasDiscovered" in event:
                 body.was_discovered = bool(event.get("WasDiscovered"))
+                self._note_sys_discovered(body.was_discovered)
             self._touch(body, event)
             if (event.get("ScanType") or "").lower() != "navbeacondetail":
                 self._carto_refresh(body)
+            self._maybe_spansh()
             self._emit_system()
             return
         if not event.get("PlanetClass"):
@@ -401,6 +422,7 @@ class Session:
         body.terraformable = tf.startswith("terraform")
         if "WasDiscovered" in event:
             body.was_discovered = bool(event.get("WasDiscovered"))
+            self._note_sys_discovered(body.was_discovered)
         if "WasMapped" in event:
             body.was_mapped = bool(event.get("WasMapped"))
         if "WasFootfalled" in event:
@@ -412,6 +434,7 @@ class Session:
         self._touch(body, event)
         if (event.get("ScanType") or "").lower() != "navbeacondetail":
             self._carto_refresh(body)
+        self._maybe_spansh()
         if body.bio_count and body.dss_complete:
             self.maybe_display(body, select=False)
         else:
@@ -459,6 +482,7 @@ class Session:
         if count is not None:
             self.fss_body_count = int(count)
         self.fss_complete = False
+        self._maybe_spansh()
         self._emit_system()
 
     def on_FSSAllBodiesFound(self, event: dict) -> None:
@@ -500,6 +524,8 @@ class Session:
         self._carto_refresh(body)
         if body.bio_count:
             self.maybe_display(body, select=True)
+        else:
+            self._emit_system()
         if self.wb and body.dss_genuses:
             self.wb.on_dss(body, timestamp=event.get("timestamp"), catalog=self.catalog)
 
@@ -647,6 +673,7 @@ class Session:
             nsp_items=nsp_items,
         )
         payload["selected_id"] = selected_id
+        payload["sys_tag"] = self._sys_tag()
         return payload
 
     def _system_sig(self, payload: dict) -> str:
@@ -656,6 +683,9 @@ class Session:
             str(payload.get("fss_body_count")),
             str(payload.get("fss_complete")),
             payload.get("sys_value") or "",
+            payload.get("sys_tag") or "",
+            _pin_sig(payload.get("pin_bio")),
+            _pin_sig(payload.get("pin_explo")),
             str(payload.get("nsp_count") or 0),
             payload.get("nsp_label") or "",
         ]
@@ -665,6 +695,72 @@ class Session:
                 f"{row.get('lo')}|{row.get('hi')}|{row.get('status')}|{row.get('tier')}"
             )
         return "|".join(parts)
+
+    def _reset_sys_known(self) -> None:
+        self._sys_journal_known = None
+        self._sys_spansh_known = None
+        self._sys_lookup_addr = None
+
+    def _note_sys_discovered(self, discovered: bool) -> None:
+        if discovered:
+            self._sys_journal_known = True
+        elif self._sys_journal_known is not True:
+            self._sys_journal_known = False
+
+    def _sys_tag(self) -> str:
+        """Short HUD tag: known / new. Blank while a lookup is still in flight."""
+        if self._sys_journal_known is True or self._sys_spansh_known is True:
+            return "known"
+        if self._sys_journal_known is False:
+            return "new"
+        pending = self._sys_lookup_addr is not None and self._sys_spansh_known is None
+        if pending:
+            return ""
+        if self._sys_spansh_known is False:
+            return "new"
+        return ""
+
+    def _maybe_spansh(self) -> None:
+        """One background GET per system if the journal did not already say known."""
+        if self.catching_up or self._sys_journal_known is True:
+            return
+        addr = self.system_address
+        if addr is None:
+            return
+        addr = int(addr)
+        with _SPANSH_LOCK:
+            cached = _SPANSH_CACHE.get(addr)
+            if cached is not None:
+                _SPANSH_CACHE.move_to_end(addr)
+                self._sys_spansh_known = cached
+                return
+        if self._sys_lookup_addr == addr:
+            return
+        self._sys_lookup_addr = addr
+        name = self.system_name
+        threading.Thread(
+            target=self._spansh_worker,
+            args=(addr, name),
+            daemon=True,
+            name="spansh-sys",
+        ).start()
+
+    def _spansh_worker(self, addr: int, name: str) -> None:
+        known = system_on_public_map(addr, name)
+        if self.system_address != addr:
+            return
+        if known is None:
+            self._sys_lookup_addr = None
+            self._emit_system()
+            return
+        with _SPANSH_LOCK:
+            _SPANSH_CACHE[addr] = known
+            _SPANSH_CACHE.move_to_end(addr)
+            while len(_SPANSH_CACHE) > _SPANSH_CACHE_MAX:
+                _SPANSH_CACHE.popitem(last=False)
+        self._sys_spansh_known = known
+        self._sys_lookup_addr = None
+        self._emit_system()
 
     def _on_nsp_codex(self, event: dict) -> None:
         addr = event.get("SystemAddress", self.system_address)
@@ -860,6 +956,7 @@ def prepare_live(
     session.catching_up = False
     if session.wb:
         session.wb.flush()
+    session._maybe_spansh()
     last = _last_interesting(session)
     if last:
         session.maybe_display(last, force=True, select=True)

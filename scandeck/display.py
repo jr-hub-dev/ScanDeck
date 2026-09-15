@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 
 from .i18n import game_name, t
-from .matcher import TIER_ICON, value_tier, verdict
+from .matcher import PRIORITY_GOOD, PRIORITY_HIGH, TIER_ICON, value_tier, verdict
 from .fss_colors import fss_color
 from .scan_value import fmt_scan_cr, map_estimate
 from .models import BodyState, Certainty, MatchResult, OrganicProgress, ScanProgress
@@ -229,7 +229,12 @@ def render_body(body: BodyState, matches: list[MatchResult], *, alert: bool = Fa
         todo = [r for r in rows if r["stage"] == ScanProgress.NONE.value]
         ongoing = [r for r in rows if r["stage"] in {ScanProgress.LOG.value, ScanProgress.SAMPLE.value}]
         done = [r for r in rows if r["stage"] == ScanProgress.ANALYSE.value]
-        bio_total = body.bio_count if body.bio_count else len(rows)
+        if body.bio_count is not None:
+            bio_total = body.bio_count
+        elif body.dss_complete and not body.dss_genuses:
+            bio_total = 0
+        else:
+            bio_total = len(rows)
         lines.append(
             f"SCANS  {len(done)}/{bio_total} terminée(s)"
             + (f"  ·  {len(ongoing)} en cours" if ongoing else "")
@@ -297,7 +302,12 @@ def snapshot_body(body: BodyState, matches: list[MatchResult], *, alert: bool = 
     todo = [r for r in rows if r["stage"] == ScanProgress.NONE.value]
     ongoing = [r for r in rows if r["stage"] in {ScanProgress.LOG.value, ScanProgress.SAMPLE.value}]
     done = [r for r in rows if r["stage"] == ScanProgress.ANALYSE.value]
-    bio_total = body.bio_count if body.bio_count else len(rows)
+    if body.bio_count is not None:
+        bio_total = body.bio_count
+    elif body.dss_complete and not body.dss_genuses:
+        bio_total = 0
+    else:
+        bio_total = len(rows)
 
     dss = list(body.dss_genuses)
     if catalog:
@@ -454,6 +464,7 @@ def snapshot_system_row(
         else:
             status = ""
     else:
+        lo, hi = 0, 0
         tier = map_tier
         if body.mapped or body.dss_complete:
             status = "✓"
@@ -501,9 +512,47 @@ def snapshot_system_row(
         "map_tier": map_tier,
         "map_label": map_label,
         "mapped": body.mapped or body.dss_complete,
+        "dss": body.dss_complete,
         "prior": prior,
         "detail": detail,
     }
+
+
+PIN_LIST_MAX = 3
+
+
+def select_pins(rows: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Landing queues: bio targets and carto targets, ranked, independent."""
+    bio_cands: list[tuple] = []
+    explo_cands: list[tuple] = []
+    for row in rows:
+        if row.get("kind") == "star":
+            continue
+        pin = {
+            "body_id": row.get("body_id"),
+            "short": row.get("short") or "",
+            "line2": row.get("line2") or "",
+        }
+        if (
+            row.get("landable") is not False
+            and (row.get("bios") or 0) > 0
+            and not row.get("done")
+        ):
+            floor = PRIORITY_GOOD if row.get("dss") else PRIORITY_HIGH
+            if (row.get("hi") or 0) >= floor:
+                bio_cands.append((
+                    -int(row.get("hi") or 0),
+                    int(row.get("bios") or 0),
+                    pin["short"],
+                    pin,
+                ))
+        if not row.get("mapped") and row.get("map_tier") in {"high", "good"}:
+            explo_cands.append((-int(row.get("map_cr") or 0), pin["short"], pin))
+    bio_cands.sort()
+    explo_cands.sort()
+    bio = [item[-1] for item in bio_cands[:PIN_LIST_MAX]]
+    explo = [item[-1] for item in explo_cands[:PIN_LIST_MAX]]
+    return bio, explo
 
 
 def snapshot_system(
@@ -561,6 +610,7 @@ def snapshot_system(
     elif leftover > 1:
         lines.append(t("nsp_many", n=leftover))
     nsp_label = "\n".join(lines)
+    pin_bio, pin_explo = select_pins(rows)
     return {
         "system": system_name,
         "system_bodies": rows,
@@ -571,6 +621,8 @@ def snapshot_system(
         "fss_complete": fss_complete,
         "nsp_count": nsp_count,
         "nsp_label": nsp_label,
+        "pin_bio": pin_bio,
+        "pin_explo": pin_explo,
     }
 
 

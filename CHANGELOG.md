@@ -6,6 +6,17 @@ What changed for players. Windows zips: [Releases](https://github.com/jr-hub-dev
 
 The GitHub “Full Changelog” compare link is a **code diff**, not these notes.
 
+## 1.3.0 — 2026-09-15
+
+### Added
+- **Landing queues**: next mapping targets under the system name (left), next bio landings under the planet name (centre). Click a line to open it. A 1-bio HMC around 1.7 M (usually Bacterium) stays out of the bio queue
+- **HELP** in the footer: a window that explains how to read every HUD element
+- After a jump, the system is tagged **new** or **known** (journal first, then one Spansh lookup if needed)
+
+### Fixed
+- Planets with 0 bio signals no longer show invented high-value species
+- Rank chevron now points at the rail
+
 ## 1.2.1 — 2026-09-15
 
 ### Changed
